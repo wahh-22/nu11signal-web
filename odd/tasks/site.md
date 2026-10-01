@@ -32,3 +32,4 @@ A fast static website for nu11signal (cyberpunk terminal radio for Apple Music),
 
 ## Next step
 - Parent commits S1; user creates the public repo wahh-22/nu11signal-web, sets Pages source to GitHub Actions, pushes; later sets donation URLs and the custom domain (README steps).
+- Published 2026-10-01: public repo https://github.com/wahh-22/nu11signal-web created, Pages build_type workflow enabled, first deploy run 36923874111 ok, https://wahh-22.github.io/nu11signal-web/ returns 200. Remote uses HTTPS (SSH push not available here). Pending: donation URLs in src/config.ts; custom domain once the user adds the CNAME and verifies nu11signal.wahh.dev.
