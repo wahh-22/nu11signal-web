@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 
 const dist = fileURLToPath(new URL('../dist/', import.meta.url));
 const site = process.env.SITE_URL || 'https://wahh-22.github.io';
-const base = (process.env.BASE_PATH || '/nu11signal-web').replace(/\/?$/, '/');
+const base = (process.env.BASE_PATH || '/').replace(/\/?$/, '/');
 const origin = new URL(site).origin;
 
 if (!existsSync(dist)) {

@@ -4,7 +4,7 @@ The website for [nu11signal](https://github.com/wahh-22/nu11signal), a cyberpunk
 
 It is a static [Astro](https://astro.build) site published on GitHub Pages:
 
-- now: https://wahh-22.github.io/nu11signal-web
+- now: https://nu11signal.wahh.dev
 - later: https://nu11signal.wahh.dev (see [Custom domain](#custom-domain))
 
 ## Local development
