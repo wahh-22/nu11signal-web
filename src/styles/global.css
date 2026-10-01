@@ -1,6 +1,6 @@
 /* nu11signal — site styles.
    Palettes mirror the app (internal/radio/theme.go): NIGHT CITY by default,
-   BLUE when <html data-theme="blue">. */
+   BLUE when <html data-theme="blue">, MATRIX when <html data-theme="matrix">. */
 
 :root,
 :root[data-theme='night-city'] {
@@ -43,6 +43,26 @@
   --glow: rgb(52 122 255 / 0.2);
 }
 
+/* MATRIX recolors NIGHT CITY in the greens of falling code (theme.go):
+   mid green for red, code green for cyan, a pale glow for yellow. */
+:root[data-theme='matrix'] {
+  --red: #00c832;
+  --deep: #009a29;
+  --cyan: #00ff41;
+  --yellow: #d2ffd2;
+  --muted: #1e6b32;
+  --dim: #0a3314;
+  --ink: #000000;
+  --select: #062610;
+
+  --bg: #000000;
+  --surface: #020802;
+  --surface-2: #051005;
+  --text: #e2f7e4;
+  --text-dim: #a3c9a9;
+  --glow: rgb(0 200 50 / 0.16);
+}
+
 :root {
   --font-ui: 'Kode Mono', 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
   --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -50,7 +70,8 @@
   --max: 72rem;
   --gutter: clamp(1rem, 4vw, 2rem);
   /* Text-safe accent: yellow in NIGHT CITY, a lighter violet in BLUE
-     (the app's #7C5CFF is too dark for body text on near-black). */
+     (the app's #7C5CFF is too dark for body text on near-black), and the
+     pale glow #D2FFD2 itself in MATRIX. */
   --accent-text: var(--yellow);
 }
 :root[data-theme='blue'] {
@@ -185,7 +206,8 @@ pre {
   font-size: clamp(1.6rem, 4vw, 2.25rem);
   color: var(--red);
 }
-:root[data-theme='blue'] .section-title {
+:root[data-theme='blue'] .section-title,
+:root[data-theme='matrix'] .section-title {
   color: var(--cyan);
 }
 
@@ -430,7 +452,8 @@ kbd {
   color: var(--red);
   font-weight: 700;
 }
-:root[data-theme='blue'] .sig-glitch__text {
+:root[data-theme='blue'] .sig-glitch__text,
+:root[data-theme='matrix'] .sig-glitch__text {
   color: var(--accent-text);
 }
 

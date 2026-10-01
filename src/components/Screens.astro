@@ -32,8 +32,8 @@ const gallery = [
   {
     name: 'settings',
     title: 'SETTINGS',
-    alt: 'The SETTINGS panel offering the NIGHT CITY and BLUE themes',
-    caption: 's switches between NIGHT CITY and BLUE; the choice is saved.',
+    alt: 'The SETTINGS panel offering the NIGHT CITY, BLUE and MATRIX themes',
+    caption: 's opens the themes: NIGHT CITY, BLUE or MATRIX; the choice is saved.',
   },
   {
     name: 'boot',
@@ -73,9 +73,19 @@ const gallery = [
         loading="lazy"
         decoding="async"
       />
+      <img
+        class="terminal__img terminal__img--matrix"
+        src={src('matrix')}
+        width="840"
+        height="556"
+        alt="nu11signal in the MATRIX theme: the PLAYLISTS dial on the left, NOW PLAYING with transport buttons and data rain on the right"
+        loading="lazy"
+        decoding="async"
+      />
       <figcaption>
-        The main screen in the <span class="when-night">NIGHT CITY</span><span class="when-blue">BLUE</span> theme. Switch
-        the site theme above to see the other one.
+        The main screen in the <span class="when-night">NIGHT CITY</span><span class="when-blue">BLUE</span><span
+          class="when-matrix">MATRIX</span
+        > theme, one of three: NIGHT CITY, BLUE and MATRIX. Switch the site theme above to see the others.
       </figcaption>
     </figure>
 
@@ -109,17 +119,23 @@ const gallery = [
       0 1.5rem 4rem -1rem var(--glow);
   }
   .terminal__img--blue,
-  .when-blue {
+  .terminal__img--matrix,
+  .when-blue,
+  .when-matrix {
     display: none;
-  }
-  :global(:root[data-theme='blue']) .terminal__img--blue {
-    display: block;
   }
   :global(:root[data-theme='blue']) .terminal__img--night,
-  :global(:root[data-theme='blue']) .when-night {
+  :global(:root[data-theme='blue']) .when-night,
+  :global(:root[data-theme='matrix']) .terminal__img--night,
+  :global(:root[data-theme='matrix']) .when-night {
     display: none;
   }
-  :global(:root[data-theme='blue']) .when-blue {
+  :global(:root[data-theme='blue']) .terminal__img--blue,
+  :global(:root[data-theme='matrix']) .terminal__img--matrix {
+    display: block;
+  }
+  :global(:root[data-theme='blue']) .when-blue,
+  :global(:root[data-theme='matrix']) .when-matrix {
     display: inline;
   }
   figcaption {

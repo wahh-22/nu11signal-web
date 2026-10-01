@@ -150,7 +150,7 @@ export function dotsPath(dots: readonly Dot[], part: DotPart, ox = 0, oy = 0, r 
     .join('');
 }
 
-/** The NIGHT CITY and BLUE palettes (nu11signal/internal/radio/theme.go). */
+/** The NIGHT CITY, BLUE and MATRIX palettes (nu11signal/internal/radio/theme.go). */
 export const PALETTES = {
   nightCity: {
     red: '#FF5F57',
@@ -171,6 +171,16 @@ export const PALETTES = {
     dim: '#1C2C54',
     ink: '#05070F',
     select: '#10182E',
+  },
+  matrix: {
+    red: '#00C832',
+    deep: '#009A29',
+    cyan: '#00FF41',
+    yellow: '#D2FFD2',
+    muted: '#1E6B32',
+    dim: '#0A3314',
+    ink: '#000000',
+    select: '#062610',
   },
 } as const;
 

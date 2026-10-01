@@ -55,7 +55,7 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
         var d = document.documentElement;
         try {
           var t = localStorage.getItem('nu11signal:theme');
-          if (t === 'blue' || t === 'night-city') d.dataset.theme = t;
+          if (t === 'night-city' || t === 'blue' || t === 'matrix') d.dataset.theme = t;
           var fx = localStorage.getItem('nu11signal:fx');
           if (fx === 'on' || fx === 'off') d.dataset.fx = fx;
         } catch (e) {}
@@ -67,23 +67,39 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
     <slot />
 
     <!-- Theme and effects toggles: [data-theme-toggle] and [data-fx-toggle].
+         The theme button cycles NIGHT CITY -> BLUE -> MATRIX -> NIGHT CITY.
          A manual theme pick dispatches nu11signal:theme-picked on document;
-         nu11signal:set-theme (detail: 'night-city' | 'blue') switches the
-         theme the same way, saved like a pick (the signal glitch uses it). -->
+         nu11signal:set-theme (detail: 'night-city' | 'blue' | 'matrix', or
+         'next' for the following theme in the cycle) switches the theme the
+         same way, saved like a pick (the signal glitch uses 'next'). -->
     <script is:inline>
       (function () {
         var d = document.documentElement;
+        var THEMES = ['night-city', 'blue', 'matrix'];
+        var LABELS = { 'night-city': 'NIGHT CITY', blue: 'BLUE', matrix: 'MATRIX' };
+        var COLORS = { 'night-city': '#070707', blue: '#03050c', matrix: '#000000' };
         function save(key, value) {
           try {
             localStorage.setItem(key, value);
           } catch (e) {}
         }
+        function current() {
+          var t = d.dataset.theme;
+          return THEMES.indexOf(t) >= 0 ? t : 'night-city';
+        }
+        function next(theme) {
+          return THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length];
+        }
         function sync() {
-          var blue = d.dataset.theme === 'blue';
+          var theme = current();
+          var after = next(theme);
           document.querySelectorAll('[data-theme-toggle]').forEach(function (b) {
-            b.setAttribute('aria-pressed', String(blue));
+            b.setAttribute('data-current', theme);
+            b.setAttribute('title', 'Color theme: ' + LABELS[theme] + '. Click for ' + LABELS[after] + '.');
             var l = b.querySelector('[data-label]');
-            if (l) l.textContent = blue ? 'BLUE' : 'NIGHT CITY';
+            if (l) l.textContent = LABELS[theme];
+            var n = b.querySelector('[data-next]');
+            if (n) n.textContent = ', switch to ' + LABELS[after];
           });
           var on = d.dataset.fx !== 'off';
           document.querySelectorAll('[data-fx-toggle]').forEach(function (b) {
@@ -92,10 +108,11 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
             if (l) l.textContent = on ? 'FX ON' : 'FX OFF';
           });
           var meta = document.querySelector('meta[name="theme-color"]');
-          if (meta) meta.setAttribute('content', blue ? '#03050c' : '#070707');
+          if (meta) meta.setAttribute('content', COLORS[theme]);
         }
         function setTheme(theme) {
-          d.dataset.theme = theme === 'blue' ? 'blue' : 'night-city';
+          if (theme === 'next') theme = next(current());
+          d.dataset.theme = THEMES.indexOf(theme) >= 0 ? theme : 'night-city';
           save('nu11signal:theme', d.dataset.theme);
           sync();
         }
@@ -106,7 +123,7 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
           var t = e.target instanceof Element ? e.target : null;
           if (!t) return;
           if (t.closest('[data-theme-toggle]')) {
-            setTheme(d.dataset.theme === 'blue' ? 'night-city' : 'blue');
+            setTheme('next');
             document.dispatchEvent(new CustomEvent('nu11signal:theme-picked'));
           } else if (t.closest('[data-fx-toggle]')) {
             d.dataset.fx = d.dataset.fx === 'off' ? 'on' : 'off';

@@ -3,9 +3,10 @@
 // glitch.go): every 10-22 s a burst of 0.6-1 s tears a few horizontal bands
 // of the page sideways, scatters noise cells (blocks and Braille) in the
 // theme's colors, may run a static bar, and one burst in four flashes
-// NO SIGNAL framed in static. Midway through each burst the theme switches
-// NIGHT CITY <-> BLUE (through the toggle's nu11signal:set-theme event, so
-// it is saved like a manual pick): the glitch carries the theme change.
+// NO SIGNAL framed in static. Midway through each burst the theme advances
+// one step in the toggle's cycle NIGHT CITY -> BLUE -> MATRIX -> NIGHT CITY
+// (through the toggle's nu11signal:set-theme event with detail 'next', so it
+// is saved like a manual pick): the glitch carries the theme change.
 //
 // No burst and no automatic switch while the visitor prefers reduced motion
 // or has the effects off (FX OFF). A manual theme pick cancels a running
@@ -163,7 +164,7 @@
       frame();
       r.switchT = setTimeout(function () {
         document.dispatchEvent(
-          new CustomEvent('nu11signal:set-theme', { detail: d.dataset.theme === 'blue' ? 'night-city' : 'blue' }),
+          new CustomEvent('nu11signal:set-theme', { detail: 'next' }),
         );
       }, len / 2);
       r.endT = setTimeout(function () {
