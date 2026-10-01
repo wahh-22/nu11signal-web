@@ -1,0 +1,152 @@
+---
+// The terminal mock: the app's own 80x24 screen renders (copied from the
+// app repo's docs/assets/screens). The main screen follows the site theme.
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const src = (name: string) => `${base}screens/${name}.svg`;
+
+const gallery = [
+  {
+    name: 'search',
+    title: 'SEARCH',
+    alt: 'SEARCH with live suggestions, matching artists and songs',
+    caption: 'Live suggestions, recent searches, artists, albums, songs and playlists.',
+  },
+  {
+    name: 'expanded',
+    title: 'Expanded player',
+    alt: 'The expanded player with the data rain under the transport controls',
+    caption: 'f expands NOW PLAYING to the full width, rain and all.',
+  },
+  {
+    name: 'no-signal',
+    title: 'Signal effects',
+    alt: 'A glitch burst tearing rows and flashing NO SIGNAL over the UI',
+    caption: 'Torn rows, corrupted cells, static bars, and now and then NO SIGNAL.',
+  },
+  {
+    name: 'keys',
+    title: 'KEYS',
+    alt: 'The KEYS overlay listing every binding by group',
+    caption: '? opens every binding in one panel.',
+  },
+  {
+    name: 'settings',
+    title: 'SETTINGS',
+    alt: 'The SETTINGS panel offering the NIGHT CITY and BLUE themes',
+    caption: 's switches between NIGHT CITY and BLUE; the choice is saved.',
+  },
+  {
+    name: 'boot',
+    title: 'Boot splash',
+    alt: 'The boot splash: the null emblem over BOOTING NU11SIGNAL',
+    caption: 'The app boots and shuts down over the null emblem.',
+  },
+];
+---
+
+<section class="section" id="screens" aria-labelledby="screens-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-kicker">Signal acquired</p>
+      <h2 class="section-title" id="screens-title">The radio, in 80×24</h2>
+      <p class="section-lede">
+        Playlists on the dial at the left, NOW PLAYING with bracketed transport controls and data rain at the right.
+        These are renders of the real UI.
+      </p>
+    </div>
+
+    <figure class="terminal">
+      <img
+        class="terminal__img terminal__img--night"
+        src={src('night-city')}
+        width="840"
+        height="556"
+        alt="nu11signal in the NIGHT CITY theme: the PLAYLISTS dial on the left, NOW PLAYING with transport buttons and data rain on the right"
+        decoding="async"
+      />
+      <img
+        class="terminal__img terminal__img--blue"
+        src={src('blue')}
+        width="840"
+        height="556"
+        alt="nu11signal in the BLUE theme: the PLAYLISTS dial on the left, NOW PLAYING with transport buttons and data rain on the right"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>
+        The main screen in the <span class="when-night">NIGHT CITY</span><span class="when-blue">BLUE</span> theme. Switch
+        the site theme above to see the other one.
+      </figcaption>
+    </figure>
+
+    <ul class="gallery">
+      {
+        gallery.map((shot) => (
+          <li>
+            <figure>
+              <img src={src(shot.name)} width="840" height="556" alt={shot.alt} loading="lazy" decoding="async" />
+              <figcaption>
+                <strong>{shot.title}</strong> — {shot.caption}
+              </figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .terminal {
+    margin: 0;
+  }
+  .terminal__img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 1px var(--dim),
+      0 1.5rem 4rem -1rem var(--glow);
+  }
+  .terminal__img--blue,
+  .when-blue {
+    display: none;
+  }
+  :global(:root[data-theme='blue']) .terminal__img--blue {
+    display: block;
+  }
+  :global(:root[data-theme='blue']) .terminal__img--night,
+  :global(:root[data-theme='blue']) .when-night {
+    display: none;
+  }
+  :global(:root[data-theme='blue']) .when-blue {
+    display: inline;
+  }
+  figcaption {
+    margin-top: 0.75rem;
+    color: var(--text-dim);
+    font-size: 0.9375rem;
+  }
+  figcaption strong {
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-weight: 600;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+    gap: 1.75rem 1.5rem;
+    margin: 3rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .gallery figure {
+    margin: 0;
+  }
+  .gallery img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px var(--dim);
+  }
+</style>

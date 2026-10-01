@@ -1,0 +1,129 @@
+---
+import { LINKS } from '../config';
+
+// The most used keys (nu11signal docs/usage.md#keys); ? in the app lists all.
+const groups = [
+  {
+    title: 'Playback',
+    keys: [
+      { keys: ['space'], action: 'Play / pause' },
+      { keys: ['n', 'p'], action: 'Next / previous track' },
+      { keys: [',', '.'], action: 'Seek −10 s / +10 s' },
+      { keys: ['k', 'j'], action: 'Volume up / down by 5%' },
+      { keys: ['o'], action: 'Loop: OFF, ALL, ONE' },
+    ],
+  },
+  {
+    title: 'Library',
+    keys: [
+      { keys: ['l'], action: 'Love the song, or unlove it' },
+      { keys: ['a'], action: 'Add the song to a playlist' },
+      { keys: ['enter'], action: 'Open or play the selection' },
+      { keys: ['↑', '↓'], action: 'Move the cursor' },
+      { keys: ['→'], action: 'Focus the player' },
+    ],
+  },
+  {
+    title: 'Navigate',
+    keys: [
+      { keys: ['/'], action: 'Open SEARCH' },
+      { keys: ['tab'], action: 'Between playlists and search' },
+      { keys: ['esc'], action: 'Back one view' },
+      { keys: ['f'], action: 'Expand the player, or restore it' },
+    ],
+  },
+  {
+    title: 'App',
+    keys: [
+      { keys: ['?'], action: 'KEYS: every binding' },
+      { keys: ['s'], action: 'SETTINGS: themes' },
+      { keys: ['x'], action: 'Signal effects off / on' },
+      { keys: ['q'], action: 'Quit, after asking' },
+    ],
+  },
+];
+---
+
+<section class="section" id="keys" aria-labelledby="keys-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-kicker">Cheatsheet</p>
+      <h2 class="section-title" id="keys-title">Keys</h2>
+      <p class="section-lede">
+        The everyday bindings. In the app, <kbd>?</kbd> opens KEYS with every one; the{' '}
+        <a href={`${LINKS.usage}#keys`} rel="noopener">usage guide</a> has the full tables per view.
+      </p>
+    </div>
+
+    <div class="keys">
+      {
+        groups.map((g) => (
+          <div class="keys__group">
+            <h3>{g.title}</h3>
+            <dl>
+              {g.keys.map((k) => (
+                <div class="keys__row">
+                  <dt>
+                    {k.keys.map((key, i) => (
+                      <>
+                        {i > 0 && <span class="keys__sep"> / </span>}
+                        <kbd>{key}</kbd>
+                      </>
+                    ))}
+                  </dt>
+                  <dd>{k.action}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .keys {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15.5rem), 1fr));
+    gap: 1rem;
+  }
+  .keys__group {
+    padding: 1.25rem;
+    border: 1px solid var(--dim);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .keys__group h3 {
+    margin: 0 0 0.75rem;
+    font-size: 0.875rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cyan);
+  }
+  dl {
+    margin: 0;
+  }
+  .keys__row {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    border-top: 1px dashed var(--dim);
+  }
+  .keys__row:first-child {
+    border-top: 0;
+  }
+  dt {
+    white-space: nowrap;
+  }
+  dd {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 0.9375rem;
+  }
+  .keys__sep {
+    color: var(--text-dim);
+  }
+</style>

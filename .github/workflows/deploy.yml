@@ -1,0 +1,46 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Allow this job to clone the repo and create a Pages deployment.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; let an in-progress deployment finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # Repository variables (Settings → Secrets and variables → Actions →
+      # Variables) switch the site to the custom domain without a code change:
+      #   SITE_URL=https://nu11signal.wahh.dev  BASE_PATH=/
+      # Unset, the site builds for https://wahh-22.github.io/nu11signal-web.
+      SITE_URL: ${{ vars.SITE_URL || 'https://wahh-22.github.io' }}
+      BASE_PATH: ${{ vars.BASE_PATH || '/nu11signal-web' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Install, build, and upload the site
+        uses: withastro/action@v6
+        with:
+          node-version: 24
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

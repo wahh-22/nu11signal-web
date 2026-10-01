@@ -1,0 +1,32 @@
+{
+  "name": "nu11signal-web",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The nu11signal website: a cyberpunk car radio for Apple Music, in your terminal.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "brand": "node tools/brand.ts",
+    "check:links": "node tools/check-links.mjs",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^7.3.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^24.19.0",
+    "typescript": "^5.9.0"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "fsevents": false
+  }
+}

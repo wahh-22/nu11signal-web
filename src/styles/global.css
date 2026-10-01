@@ -1,0 +1,394 @@
+/* nu11signal — site styles.
+   Palettes mirror the app (internal/radio/theme.go): NIGHT CITY by default,
+   BLUE when <html data-theme="blue">. */
+
+:root,
+:root[data-theme='night-city'] {
+  --red: #ff5f57;
+  --deep: #e8554e;
+  --cyan: #5ef6ff;
+  --yellow: #fcee0a;
+  --muted: #9a3b37;
+  --dim: #5a1e1e;
+  --ink: #0a0a0a;
+  --select: #0e2a2f;
+
+  --bg: #070707;
+  --surface: #0f0d0d;
+  --surface-2: #161111;
+  --text: #f1e9e7;
+  --text-dim: #b9aeab;
+  --ring: var(--red);
+  --slash: var(--yellow);
+  --link: var(--cyan);
+  --glow: rgb(255 95 87 / 0.18);
+  color-scheme: dark;
+}
+
+:root[data-theme='blue'] {
+  --red: #347aff;
+  --deep: #2a62cc;
+  --cyan: #5ce1ff;
+  --yellow: #7c5cff;
+  --muted: #4a5578;
+  --dim: #1c2c54;
+  --ink: #05070f;
+  --select: #10182e;
+
+  --bg: #03050c;
+  --surface: #080c18;
+  --surface-2: #0d1324;
+  --text: #e6ecfb;
+  --text-dim: #a9b4d0;
+  --glow: rgb(52 122 255 / 0.2);
+}
+
+:root {
+  --font-ui: 'Kode Mono', 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --radius: 4px;
+  --max: 72rem;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  /* Text-safe accent: yellow in NIGHT CITY, a lighter violet in BLUE
+     (the app's #7C5CFF is too dark for body text on near-black). */
+  --accent-text: var(--yellow);
+}
+:root[data-theme='blue'] {
+  --accent-text: #a995ff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(60rem 30rem at 85% -10%, var(--glow), transparent 70%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--link);
+  text-underline-offset: 0.2em;
+}
+a:hover {
+  color: var(--accent-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-ui);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+code,
+kbd,
+pre {
+  font-family: var(--font-ui);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: var(--yellow);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-weight: 700;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 1rem;
+  color: var(--ink);
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---- section chrome ---------------------------------------------------- */
+
+.section {
+  padding: clamp(3rem, 8vw, 5.5rem) 0;
+  border-top: 1px solid var(--dim);
+}
+
+.section-head {
+  margin-bottom: 2rem;
+}
+
+.section-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 0.5rem;
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+.section-kicker::before {
+  content: '◢◤';
+  color: var(--accent-text);
+  letter-spacing: 0;
+}
+
+.section-title {
+  margin: 0;
+  font-size: clamp(1.6rem, 4vw, 2.25rem);
+  color: var(--red);
+}
+:root[data-theme='blue'] .section-title {
+  color: var(--cyan);
+}
+
+.section-lede {
+  max-width: 44rem;
+  margin: 0.75rem 0 0;
+  color: var(--text-dim);
+}
+
+/* ---- HUD buttons ([ LIKE THIS ]) --------------------------------------- */
+
+.hud-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: 2.75rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--deep);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+.hud-btn::before {
+  content: '[';
+  color: var(--accent-text);
+}
+.hud-btn::after {
+  content: ']';
+  color: var(--accent-text);
+}
+.hud-btn:hover {
+  border-color: var(--accent-text);
+  color: var(--accent-text);
+}
+.hud-btn--primary {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  color: var(--ink);
+}
+.hud-btn--primary::before,
+.hud-btn--primary::after {
+  color: var(--ink);
+}
+.hud-btn--primary:hover {
+  background: transparent;
+  color: var(--accent-text);
+}
+:root[data-theme='blue'] .hud-btn--primary {
+  color: #fff;
+}
+:root[data-theme='blue'] .hud-btn--primary::before,
+:root[data-theme='blue'] .hud-btn--primary::after {
+  color: #fff;
+}
+.hud-btn--small {
+  min-height: 2.25rem;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.8125rem;
+}
+.hud-btn[aria-disabled='true'] {
+  border-style: dashed;
+  border-color: var(--muted);
+  color: var(--text-dim);
+  cursor: not-allowed;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.9em;
+  padding: 0.1em 0.45em;
+  border: 1px solid var(--deep);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  background: var(--surface-2);
+  color: var(--accent-text);
+  font-size: 0.875em;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ---- glitch on the hero emblem ----------------------------------------- */
+
+.glitch {
+  position: relative;
+}
+.glitch__layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.glitch__layer--a {
+  --ring: var(--cyan);
+  --slash: var(--cyan);
+  animation: glitch-a 7s steps(1, end) infinite;
+}
+.glitch__layer--b {
+  --ring: var(--yellow);
+  --slash: var(--red);
+  animation: glitch-b 7s steps(1, end) infinite;
+}
+.glitch__main {
+  animation: glitch-main 7s steps(1, end) infinite;
+}
+
+@keyframes glitch-main {
+  0%,
+  88%,
+  100% {
+    transform: none;
+    clip-path: none;
+  }
+  89% {
+    transform: translateX(3%);
+    clip-path: inset(0 0 40% 0);
+  }
+  90% {
+    transform: translateX(-2%);
+  }
+  91% {
+    transform: none;
+    clip-path: inset(30% 0 0 0);
+  }
+  92% {
+    transform: none;
+    clip-path: none;
+  }
+}
+@keyframes glitch-a {
+  0%,
+  88%,
+  93%,
+  100% {
+    opacity: 0;
+  }
+  89% {
+    opacity: 0.85;
+    clip-path: inset(10% 0 70% 0);
+    transform: translateX(-6%);
+  }
+  90% {
+    opacity: 0.85;
+    clip-path: inset(50% 0 30% 0);
+    transform: translateX(5%);
+  }
+  91.5% {
+    opacity: 0.85;
+    clip-path: inset(80% 0 0 0);
+    transform: translateX(-3%);
+  }
+}
+@keyframes glitch-b {
+  0%,
+  89%,
+  92.5%,
+  100% {
+    opacity: 0;
+  }
+  89.5% {
+    opacity: 0.8;
+    clip-path: inset(30% 0 50% 0);
+    transform: translateX(7%);
+  }
+  91% {
+    opacity: 0.8;
+    clip-path: inset(0 0 85% 0);
+    transform: translateX(-5%);
+  }
+}
+
+:root[data-fx='off'] .glitch__layer,
+:root[data-fx='off'] .glitch__main {
+  animation: none;
+}
+:root[data-fx='off'] .glitch__layer {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .glitch__layer,
+  .glitch__main {
+    animation: none;
+  }
+  .glitch__layer {
+    display: none;
+  }
+  .hud-btn {
+    transition: none;
+  }
+}

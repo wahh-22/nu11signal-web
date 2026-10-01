@@ -1,0 +1,78 @@
+---
+import Emblem from './Emblem.astro';
+import { LINKS } from '../config';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="site-footer__brand">
+      <Emblem size={36} />
+      <div>
+        <p class="site-footer__name">NU11SIGNAL</p>
+        <p class="site-footer__fine">
+          © {year} Wilmer Henao. Released under the <a href={LINKS.license} rel="noopener">MIT License</a>.
+        </p>
+        <p class="site-footer__fine">Not affiliated with Apple. Apple Music is a trademark of Apple Inc.</p>
+      </div>
+    </div>
+    <nav aria-label="Project links">
+      <ul class="site-footer__links">
+        <li><a href={LINKS.repo} rel="noopener">Repository</a></li>
+        <li><a href={LINKS.releases} rel="noopener">Releases</a></li>
+        <li><a href={LINKS.issues} rel="noopener">Issues</a></li>
+        <li><a href={LINKS.docs} rel="noopener">Docs</a></li>
+        <li><a href={LINKS.siteRepo} rel="noopener">Site source</a></li>
+      </ul>
+    </nav>
+  </div>
+  <p class="site-footer__mark" aria-hidden="true">◢◤◢◤◢◤◢◤◢◤</p>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--dim);
+    padding: 2.5rem 0 1.5rem;
+    background: var(--surface);
+  }
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .site-footer__brand {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .site-footer__name {
+    margin: 0 0 0.25rem;
+    color: var(--red);
+    font-family: var(--font-ui);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  .site-footer__fine {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 0.875rem;
+  }
+  .site-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-ui);
+    font-size: 0.9375rem;
+  }
+  .site-footer__mark {
+    margin: 2rem 0 0;
+    text-align: center;
+    color: var(--yellow);
+    font-family: var(--font-ui);
+  }
+</style>

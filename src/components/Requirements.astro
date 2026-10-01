@@ -1,0 +1,98 @@
+---
+import { INSTALL_COMMAND, LINKS } from '../config';
+---
+
+<section class="section" id="install" aria-labelledby="install-title">
+  <div class="container req">
+    <div>
+      <div class="section-head">
+        <p class="section-kicker">Requirements</p>
+        <h2 class="section-title" id="install-title">Before you tune in</h2>
+      </div>
+      <ul class="req__list">
+        <li><strong>macOS 14 or later</strong>, Apple Silicon or Intel.</li>
+        <li><strong>An Apple Music subscription.</strong> The first launch asks for Apple Music access.</li>
+        <li>
+          <strong>A terminal</strong> of 80×24 or larger. Set its font to Kode Mono (installed by the cask) for the intended
+          look.
+        </li>
+        <li>
+          Optional: independent app volume needs macOS 14.2+; the live spectrum behind the rain needs macOS 15+.
+        </li>
+      </ul>
+      <p class="req__note">macOS only. Not affiliated with Apple.</p>
+    </div>
+
+    <div class="req__steps">
+      <h3>Install</h3>
+      <pre><code><span class="c"># signed, notarized build via Homebrew</span>
+{INSTALL_COMMAND}
+nu11signal</code></pre>
+      <h3>No subscription handy?</h3>
+      <p>Build from source and try the UI against a simulated player:</p>
+      <pre><code>make demo</code></pre>
+      <p>
+        Release archives for a manual install are on <a href={LINKS.releases} rel="noopener">GitHub Releases</a>. See
+        the <a href={LINKS.docs} rel="noopener">documentation</a> for building, usage and troubleshooting.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .req {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: 2.5rem;
+  }
+  .req__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .req__list li {
+    position: relative;
+    padding: 0.5rem 0 0.5rem 1.75rem;
+    color: var(--text-dim);
+  }
+  .req__list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0.25rem;
+    color: var(--accent-text);
+  }
+  .req__list strong {
+    color: var(--text);
+  }
+  .req__note {
+    margin-top: 1rem;
+    color: var(--text-dim);
+    font-size: 0.9375rem;
+  }
+  .req__steps h3 {
+    margin: 0 0 0.75rem;
+    color: var(--cyan);
+    font-size: 1.0625rem;
+  }
+  .req__steps h3:not(:first-child) {
+    margin-top: 1.75rem;
+  }
+  .req__steps p {
+    color: var(--text-dim);
+  }
+  pre {
+    margin: 0;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    border: 1px solid var(--dim);
+    border-left: 3px solid var(--yellow);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+  pre .c {
+    color: var(--text-dim);
+  }
+</style>

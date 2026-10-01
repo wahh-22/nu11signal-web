@@ -1,0 +1,58 @@
+---
+// Donation links come from src/config.ts (DONATIONS). An unset URL shows its
+// button as "coming soon"; with both unset the section says so.
+import { DONATIONS } from '../config';
+
+const buttons = [
+  { label: 'Buy me a coffee', glyph: '☕', url: DONATIONS.coffee.trim() },
+  { label: 'GitHub Sponsors', glyph: '<3', url: DONATIONS.sponsors.trim() },
+];
+const anyLive = buttons.some((b) => b.url !== '');
+---
+
+<section class="section" id="support" aria-labelledby="support-title">
+  <div class="container support">
+    <div class="section-head">
+      <p class="section-kicker">Keep it on air</p>
+      <h2 class="section-title" id="support-title">Support the signal</h2>
+      <p class="section-lede">
+        nu11signal is free and open source.
+        {
+          anyLive
+            ? 'If it keeps your nights soundtracked, a coffee or a sponsorship keeps the signal strong.'
+            : 'Donation links are coming soon. Until then, a star on GitHub or a bug report helps the signal just as much.'
+        }
+      </p>
+    </div>
+
+    <div class="support__buttons">
+      {
+        buttons.map((b) =>
+          b.url ? (
+            <a class="hud-btn hud-btn--primary" href={b.url} rel="noopener">
+              <span aria-hidden="true">{b.glyph}</span> {b.label}
+            </a>
+          ) : (
+            <span class="hud-btn" aria-disabled="true">
+              <span aria-hidden="true">{b.glyph}</span> {b.label} <span class="soon">· coming soon</span>
+            </span>
+          ),
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .support__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .soon {
+    color: var(--text-dim);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+</style>

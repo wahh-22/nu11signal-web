@@ -1,0 +1,144 @@
+---
+// Features, kept accurate to the app's README and docs.
+const features = [
+  {
+    glyph: '♪',
+    title: 'Apple Music, natively',
+    body: 'Plays through MusicKit in a tiny signed, windowless Swift helper: no browser, no Electron, no Music app window, near 0% CPU at idle.',
+  },
+  {
+    glyph: '⌕',
+    title: 'Library, playlists, search',
+    body: 'Your playlists on a pseudo FM dial. Search the catalog with live suggestions and recent terms; open artists, albums, songs and playlists.',
+  },
+  {
+    glyph: '<3',
+    title: 'Favorites and playlist editing',
+    body: 'Love a song with l, add it to a playlist with a, or create a new playlist on the spot, from any song row or the song playing.',
+  },
+  {
+    glyph: '░▒▓',
+    title: 'Data rain that plays the music',
+    body: 'Hex digits and half-width katakana fall under NOW PLAYING, driven by the real spectrum on macOS 15+: loud bands rain harder, bass hits send a wave, silence is dry.',
+  },
+  {
+    glyph: '▚▞',
+    title: 'Signal glitches and intros',
+    body: 'Every so often the signal drops: torn rows, corrupted cells, static and NO SIGNAL. New content scrambles in. x toggles it; --calm starts without.',
+  },
+  {
+    glyph: '[ ]',
+    title: 'Bracket HUD, keys or mouse',
+    body: 'Bracketed buttons for transport, loop, volume and expand. Every control answers to the keyboard and a click; the wheel scrolls the lists.',
+  },
+  {
+    glyph: '◐',
+    title: 'Two themes',
+    body: 'NIGHT CITY (neon red, cyan and yellow) or BLUE (electric blue and violet). The whole UI recolors at once and the choice is saved.',
+  },
+  {
+    glyph: '?',
+    title: 'KEYS overlay',
+    body: 'Press ? for every binding in one panel, grouped by view. Quitting always asks first.',
+  },
+  {
+    glyph: 'VOL',
+    title: 'Its own volume',
+    body: 'VOL is independent of the system volume, through a Core Audio process tap (macOS 14.2+), falling back to the system volume (SYS) when it cannot.',
+  },
+  {
+    glyph: 'Ø',
+    title: 'Boot and shutdown splash',
+    body: 'The app boots and shuts down over the null emblem, with a signal line that scrambles in.',
+  },
+  {
+    glyph: 'Aa',
+    title: 'Designed in Kode Mono',
+    body: 'The Homebrew cask installs Kode Mono, the font the UI is designed with. Any monospaced font works.',
+  },
+  {
+    glyph: '◢◤',
+    title: 'Signed and notarized',
+    body: 'A signed, notarized build for Apple Silicon and Intel, one Homebrew command away. Open source under MIT.',
+  },
+];
+---
+
+<section class="section" id="features" aria-labelledby="features-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="section-kicker">Features</p>
+      <h2 class="section-title" id="features-title">Everything on the dial</h2>
+    </div>
+    <ul class="features">
+      {
+        features.map((f) => (
+          <li class="feature">
+            <span class="feature__glyph" aria-hidden="true">
+              {f.glyph}
+            </span>
+            <h3 class="feature__title">{f.title}</h3>
+            <p class="feature__body">{f.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .feature {
+    position: relative;
+    padding: 1.25rem 1.25rem 1.35rem;
+    border: 1px solid var(--dim);
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition: border-color 0.15s;
+  }
+  .feature:hover {
+    border-color: var(--deep);
+  }
+  .feature::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 2.25rem;
+    height: 2px;
+    background: var(--yellow);
+  }
+  .feature__glyph {
+    display: inline-block;
+    min-width: 2.5rem;
+    color: var(--cyan);
+    font-family: var(--font-ui);
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .feature__title {
+    margin: 0.6rem 0 0.4rem;
+    font-size: 1.0625rem;
+    color: var(--red);
+  }
+  :global(:root[data-theme='blue']) .feature__title {
+    color: var(--text);
+  }
+  .feature__body {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 0.9625rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .feature {
+      transition: none;
+    }
+  }
+</style>
