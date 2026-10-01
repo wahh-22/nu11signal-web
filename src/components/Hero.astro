@@ -1,6 +1,7 @@
 ---
 import Emblem from './Emblem.astro';
-import { EMBLEM_MARK, EMBLEM_NAME } from '../emblem';
+import Bars from './Bars.astro';
+import { EMBLEM_NAME } from '../emblem';
 import { INSTALL_COMMAND, LINKS, REPO } from '../config';
 
 const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-the-badge&labelColor=0A0A0A&color=FF5F57&label=latest`;
@@ -9,14 +10,14 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
 <section class="hero" aria-labelledby="hero-title">
   <div class="container hero__inner">
     <div class="hero__mark">
-      <Emblem size={176} glitch class="hero__emblem" />
+      <Emblem size={200} glitch class="hero__emblem" />
       <div class="hero__name">
         <h1 id="hero-title">
           <span class="sr-only">nu11signal</span>
           <span aria-hidden="true" class="hero__line">{EMBLEM_NAME[0]}</span>
           <span aria-hidden="true" class="hero__line">{EMBLEM_NAME[1]}</span>
         </h1>
-        <p class="hero__slants" aria-hidden="true">{EMBLEM_MARK}</p>
+        <Bars class="hero__bars" />
       </div>
     </div>
 
@@ -111,12 +112,7 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
     flex-wrap: wrap;
   }
   .hero__mark :global(.hero__emblem) {
-    width: clamp(112px, 22vw, 176px) !important;
-    height: clamp(112px, 22vw, 176px) !important;
-  }
-  .hero__mark :global(.hero__emblem svg) {
-    width: 100%;
-    height: 100%;
+    height: clamp(128px, 26vw, 200px) !important;
   }
   .hero__name h1 {
     margin: 0;
@@ -128,12 +124,11 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
     line-height: 1.1;
     white-space: pre;
   }
-  .hero__slants {
-    margin: 0.5rem 0 0;
-    color: var(--yellow);
-    font-family: var(--font-ui);
-    font-size: clamp(1.1rem, 3.2vw, 1.6rem);
-    letter-spacing: 0;
+  /* The bars run under S I G N A L, about as wide. */
+  .hero__name :global(.hero__bars) {
+    width: calc(clamp(1.9rem, 6.5vw, 3.5rem) * 7);
+    max-width: 100%;
+    margin-top: 0.6rem;
   }
   .hero__tagline {
     margin: 2rem 0 0;

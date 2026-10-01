@@ -1,0 +1,206 @@
+---
+// The page now and then loses the signal, like the app (internal/radio/
+// glitch.go): every 10-22 s a burst of 0.6-1 s tears a few horizontal bands
+// of the page sideways, scatters noise cells (blocks and Braille) in the
+// theme's colors, may run a static bar, and one burst in four flashes
+// NO SIGNAL framed in static. Midway through each burst the theme switches
+// NIGHT CITY <-> BLUE (through the toggle's nu11signal:set-theme event, so
+// it is saved like a manual pick): the glitch carries the theme change.
+//
+// No burst and no automatic switch while the visitor prefers reduced motion
+// or has the effects off (FX OFF). A manual theme pick cancels a running
+// burst and restarts the wait; the next burst switches from the picked
+// theme. The wait pauses while the tab is hidden.
+//
+// Light on the page: the bands are read once per burst, then each frame only
+// writes the CSS translate property and swaps the overlay's few nodes; the
+// overlay is removed after the burst. Frames last 110-140 ms (under 10 per
+// second, small areas), and the NO SIGNAL sign stays up for the whole burst,
+// so nothing large flashes more than three times a second.
+//
+// For a quick look, ?glitch=now starts the first burst after 300 ms.
+---
+
+<script is:inline>
+  (function () {
+    var d = document.documentElement;
+    var motion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    var GAP_MIN = 10000;
+    var GAP_MAX = 22000;
+    var LEN_MIN = 600;
+    var LEN_MAX = 1000;
+    var FRAME_MIN = 110;
+    var FRAME_MAX = 140;
+    var SIGN_ODDS = 4;
+    var TEARS = '.site-header__inner > *, main .container > *, .site-footer__inner > *, .site-footer__mark';
+    var BLOCKS = '░▒▓█▚▞0137ACEF';
+    var COLORS = ['var(--red)', 'var(--cyan)', 'var(--yellow)', 'var(--muted)'];
+
+    var timer = 0;
+    var due = 0;
+    var paused = 0;
+    var run = null;
+
+    function rand(a, b) {
+      return a + Math.random() * (b - a);
+    }
+    function pick(n) {
+      return Math.floor(Math.random() * n);
+    }
+    function active() {
+      return d.dataset.fx !== 'off' && !(motion && motion.matches) && !document.hidden;
+    }
+    function braille() {
+      return String.fromCharCode(0x2801 + pick(255));
+    }
+    function noiseGlyph() {
+      return Math.random() < 0.5 ? braille() : BLOCKS.charAt(pick(BLOCKS.length));
+    }
+    function staticText(n, brailleOnly) {
+      var s = '';
+      for (var i = 0; i < n; i++) s += brailleOnly ? braille() : '░▒▓'.charAt(pick(3));
+      return s;
+    }
+
+    // Waits ms (a random gap when omitted) for the next burst, if active.
+    function arm(ms) {
+      clearTimeout(timer);
+      timer = 0;
+      due = 0;
+      if (!active()) return;
+      if (ms == null) ms = rand(GAP_MIN, GAP_MAX);
+      due = Date.now() + ms;
+      timer = setTimeout(burst, ms);
+    }
+
+    // Stops a running burst and puts the page back as it was.
+    function abort() {
+      if (!run) return;
+      clearTimeout(run.frameT);
+      clearTimeout(run.switchT);
+      clearTimeout(run.endT);
+      untear(run);
+      run.overlay.remove();
+      run = null;
+    }
+
+    function untear(r) {
+      for (var i = 0; i < r.moved.length; i++) r.moved[i].style.translate = '';
+      r.moved = [];
+    }
+
+    function burst() {
+      timer = 0;
+      due = 0;
+      if (!active()) return;
+      var len = rand(LEN_MIN, LEN_MAX);
+      var overlay = document.createElement('div');
+      overlay.className = 'sig-glitch';
+      overlay.setAttribute('aria-hidden', 'true');
+      var noise = document.createElement('div');
+      overlay.appendChild(noise);
+      var cols = Math.ceil(window.innerWidth / 8);
+      if (Math.random() * SIGN_ODDS < 1) {
+        var w = 24;
+        var sign = document.createElement('div');
+        sign.className = 'sig-glitch__sign';
+        sign.innerHTML =
+          '<div class="sig-glitch__static">' + staticText(w) + '</div>' +
+          '<div><span class="sig-glitch__static">▒▓</span>' +
+          '<span class="sig-glitch__text">  N O   S I G N A L  </span>' +
+          '<span class="sig-glitch__static">▓▒</span></div>' +
+          '<div class="sig-glitch__static">' + staticText(w) + '</div>';
+        overlay.appendChild(sign);
+      }
+
+      // Read the bands once: the visible blocks a tear can move.
+      var vh = window.innerHeight;
+      var bands = [];
+      document.querySelectorAll(TEARS).forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.height > 0 && r.bottom > 0 && r.top < vh) bands.push({ el: el, top: r.top, bottom: r.bottom });
+      });
+      document.body.appendChild(overlay);
+
+      var r = { overlay: overlay, moved: [], frameT: 0, switchT: 0, endT: 0, signed: overlay.childNodes.length > 1 };
+      run = r;
+
+      function frame() {
+        untear(r);
+        var html = '';
+        // 1-3 tears: the blocks crossing a band jump 6-18 px sideways, with a
+        // thin edge line where the band tore.
+        var tears = 1 + pick(3);
+        for (var t = 0; t < tears; t++) {
+          var y = rand(0, vh);
+          var h = rand(8, 56);
+          var k = Math.round(rand(6, 18)) * (Math.random() < 0.5 ? -1 : 1);
+          for (var i = 0; i < bands.length; i++) {
+            var b = bands[i];
+            if (b.bottom > y && b.top < y + h && r.moved.indexOf(b.el) < 0) {
+              b.el.style.translate = k + 'px 0';
+              r.moved.push(b.el);
+            }
+          }
+          html += '<i class="sig-glitch__edge" style="top:' + Math.round(y) + 'px;background:' + COLORS[pick(2)] + '"></i>';
+        }
+        // a static bar on one frame in three
+        if (pick(3) === 0) {
+          html += '<i class="sig-glitch__bar" style="top:' + Math.round(rand(0, vh - 20)) + 'px">' + staticText(cols, Math.random() < 0.5) + '</i>';
+        }
+        // 4-10 noise cells, twice as many with NO SIGNAL
+        var n = (4 + pick(7)) * (r.signed ? 2 : 1);
+        for (var c = 0; c < n; c++) {
+          html +=
+            '<i class="sig-glitch__cell" style="left:' + Math.round(rand(0, window.innerWidth - 16)) +
+            'px;top:' + Math.round(rand(0, vh - 20)) + 'px;color:' + COLORS[pick(COLORS.length)] + '">' +
+            noiseGlyph() + noiseGlyph() + '</i>';
+        }
+        noise.innerHTML = html;
+        r.frameT = setTimeout(frame, rand(FRAME_MIN, FRAME_MAX));
+      }
+
+      frame();
+      r.switchT = setTimeout(function () {
+        document.dispatchEvent(
+          new CustomEvent('nu11signal:set-theme', { detail: d.dataset.theme === 'blue' ? 'night-city' : 'blue' }),
+        );
+      }, len / 2);
+      r.endT = setTimeout(function () {
+        abort();
+        arm();
+      }, len);
+    }
+
+    // A manual pick: start over from the chosen theme.
+    document.addEventListener('nu11signal:theme-picked', function () {
+      abort();
+      arm();
+    });
+    // FX on/off.
+    new MutationObserver(function () {
+      abort();
+      arm();
+    }).observe(d, { attributes: true, attributeFilter: ['data-fx'] });
+    if (motion) {
+      var onMotion = function () {
+        abort();
+        arm();
+      };
+      motion.addEventListener('change', onMotion);
+    }
+    // Pause the wait while the tab is hidden, resume it when shown again.
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        paused = due ? Math.max(due - Date.now(), 0) : 0;
+        abort();
+        arm();
+      } else {
+        arm(paused ? Math.max(paused, 1000) : null);
+        paused = 0;
+      }
+    });
+
+    arm(/[?&]glitch=now\b/.test(window.location.search) ? 300 : null);
+  })();
+</script>

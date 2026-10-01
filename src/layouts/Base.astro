@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { SITE } from '../config';
+import SignalGlitch from '../components/SignalGlitch.astro';
 
 interface Props {
   title?: string;
@@ -65,7 +66,10 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
     <a class="skip-link" href="#main">Skip to content</a>
     <slot />
 
-    <!-- Theme and effects toggles: [data-theme-toggle] and [data-fx-toggle]. -->
+    <!-- Theme and effects toggles: [data-theme-toggle] and [data-fx-toggle].
+         A manual theme pick dispatches nu11signal:theme-picked on document;
+         nu11signal:set-theme (detail: 'night-city' | 'blue') switches the
+         theme the same way, saved like a pick (the signal glitch uses it). -->
     <script is:inline>
       (function () {
         var d = document.documentElement;
@@ -90,13 +94,20 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
           var meta = document.querySelector('meta[name="theme-color"]');
           if (meta) meta.setAttribute('content', blue ? '#03050c' : '#070707');
         }
+        function setTheme(theme) {
+          d.dataset.theme = theme === 'blue' ? 'blue' : 'night-city';
+          save('nu11signal:theme', d.dataset.theme);
+          sync();
+        }
+        document.addEventListener('nu11signal:set-theme', function (e) {
+          setTheme(e instanceof CustomEvent ? e.detail : '');
+        });
         document.addEventListener('click', function (e) {
           var t = e.target instanceof Element ? e.target : null;
           if (!t) return;
           if (t.closest('[data-theme-toggle]')) {
-            d.dataset.theme = d.dataset.theme === 'blue' ? 'night-city' : 'blue';
-            save('nu11signal:theme', d.dataset.theme);
-            sync();
+            setTheme(d.dataset.theme === 'blue' ? 'night-city' : 'blue');
+            document.dispatchEvent(new CustomEvent('nu11signal:theme-picked'));
           } else if (t.closest('[data-fx-toggle]')) {
             d.dataset.fx = d.dataset.fx === 'off' ? 'on' : 'off';
             save('nu11signal:fx', d.dataset.fx);
@@ -106,5 +117,6 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
         sync();
       })();
     </script>
+    <SignalGlitch />
   </body>
 </html>

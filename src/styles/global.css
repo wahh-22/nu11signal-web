@@ -175,7 +175,7 @@ pre {
   color: var(--accent-text);
 }
 .section-kicker::before {
-  content: '◢◤';
+  content: '⣠⡾⠋';
   color: var(--accent-text);
   letter-spacing: 0;
 }
@@ -377,6 +377,63 @@ kbd {
   display: none;
 }
 
+/* ---- page-wide signal glitch (src/components/SignalGlitch.astro) ------- */
+
+.sig-glitch {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+  font-family: var(--font-ui);
+  line-height: 1;
+}
+.sig-glitch i {
+  position: absolute;
+  font-style: normal;
+}
+.sig-glitch__edge {
+  left: 0;
+  right: 0;
+  height: 2px;
+  opacity: 0.7;
+}
+.sig-glitch__bar {
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  white-space: pre;
+  font-size: 1rem;
+  color: var(--muted);
+  background: var(--bg);
+}
+.sig-glitch__cell {
+  font-size: 1.1rem;
+  background: var(--bg);
+}
+.sig-glitch__sign {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0.25rem;
+  background: var(--bg);
+  font-size: clamp(0.9rem, 2.6vw, 1.5rem);
+  line-height: 1.25;
+  white-space: pre;
+}
+.sig-glitch__static {
+  color: var(--red);
+}
+.sig-glitch__text {
+  color: var(--red);
+  font-weight: 700;
+}
+:root[data-theme='blue'] .sig-glitch__text {
+  color: var(--accent-text);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -390,5 +447,8 @@ kbd {
   }
   .hud-btn {
     transition: none;
+  }
+  .sig-glitch {
+    display: none;
   }
 }

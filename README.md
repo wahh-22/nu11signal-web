@@ -43,7 +43,9 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 | Path | What |
 |------|------|
 | `src/config.ts` | Links, the install command, page title and description, **donation URLs** |
-| `src/emblem.ts` | The null emblem grid and masks, copied from the app (`internal/radio/emblem.go`), and the NIGHT CITY / BLUE palettes (`internal/radio/theme.go`) |
+| `src/emblem.ts` | The Braille null emblem (large and compact rows and masks), the name and the five thin bars, copied from the app (`internal/radio/emblem.go`), the dot decoder, and the NIGHT CITY / BLUE palettes (`internal/radio/theme.go`) |
+| `src/components/Emblem.astro`, `Bars.astro` | The emblem and the bars drawn as SVG dots, one circle per raised Braille dot |
+| `src/components/SignalGlitch.astro` | The periodic page glitch that also switches the theme |
 | `src/components/` | Page sections: header, hero, screens, features, requirements, keys, support, footer |
 | `src/styles/global.css` | Theme tokens and shared styles |
 | `public/screens/` | The app's 80x24 screen renders, copied from the app repo's `docs/assets/screens/` |
@@ -53,6 +55,15 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 
 If the emblem changes in the app, update `src/emblem.ts` and run `npm run brand`.
 If the app's screen renders change, copy them into `public/screens/` again.
+
+## Signal effects and accessibility
+
+Like the app, the page now and then loses the signal: every 10 to 22 seconds a burst of 0.6 to 1 second tears a few bands of the page sideways, scatters noise cells (blocks and Braille) in the theme's colors, and one burst in four flashes `NO SIGNAL`. Midway through each burst the theme switches between NIGHT CITY and BLUE, saved like a click on the theme button.
+
+- No bursts and no automatic theme switch when the visitor prefers reduced motion (`prefers-reduced-motion: reduce`) or turns the effects off (**FX OFF**, saved per browser).
+- Nothing flashes faster than three times a second: burst frames last 110 to 140 ms and change only small areas, and the `NO SIGNAL` sign stays up for the whole burst (WCAG 2.3.1).
+- A manual theme click cancels a running burst and restarts the wait; the next burst switches from the chosen theme. The wait pauses while the tab is hidden.
+- Add `?glitch=now` to the URL to see the first burst after 300 ms.
 
 ## Donation links
 

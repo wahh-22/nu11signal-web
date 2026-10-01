@@ -1,5 +1,5 @@
-// Generates the brand files in public/ from the emblem grid (src/emblem.ts):
-//   public/favicon.svg  the emblem on a dark tile
+// Generates the brand files in public/ from the Braille emblem (src/emblem.ts):
+//   public/favicon.svg  the compact emblem's dots on a dark tile
 //   public/og.png       a 1200x630 social card
 //
 // Run with `npm run brand` (Node 22.18+/24 runs TypeScript directly). It uses
@@ -10,13 +10,22 @@
 import { writeFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
-import { EMBLEM_WIDTH, PALETTES, emblemRects, emblemSvg } from '../src/emblem.ts';
+import {
+  BARS_ART,
+  DOT_RADIUS,
+  EMBLEM_LARGE,
+  PALETTES,
+  brailleDots,
+  dotBounds,
+  faviconSvg,
+  type Dot,
+} from '../src/emblem.ts';
 
 const out = (name: string) => fileURLToPath(new URL(`../public/${name}`, import.meta.url));
 
 // ---- favicon --------------------------------------------------------------
 
-writeFileSync(out('favicon.svg'), emblemSvg({ tile: true, unit: 16 }));
+writeFileSync(out('favicon.svg'), faviconSvg());
 
 // ---- og.png ---------------------------------------------------------------
 
@@ -61,13 +70,43 @@ rect(W - 24 - t, 24, t, H - 48, dim);
 rect(24, 24, 120, t, yellow);
 rect(24, 24, t, 60, yellow);
 
-// emblem
-const unit = 30;
-const ex = 110;
-const ey = 150;
-for (const r of emblemRects()) {
-  rect(ex + r.x * unit, ey + r.y * unit, r.width * unit, r.height * unit, r.part === 'ring' ? red : yellow);
+/** Fills a disc at (cx, cy) of radius r over the pixels, edges antialiased
+ * against what is already there (4 x 4 samples per pixel). */
+function disc(cx: number, cy: number, r: number, c: RGB): void {
+  const S = 4;
+  for (let j = Math.floor(cy - r); j <= Math.ceil(cy + r); j++) {
+    for (let i = Math.floor(cx - r); i <= Math.ceil(cx + r); i++) {
+      if (i < 0 || j < 0 || i >= W || j >= H) continue;
+      let hit = 0;
+      for (let sy = 0; sy < S; sy++) {
+        for (let sx = 0; sx < S; sx++) {
+          const dx = i + (sx + 0.5) / S - cx;
+          const dy = j + (sy + 0.5) / S - cy;
+          if (dx * dx + dy * dy <= r * r) hit++;
+        }
+      }
+      if (!hit) continue;
+      const a = hit / (S * S);
+      const o = (j * W + i) * 3;
+      for (let k = 0; k < 3; k++) px[o + k] = Math.round((px[o + k] ?? 0) * (1 - a) + c[k]! * a);
+    }
+  }
 }
+
+/** Draws dots with their box's top left at (x, y), unit pixels per dot. */
+function drawDots(dots: Dot[], x: number, y: number, unit: number, color: (d: Dot) => RGB): void {
+  const b = dotBounds(dots);
+  for (const d of dots) {
+    disc(x + (d.x - b.x + 0.5) * unit, y + (d.y - b.y + 0.5) * unit, DOT_RADIUS * unit, color(d));
+  }
+}
+
+// emblem: the large Braille emblem, one disc per dot
+const emblemDots = brailleDots(EMBLEM_LARGE);
+const unit = 12;
+const ex = 110;
+const ey = Math.round((480 - dotBounds(emblemDots).height * unit) / 2) + 40;
+drawDots(emblemDots, ex, ey, unit, (d) => (d.part === 'ring' ? red : yellow));
 
 // 5x7 bitmap font: each glyph is 7 rows of 5 bits, most significant first.
 const FONT: Record<string, number[]> = {
@@ -120,28 +159,15 @@ function text(str: string, x: number, y: number, s: number, c: RGB): void {
 const textWidth = (str: string, s: number) => str.length * 6 * s - s;
 
 // name beside the emblem, as in the app: N U 1 1 / S I G N A L
-const tx = ex + EMBLEM_WIDTH * unit + 70;
+const tx = ex + dotBounds(emblemDots).width * unit + 70;
 text('N U 1 1', tx, 175, 9, red);
 text('S I G N A L', tx, 275, 9, red);
 
-// the slants ◢◤ x10 under the name
-const sw = 28;
-const sh = 34;
-const sy = 375;
-for (let k = 0; k < 10; k++) {
-  const x0 = tx + k * sw;
-  for (let j = 0; j < sh; j++) {
-    const f = (j + 1) / sh; // 0..1 down the glyph
-    const w = Math.round(f * sw);
-    if (k % 2 === 0) {
-      // ◢ lower-right triangle
-      rect(x0 + sw - w, sy + j, w, 1, yellow);
-    } else {
-      // ◤ upper-left triangle
-      rect(x0, sy + j, Math.round((1 - f) * sw) + 1, 1, yellow);
-    }
-  }
-}
+// the five thin Braille bars under the name, 15 cells under the 11 of
+// S I G N A L as in the app (clipped to the frame)
+const barDots = brailleDots(BARS_ART);
+const barUnit = Math.min(20, Math.floor((W - 60 - tx) / dotBounds(barDots).width));
+drawDots(barDots, tx, 375, barUnit, () => yellow);
 
 // tagline and install line across the bottom, centered
 const tagline = 'A CYBERPUNK CAR RADIO FOR APPLE MUSIC, IN YOUR TERMINAL';

@@ -1,0 +1,34 @@
+---
+// The five thin Braille bars from the app (⣠⡾⠋ x5, emblemMark in
+// internal/radio/emblem.go) as SVG dots in the accent color. Decorative.
+// Set their width in CSS; the height follows their shape.
+import { BARS_ART, brailleDots, dotBounds, dotsPath } from '../emblem';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const dots = brailleDots(BARS_ART);
+const box = dotBounds(dots);
+// A little finer than the emblem's dots, so the bars read thin.
+const d = dotsPath(dots, 'mark', box.x, box.y, 0.32);
+---
+
+<svg
+  class:list={['bars', className]}
+  viewBox={`0 0 ${box.width} ${box.height}`}
+  style={`aspect-ratio:${box.width}/${box.height}`}
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d={d} />
+</svg>
+
+<style>
+  .bars {
+    display: block;
+    height: auto;
+    fill: var(--slash);
+  }
+</style>
