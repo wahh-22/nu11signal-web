@@ -219,7 +219,7 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
   .install__tab {
     text-transform: none;
   }
-  /* The selected platform reads like a primary HUD button (white ink on BLUE). */
+  /* The selected platform reads like a primary HUD button (white ink on BLUESHIFT). */
   .install__tab[aria-pressed='true'] {
     border-color: var(--yellow);
     background: var(--yellow);
@@ -229,7 +229,7 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
   .install__tab[aria-pressed='true']::after {
     color: inherit;
   }
-  :root[data-theme='blue'] .install {
+  :root:is([data-theme='blueshift'], :not([data-theme])) .install {
     --install-tab-ink: #fff;
   }
   .install__tab[aria-pressed='false'] {
