@@ -26,14 +26,10 @@ export const SITE = {
 // ---------------------------------------------------------------------------
 // Support the signal (donations)
 //
-// PLACEHOLDERS: set each URL to enable its button. While a URL is an empty
-// string its button shows "coming soon" instead of a link, and while both are
-// empty the whole section reads "coming soon".
-//
-//   coffee:   e.g. 'https://buymeacoffee.com/<your-handle>' or a Ko-fi link
-//   sponsors: e.g. 'https://github.com/sponsors/<your-handle>'
+// Each URL enables its button; an empty string shows "coming soon" instead,
+// and with both empty the whole section reads "coming soon".
 // ---------------------------------------------------------------------------
 export const DONATIONS = {
-  coffee: '', // TODO(placeholder): Buy Me a Coffee URL
-  sponsors: '', // TODO(placeholder): GitHub Sponsors URL
+  coffee: 'https://buymeacoffee.com/wahh.dev',
+  sponsors: 'https://github.com/sponsors/wahh-22',
 } as const;
