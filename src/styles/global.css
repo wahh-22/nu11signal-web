@@ -19,8 +19,6 @@
   --surface-2: #161111;
   --text: #f1e9e7;
   --text-dim: #b9aeab;
-  --ring: var(--red);
-  --slash: var(--yellow);
   --link: var(--cyan);
   --glow: rgb(255 95 87 / 0.18);
   color-scheme: dark;
@@ -234,7 +232,7 @@ pre {
   color: var(--accent-text);
 }
 .section-kicker::before {
-  content: '⣠⡾⠋';
+  content: '⡾⡾⡾';
   color: var(--accent-text);
   letter-spacing: 0;
 }
@@ -377,7 +375,7 @@ kbd {
   mix-blend-mode: screen;
 }
 
-/* ---- glitch on the hero logo and the emblem ----------------------------- */
+/* ---- glitch on the logo (hero and 404) ---------------------------------- */
 
 .glitch {
   position: relative;
@@ -389,13 +387,9 @@ kbd {
   pointer-events: none;
 }
 .glitch__layer--a {
-  --ring: var(--cyan);
-  --slash: var(--cyan);
   animation: glitch-a 7s steps(1, end) infinite;
 }
 .glitch__layer--b {
-  --ring: var(--yellow);
-  --slash: var(--red);
   animation: glitch-b 7s steps(1, end) infinite;
 }
 .glitch__main {

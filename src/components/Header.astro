@@ -1,10 +1,8 @@
 ---
+import ThemeArt from './ThemeArt.astro';
 import { LINKS } from '../config';
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
-// The head of the logo, one file per theme; .theme-art (global.css) shows the
-// one for the active theme.
-const THEMES = ['night-city', 'blue', 'matrix', 'rose', 'neon-rose'] as const;
 const nav = [
   { href: `${base}#features`, label: 'Features' },
   { href: `${base}#screens`, label: 'Screens' },
@@ -16,20 +14,7 @@ const nav = [
 <header class="site-header">
   <div class="container site-header__inner">
     <a class="brand" href={base} aria-label="nu11signal home">
-      <span class="theme-art brand__mark" aria-hidden="true">
-        {
-          THEMES.map((theme) => (
-            <img
-              class={`theme-art__img theme-art__img--${theme}`}
-              src={`${base}logo/nu11signal-mark-${theme}.svg`}
-              alt=""
-              width="500"
-              height="500"
-              decoding="async"
-            />
-          ))
-        }
-      </span>
+      <ThemeArt kind="mark" class="brand__mark" aria-hidden="true" />
       <span class="brand__word" aria-hidden="true">NU11SIGNAL</span>
     </a>
 

@@ -2,16 +2,20 @@
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import Emblem from '../components/Emblem.astro';
+import ThemeArt from '../components/ThemeArt.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+// The head mark for the active theme, with the same glitch layers as the hero.
+const layers = ['glitch__main', 'glitch__layer glitch__layer--a', 'glitch__layer glitch__layer--b'];
 ---
 
 <Base title="NO SIGNAL — nu11signal" description="This page lost the signal." noindex>
   <Header />
   <main id="main" class="lost">
     <div class="container lost__inner">
-      <Emblem size={120} glitch />
+      <span class="lost__mark glitch" aria-hidden="true">
+        {layers.map((layer) => <ThemeArt kind="mark" class={layer} />)}
+      </span>
       <h1>NO SIGNAL</h1>
       <p>Error 404: this frequency is empty.</p>
       <a class="hud-btn hud-btn--primary" href={base}>Back to the dial</a>
@@ -26,6 +30,8 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     display: grid;
     place-items: center;
     padding: 4rem 0;
+    /* The glitch layers shift sideways; never let them widen the page. */
+    overflow-x: clip;
   }
   .lost__inner {
     display: flex;
@@ -33,6 +39,11 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     align-items: center;
     text-align: center;
     gap: 1rem;
+  }
+  .lost__mark {
+    display: block;
+    width: 8rem;
+    height: 8rem;
   }
   h1 {
     margin: 0.5rem 0 0;
