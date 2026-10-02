@@ -301,7 +301,43 @@ kbd {
   white-space: nowrap;
 }
 
-/* ---- glitch on the hero emblem ----------------------------------------- */
+/* ---- per-theme artwork (the logos in public/logo/) --------------------- */
+
+/* A .theme-art box holds one <img> per theme; only the one matching
+   <html data-theme> shows, so artwork follows a theme change (toggle or
+   signal glitch) with no script and no layout shift (the box keeps its size). */
+.theme-art {
+  display: block;
+  position: relative;
+}
+.theme-art__img {
+  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+:root[data-theme='night-city'] .theme-art__img--night-city,
+:root:not([data-theme]) .theme-art__img--night-city,
+:root[data-theme='blue'] .theme-art__img--blue,
+:root[data-theme='matrix'] .theme-art__img--matrix {
+  display: block;
+}
+/* In a glitching logo every layer covers the box; the tinted copies read as
+   a colour split while they tear across it. */
+.glitch > .theme-art {
+  position: absolute;
+  inset: 0;
+}
+.theme-art.glitch__layer--a {
+  filter: hue-rotate(170deg) saturate(1.6) brightness(1.15);
+  mix-blend-mode: screen;
+}
+.theme-art.glitch__layer--b {
+  filter: hue-rotate(60deg) saturate(1.8) brightness(1.1);
+  mix-blend-mode: screen;
+}
+
+/* ---- glitch on the hero logo and the emblem ----------------------------- */
 
 .glitch {
   position: relative;
