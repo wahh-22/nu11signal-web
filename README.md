@@ -1,6 +1,6 @@
 # nu11signal-web
 
-The website for [nu11signal](https://github.com/wahh-22/nu11signal), a cyberpunk car radio for Apple Music in your terminal (Apple Music and local files on macOS, local files on Linux).
+The website for [nu11signal](https://github.com/wahh-22/nu11signal), a neon car radio for Apple Music in your terminal (Apple Music and local files on macOS, local files on Linux).
 
 It is a static [Astro](https://astro.build) site published on GitHub Pages:
 
@@ -48,8 +48,8 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 | `src/components/` | Page sections: header, hero, screens, features, requirements, keys, support, footer |
 | `src/styles/global.css` | Theme tokens and shared styles |
 | `public/screens/` | The app's 80x24 screen renders, copied from the app repo's `docs/assets/screens/` |
-| `public/favicon.svg` | A copy of `public/logo/nu11signal-mark-night-city.svg` |
-| `public/og.png` | The 1200x630 social card, rendered from `src/assets/og-card.svg` (the Night City logo on the site background), which `tools/og-card.mjs` generates from `public/logo/nu11signal-night-city.svg`; do not edit the card by hand |
+| `public/favicon.svg` | A copy of `public/logo/nu11signal-mark-redshift.svg` |
+| `public/og.png` | The 1200x630 social card, rendered from `src/assets/og-card.svg` (the Redshift logo on the site background), which `tools/og-card.mjs` generates from `public/logo/nu11signal-redshift.svg`; do not edit the card by hand |
 | `tools/check-links.mjs` | Internal link and asset checker for `dist/` |
 
 If the logos change, replace the files in `public/logo/` (keep the marks in step) and run `npm run brand` (needs `rsvg-convert`, from librsvg) to refresh the favicon, regenerate `src/assets/og-card.svg` and render `public/og.png`. `npm run check:brand` fails when the card or the favicon no longer match the logos.
@@ -57,7 +57,7 @@ If the app's screen renders change, copy them into `public/screens/` again.
 
 ## Themes
 
-The site has the app's five themes: **NIGHT CITY** (neon red, cyan and yellow, the default), **BLUE** (electric blue and violet), **MATRIX** (the greens of falling code), **ROSE** (soft pinks with mint) and **NEON ROSE** (hot pinks with silver). The theme button in the header shows the current one and cycles NIGHT CITY → BLUE → MATRIX → ROSE → NEON ROSE → NIGHT CITY; the choice is saved per browser. The palettes live as CSS tokens per `data-theme` in `src/styles/global.css`, and the main screenshot swaps to the matching render (the ROSE themes keep the NIGHT CITY render until the app has ROSE renders).
+The site has the app's five themes: **REDSHIFT** (neon red, cyan and yellow, the default), **BLUE** (electric blue and violet), **MATRIX** (the greens of falling code), **ROSE** (soft pinks with mint) and **NEON ROSE** (hot pinks with silver). The theme button in the header shows the current one and cycles REDSHIFT → BLUE → MATRIX → ROSE → NEON ROSE → REDSHIFT; the choice is saved per browser. The palettes live as CSS tokens per `data-theme` in `src/styles/global.css`, and the main screenshot swaps to the matching render (the ROSE themes keep the REDSHIFT render until the app has ROSE renders).
 
 ## Signal effects and accessibility
 
