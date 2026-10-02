@@ -1,12 +1,12 @@
 ---
 import { INSTALL_COMMAND, LINKS, REPO } from '../config';
 
-// The official logo, one file per theme in public/logo/. All three are in the
+// The official logo, one file per theme in public/logo/. All five are in the
 // page; CSS in global.css (.theme-art) shows the one matching
 // <html data-theme>, so the logo follows a theme change at once. The glitch
 // layers repeat the stack, tinted, and tear across it now and then.
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
-const THEMES = ['night-city', 'blue', 'matrix'] as const;
+const THEMES = ['night-city', 'blue', 'matrix', 'rose', 'neon-rose'] as const;
 const logo = (theme: (typeof THEMES)[number]) => `${base}logo/nu11signal-${theme}.svg`;
 const layers = ['glitch__main', 'glitch__layer glitch__layer--a', 'glitch__layer glitch__layer--b'];
 

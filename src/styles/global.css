@@ -1,6 +1,7 @@
 /* nu11signal — site styles.
    Palettes mirror the app (internal/radio/theme.go): NIGHT CITY by default,
-   BLUE when <html data-theme="blue">, MATRIX when <html data-theme="matrix">. */
+   BLUE when <html data-theme="blue">, MATRIX when <html data-theme="matrix">,
+   ROSE when <html data-theme="rose">, NEON ROSE when <html data-theme="neon-rose">. */
 
 :root,
 :root[data-theme='night-city'] {
@@ -63,6 +64,41 @@
   --glow: rgb(0 200 50 / 0.16);
 }
 
+/* ROSE and NEON ROSE are the app's pinkTheme (theme.go) mapped by role onto
+   the NIGHT CITY tokens: red takes the main accent (hi, alert, the rain's
+   bright step), yellow the active color (fill, focus, accent marks, onAir,
+   the rain's tip), cyan the success color (ok), deep and muted the mauve
+   frame, dim and select the shadow, ink and bg the near-black. Links follow
+   the hi role, which pinkTheme draws in the main accent. Both share every
+   color but the accent, active and success. */
+:root[data-theme='rose'],
+:root[data-theme='neon-rose'] {
+  --deep: #a78e9b;
+  --muted: #a78e9b;
+  --dim: #28121e;
+  --ink: #060407;
+  --select: #28121e;
+
+  --bg: #060407;
+  --surface: #0d080b;
+  --surface-2: #150d11;
+  --text: #f6eff3;
+  --text-dim: #c7b6bf;
+  --link: var(--red);
+}
+:root[data-theme='rose'] {
+  --red: #f095c8;
+  --cyan: #b4e7c7;
+  --yellow: #ffb1dd;
+  --glow: rgb(240 149 200 / 0.16);
+}
+:root[data-theme='neon-rose'] {
+  --red: #f43888;
+  --cyan: #d2cbd0;
+  --yellow: #ff4f9a;
+  --glow: rgb(244 56 136 / 0.18);
+}
+
 :root {
   --font-ui: 'Kode Mono', 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
   --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -71,7 +107,9 @@
   --gutter: clamp(1rem, 4vw, 2rem);
   /* Text-safe accent: yellow in NIGHT CITY, a lighter violet in BLUE
      (the app's #7C5CFF is too dark for body text on near-black), and the
-     pale glow #D2FFD2 itself in MATRIX. */
+     pale glow #D2FFD2 itself in MATRIX, and the active pink in ROSE and
+     NEON ROSE (#FFB1DD and #FF4F9A both read on their near-black, and dark
+     ink reads on them as a fill, so their primary buttons keep the ink). */
   --accent-text: var(--yellow);
 }
 :root[data-theme='blue'] {
@@ -319,7 +357,9 @@ kbd {
 :root[data-theme='night-city'] .theme-art__img--night-city,
 :root:not([data-theme]) .theme-art__img--night-city,
 :root[data-theme='blue'] .theme-art__img--blue,
-:root[data-theme='matrix'] .theme-art__img--matrix {
+:root[data-theme='matrix'] .theme-art__img--matrix,
+:root[data-theme='rose'] .theme-art__img--rose,
+:root[data-theme='neon-rose'] .theme-art__img--neon-rose {
   display: block;
 }
 /* In a glitching logo every layer covers the box; the tinted copies read as

@@ -55,7 +55,7 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
         var d = document.documentElement;
         try {
           var t = localStorage.getItem('nu11signal:theme');
-          if (t === 'night-city' || t === 'blue' || t === 'matrix') d.dataset.theme = t;
+          if (t === 'night-city' || t === 'blue' || t === 'matrix' || t === 'rose' || t === 'neon-rose') d.dataset.theme = t;
           var fx = localStorage.getItem('nu11signal:fx');
           if (fx === 'on' || fx === 'off') d.dataset.fx = fx;
         } catch (e) {}
@@ -67,17 +67,31 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
     <slot />
 
     <!-- Theme and effects toggles: [data-theme-toggle] and [data-fx-toggle].
-         The theme button cycles NIGHT CITY -> BLUE -> MATRIX -> NIGHT CITY.
+         The theme button cycles NIGHT CITY -> BLUE -> MATRIX -> ROSE -> NEON ROSE
+         -> NIGHT CITY.
          A manual theme pick dispatches nu11signal:theme-picked on document;
-         nu11signal:set-theme (detail: 'night-city' | 'blue' | 'matrix', or
+         nu11signal:set-theme (detail: 'night-city' | 'blue' | 'matrix' | 'rose' |
+         'neon-rose', or
          'next' for the following theme in the cycle) switches the theme the
          same way, saved like a pick (the signal glitch uses 'next'). -->
     <script is:inline>
       (function () {
         var d = document.documentElement;
-        var THEMES = ['night-city', 'blue', 'matrix'];
-        var LABELS = { 'night-city': 'NIGHT CITY', blue: 'BLUE', matrix: 'MATRIX' };
-        var COLORS = { 'night-city': '#070707', blue: '#03050c', matrix: '#000000' };
+        var THEMES = ['night-city', 'blue', 'matrix', 'rose', 'neon-rose'];
+        var LABELS = {
+          'night-city': 'NIGHT CITY',
+          blue: 'BLUE',
+          matrix: 'MATRIX',
+          rose: 'ROSE',
+          'neon-rose': 'NEON ROSE',
+        };
+        var COLORS = {
+          'night-city': '#070707',
+          blue: '#03050c',
+          matrix: '#000000',
+          rose: '#060407',
+          'neon-rose': '#060407',
+        };
         function save(key, value) {
           try {
             localStorage.setItem(key, value);

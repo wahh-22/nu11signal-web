@@ -1,6 +1,7 @@
 ---
 // The terminal mock: the app's own 80x24 screen renders (copied from the
-// app repo's docs/assets/screens). The main screen follows the site theme.
+// app repo's docs/assets/screens). The main screen follows the site theme;
+// there is no ROSE or NEON ROSE render yet, so those themes keep NIGHT CITY's.
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const src = (name: string) => `${base}screens/${name}.svg`;
 
@@ -32,7 +33,7 @@ const gallery = [
   {
     name: 'settings',
     title: 'SETTINGS',
-    alt: 'The SETTINGS panel offering the NIGHT CITY, BLUE and MATRIX themes',
+    alt: 'The SETTINGS panel offering the NIGHT CITY, BLUE, MATRIX, ROSE and NEON ROSE themes',
     caption: 's opens the themes: NIGHT CITY, BLUE or MATRIX; the choice is saved.',
   },
   {
@@ -85,7 +86,8 @@ const gallery = [
       <figcaption>
         The main screen in the <span class="when-night">NIGHT CITY</span><span class="when-blue">BLUE</span><span
           class="when-matrix">MATRIX</span
-        > theme, one of three: NIGHT CITY, BLUE and MATRIX. Switch the site theme above to see the others.
+        > theme, one of five: NIGHT CITY, BLUE, MATRIX, ROSE and NEON ROSE. Switch the site theme above to see the BLUE
+        and MATRIX renders; the ROSE themes show the NIGHT CITY one.
       </figcaption>
     </figure>
 
