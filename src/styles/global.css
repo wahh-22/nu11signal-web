@@ -151,6 +151,17 @@ a {
 a:hover {
   color: var(--accent-text);
 }
+/* In ROSE and NEON ROSE the link (main accent) and the active pink sit too
+   close to tell apart (1.28:1 and 1.19:1), so hover and keyboard focus turn
+   the link to the near-white text (1.89:1 and 3.22:1 against the link, 18:1
+   on the background) and thicken its underline.
+   :where() keeps the plain a:hover specificity, so component hovers (the
+   nav, the HUD buttons) still win. */
+:where(:root[data-theme='rose'], :root[data-theme='neon-rose']) a:hover,
+:where(:root[data-theme='rose'], :root[data-theme='neon-rose']) a:focus-visible {
+  color: var(--text);
+  text-decoration-thickness: 2px;
+}
 
 :focus-visible {
   outline: 2px solid var(--accent-text);
