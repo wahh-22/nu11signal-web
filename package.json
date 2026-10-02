@@ -13,7 +13,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "brand": "node tools/brand.ts",
+    "brand": "cp public/logo/nu11signal-mark-night-city.svg public/favicon.svg && rsvg-convert -w 1200 -h 630 src/assets/og-card.svg -o public/og.png",
     "check:links": "node tools/check-links.mjs",
     "astro": "astro"
   },
