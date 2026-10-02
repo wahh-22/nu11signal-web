@@ -39,7 +39,7 @@ const features = [
   {
     glyph: '◐',
     title: 'Five themes',
-    body: 'REDSHIFT (neon red, cyan and yellow), BLUE (electric blue and violet), MATRIX (the greens of falling code), ROSE (soft pink) or NEON ROSE (hot pink). The whole UI recolors at once and the choice is saved.',
+    body: 'BLUESHIFT (electric blue and violet, the default), REDSHIFT (neon red, cyan and yellow), MATRIX (the greens of falling code), ROSE (soft pink) or NEON ROSE (hot pink). The whole UI recolors at once and the choice is saved.',
   },
   {
     glyph: '?',
@@ -133,7 +133,7 @@ const features = [
     font-size: 1.0625rem;
     color: var(--red);
   }
-  :global(:root[data-theme='blue']) .feature__title {
+  :global(:root:is([data-theme='blueshift'], :not([data-theme]))) .feature__title {
     color: var(--text);
   }
   .feature__body {

@@ -1,9 +1,31 @@
 /* nu11signal — site styles.
-   Palettes mirror the app (internal/radio/theme.go): REDSHIFT by default,
-   BLUE when <html data-theme="blue">, MATRIX when <html data-theme="matrix">,
-   ROSE when <html data-theme="rose">, NEON ROSE when <html data-theme="neon-rose">. */
+   Palettes mirror the app (internal/radio/theme.go): BLUESHIFT by default
+   (also when <html> has no data-theme), REDSHIFT when <html data-theme="redshift">,
+   MATRIX when <html data-theme="matrix">, ROSE when <html data-theme="rose">,
+   NEON ROSE when <html data-theme="neon-rose">. The token names are REDSHIFT's
+   roles (red, cyan, yellow...); every theme maps its colors onto them. */
 
 :root,
+:root[data-theme='blueshift'] {
+  --red: #347aff;
+  --deep: #2a62cc;
+  --cyan: #5ce1ff;
+  --yellow: #7c5cff;
+  --muted: #4a5578;
+  --dim: #1c2c54;
+  --ink: #05070f;
+  --select: #10182e;
+
+  --bg: #03050c;
+  --surface: #080c18;
+  --surface-2: #0d1324;
+  --text: #e6ecfb;
+  --text-dim: #a9b4d0;
+  --link: var(--cyan);
+  --glow: rgb(52 122 255 / 0.2);
+  color-scheme: dark;
+}
+
 :root[data-theme='redshift'] {
   --red: #ff5f57;
   --deep: #e8554e;
@@ -19,27 +41,7 @@
   --surface-2: #161111;
   --text: #f1e9e7;
   --text-dim: #b9aeab;
-  --link: var(--cyan);
   --glow: rgb(255 95 87 / 0.18);
-  color-scheme: dark;
-}
-
-:root[data-theme='blue'] {
-  --red: #347aff;
-  --deep: #2a62cc;
-  --cyan: #5ce1ff;
-  --yellow: #7c5cff;
-  --muted: #4a5578;
-  --dim: #1c2c54;
-  --ink: #05070f;
-  --select: #10182e;
-
-  --bg: #03050c;
-  --surface: #080c18;
-  --surface-2: #0d1324;
-  --text: #e6ecfb;
-  --text-dim: #a9b4d0;
-  --glow: rgb(52 122 255 / 0.2);
 }
 
 /* MATRIX recolors REDSHIFT in the greens of falling code (theme.go):
@@ -103,14 +105,14 @@
   --radius: 4px;
   --max: 72rem;
   --gutter: clamp(1rem, 4vw, 2rem);
-  /* Text-safe accent: yellow in REDSHIFT, a lighter violet in BLUE
+  /* Text-safe accent: yellow in REDSHIFT, a lighter violet in BLUESHIFT
      (the app's #7C5CFF is too dark for body text on near-black), and the
      pale glow #D2FFD2 itself in MATRIX, and the active pink in ROSE and
      NEON ROSE (#FFB1DD and #FF4F9A both read on their near-black, and dark
      ink reads on them as a fill, so their primary buttons keep the ink). */
   --accent-text: var(--yellow);
 }
-:root[data-theme='blue'] {
+:root:is([data-theme='blueshift'], :not([data-theme])) {
   --accent-text: #a995ff;
 }
 
@@ -253,7 +255,7 @@ pre {
   font-size: clamp(1.6rem, 4vw, 2.25rem);
   color: var(--red);
 }
-:root[data-theme='blue'] .section-title,
+:root:is([data-theme='blueshift'], :not([data-theme])) .section-title,
 :root[data-theme='matrix'] .section-title {
   color: var(--cyan);
 }
@@ -314,11 +316,11 @@ pre {
   background: transparent;
   color: var(--accent-text);
 }
-:root[data-theme='blue'] .hud-btn--primary {
+:root:is([data-theme='blueshift'], :not([data-theme])) .hud-btn--primary {
   color: #fff;
 }
-:root[data-theme='blue'] .hud-btn--primary::before,
-:root[data-theme='blue'] .hud-btn--primary::after {
+:root:is([data-theme='blueshift'], :not([data-theme])) .hud-btn--primary::before,
+:root:is([data-theme='blueshift'], :not([data-theme])) .hud-btn--primary::after {
   color: #fff;
 }
 .hud-btn--small {
@@ -363,9 +365,8 @@ kbd {
   height: 100%;
   object-fit: contain;
 }
+:root:is([data-theme='blueshift'], :not([data-theme])) .theme-art__img--blueshift,
 :root[data-theme='redshift'] .theme-art__img--redshift,
-:root:not([data-theme]) .theme-art__img--redshift,
-:root[data-theme='blue'] .theme-art__img--blue,
 :root[data-theme='matrix'] .theme-art__img--matrix,
 :root[data-theme='rose'] .theme-art__img--rose,
 :root[data-theme='neon-rose'] .theme-art__img--neon-rose {
@@ -533,7 +534,7 @@ kbd {
   color: var(--red);
   font-weight: 700;
 }
-:root[data-theme='blue'] .sig-glitch__text,
+:root:is([data-theme='blueshift'], :not([data-theme])) .sig-glitch__text,
 :root[data-theme='matrix'] .sig-glitch__text {
   color: var(--accent-text);
 }
