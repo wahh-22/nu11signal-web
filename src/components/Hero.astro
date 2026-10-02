@@ -1,6 +1,6 @@
 ---
 import ThemeArt from './ThemeArt.astro';
-import { INSTALL_COMMAND, LINKS, REPO } from '../config';
+import { INSTALL_COMMANDS, LINKS, LINUX_FONT_COMMAND, REPO } from '../config';
 
 // The official logo, one file per theme (ThemeArt). The glitch layers repeat
 // the stack, tinted, and tear across it now and then.
@@ -20,16 +20,50 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
 
     <p class="hero__tagline">A cyberpunk car radio for Apple&nbsp;Music, in your terminal.</p>
     <p class="hero__lede">
-      Your library playlists sit on a pseudo FM dial beside a now-playing panel, a volume readout, and data rain that
-      plays the music. Search the Apple Music catalog, edit playlists, and love songs without leaving the terminal.
+      Your playlists sit on a pseudo FM dial beside a now-playing panel, a volume readout, and data rain that plays the
+      music. Search the Apple Music catalog, edit playlists, and love songs without leaving the terminal, or play your
+      own music files: beside Apple Music on macOS, on their own on Linux.
     </p>
 
-    <div class="install" role="group" aria-label="Install with Homebrew">
-      <span class="install__prompt" aria-hidden="true">$</span>
-      <code class="install__cmd" id="install-cmd">{INSTALL_COMMAND}</code>
-      <button type="button" class="hud-btn hud-btn--small install__copy" data-copy-target="install-cmd">
-        <span data-copy-label>Copy</span>
-      </button>
+    <!--
+      Without JavaScript both install lines show, each labeled. With it, the
+      platform toggle shows one line at a time and the copy button follows it.
+    -->
+    <div class="install" role="group" aria-label="Install with Homebrew" data-install>
+      <div class="install__tabs" role="group" aria-label="Platform" hidden data-install-tabs>
+        <button type="button" class="hud-btn hud-btn--small install__tab" aria-pressed="true" data-platform="macos">
+          macOS
+        </button>
+        <button type="button" class="hud-btn hud-btn--small install__tab" aria-pressed="false" data-platform="linux">
+          Linux
+        </button>
+      </div>
+      <div class="install__body">
+        <div class="install__lines">
+          <div class="install__line" data-platform-line="macos">
+            <p class="install__row">
+              <span class="install__os">macOS</span>
+              <span class="install__prompt" aria-hidden="true">$</span>
+              <code class="install__cmd" id="install-cmd-macos" data-copy-key="⌘C">{INSTALL_COMMANDS.macos}</code>
+            </p>
+            <p class="install__note">macOS 14+. Also installs the Kode Mono font.</p>
+          </div>
+          <div class="install__line" data-platform-line="linux">
+            <p class="install__row">
+              <span class="install__os">Linux</span>
+              <span class="install__prompt" aria-hidden="true">$</span>
+              <code class="install__cmd" id="install-cmd-linux" data-copy-key="Ctrl+C">{INSTALL_COMMANDS.linux}</code>
+            </p>
+            <p class="install__note">
+              x86_64 or ARM64, glibc, Homebrew on Linux. Font: <code>{LINUX_FONT_COMMAND}</code>. Or
+              a <a href={LINKS.installLinux} rel="noopener">release archive</a>.
+            </p>
+          </div>
+        </div>
+        <button type="button" class="hud-btn hud-btn--small install__copy" data-copy-target="install-cmd-macos">
+          <span data-copy-label>Copy</span>
+        </button>
+      </div>
       <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
     </div>
 
@@ -45,7 +79,9 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
         </a>
       </li>
       <li class="chip">macOS 14+</li>
-      <li class="chip">Apple Music subscription</li>
+      <li class="chip">Linux x86_64 · ARM64</li>
+      <li class="chip">Local files</li>
+      <li class="chip">Apple Music on macOS</li>
       <li class="chip">MIT</li>
     </ul>
   </div>
@@ -53,15 +89,46 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
 
 <script is:inline>
   (function () {
+    // Platform toggle: show one install line and point the copy button at it.
+    document.querySelectorAll('[data-install]').forEach(function (box) {
+      var tabs = box.querySelector('[data-install-tabs]');
+      var copy = box.querySelector('[data-copy-target]');
+      if (!tabs) return;
+      function select(platform) {
+        tabs.querySelectorAll('[data-platform]').forEach(function (tab) {
+          tab.setAttribute('aria-pressed', String(tab.getAttribute('data-platform') === platform));
+        });
+        box.querySelectorAll('[data-platform-line]').forEach(function (line) {
+          var on = line.getAttribute('data-platform-line') === platform;
+          line.hidden = !on;
+          if (on && copy) {
+            var cmd = line.querySelector('code[id]');
+            if (cmd) copy.setAttribute('data-copy-target', cmd.id);
+          }
+        });
+      }
+      tabs.addEventListener('click', function (e) {
+        var tab = e.target instanceof Element ? e.target.closest('[data-platform]') : null;
+        if (tab) select(tab.getAttribute('data-platform') || 'macos');
+      });
+      var ua = navigator.userAgent || '';
+      box.setAttribute('data-js', '');
+      tabs.hidden = false;
+      select(/Linux/.test(ua) && !/Android/.test(ua) ? 'linux' : 'macos');
+    });
+
     document.querySelectorAll('[data-copy-target]').forEach(function (btn) {
       btn.addEventListener('click', function () {
+        // Read the target on every click: the platform toggle changes it.
         var src = document.getElementById(btn.getAttribute('data-copy-target') || '');
         var label = btn.querySelector('[data-copy-label]');
-        var status = btn.parentElement && btn.parentElement.querySelector('[data-copy-status]');
+        var status = btn.closest('[data-install]');
+        status = status && status.querySelector('[data-copy-status]');
         if (!src) return;
         var text = src.textContent || '';
+        var key = src.getAttribute('data-copy-key') || 'Ctrl+C';
         function done(ok) {
-          if (label) label.textContent = ok ? 'Copied' : 'Press ⌘C';
+          if (label) label.textContent = ok ? 'Copied' : 'Press ' + key;
           if (status) status.textContent = ok ? 'Install command copied to the clipboard.' : 'Copy failed; select the command and copy it.';
           if (!ok) {
             var r = document.createRange();
@@ -129,9 +196,8 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
   }
   .install {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 0.75rem;
-    flex-wrap: wrap;
     width: 100%;
     max-width: 42rem;
     margin-top: 2rem;
@@ -141,16 +207,94 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
     border-radius: var(--radius);
     background: var(--surface);
   }
+  .install__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .install__tabs[hidden] {
+    display: none;
+  }
+  /* Keep the platform names' own casing inside the HUD brackets. */
+  .install__tab {
+    text-transform: none;
+  }
+  /* The selected platform reads like a primary HUD button (white ink on BLUE). */
+  .install__tab[aria-pressed='true'] {
+    border-color: var(--yellow);
+    background: var(--yellow);
+    color: var(--install-tab-ink, var(--ink));
+  }
+  .install__tab[aria-pressed='true']::before,
+  .install__tab[aria-pressed='true']::after {
+    color: inherit;
+  }
+  :root[data-theme='blue'] .install {
+    --install-tab-ink: #fff;
+  }
+  .install__tab[aria-pressed='false'] {
+    color: var(--text-dim);
+  }
+  .install__tab[aria-pressed='false']:hover {
+    color: var(--accent-text);
+  }
+  .install__body {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .install__lines {
+    display: flex;
+    flex: 1 1 16rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+  .install__line[hidden] {
+    display: none;
+  }
+  .install__row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin: 0;
+    min-height: 2.25rem;
+    padding-top: 0.4rem;
+  }
+  .install__os {
+    flex: none;
+    min-width: 3.5rem;
+    color: var(--cyan);
+    font-family: var(--font-ui);
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  /* The toggle names the platform once JavaScript runs. */
+  [data-js] .install__os {
+    display: none;
+  }
   .install__prompt {
     color: var(--accent-text);
     font-family: var(--font-ui);
   }
   .install__cmd {
-    flex: 1 1 16rem;
+    flex: 1 1 auto;
     min-width: 0;
     overflow-wrap: anywhere;
     color: var(--text);
     font-size: 0.95rem;
+  }
+  .install__note {
+    margin: 0.25rem 0 0;
+    color: var(--text-dim);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+  .install__note code {
+    overflow-wrap: anywhere;
+    color: var(--text);
   }
   .hero__actions {
     display: flex;

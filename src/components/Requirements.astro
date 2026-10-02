@@ -1,5 +1,5 @@
 ---
-import { INSTALL_COMMAND, LINKS } from '../config';
+import { INSTALL_COMMANDS, LINKS, LINUX_FONT_COMMAND } from '../config';
 ---
 
 <section class="section" id="install" aria-labelledby="install-title">
@@ -10,29 +10,52 @@ import { INSTALL_COMMAND, LINKS } from '../config';
         <h2 class="section-title" id="install-title">Before you tune in</h2>
       </div>
       <ul class="req__list">
-        <li><strong>macOS 14 or later</strong>, Apple Silicon or Intel.</li>
-        <li><strong>An Apple Music subscription.</strong> The first launch asks for Apple Music access.</li>
         <li>
-          <strong>A terminal</strong> of 80×24 or larger. Set its font to Kode Mono (installed by the cask) for the intended
-          look.
+          <strong>macOS 14 or later</strong>, Apple Silicon or Intel: Apple Music and your local music files, side by
+          side.
         </li>
         <li>
-          Optional: independent app volume needs macOS 14.2+; the live spectrum behind the rain needs macOS 15+.
+          <strong>An Apple Music subscription</strong> for the catalog, on macOS. The first launch asks for Apple Music
+          access.
+        </li>
+        <li>
+          <strong>Or Linux</strong>, x86_64 or ARM64 with glibc: your local music files only (Apple Music needs macOS).
+          Sound goes through PulseAudio, PipeWire or ALSA.
+        </li>
+        <li>
+          <strong>Local files</strong>: mp3, flac, ogg and wav from <code>~/Music</code> or the folders
+          in <code>music_dirs</code>. See <a href={LINKS.localFiles} rel="noopener">local files</a>.
+        </li>
+        <li>
+          <strong>A terminal</strong> of 80×24 or larger. Set its font to Kode Mono for the intended look.
+        </li>
+        <li>
+          Optional, on macOS: independent app volume needs macOS 14.2+; the live spectrum behind the rain for Apple
+          Music needs macOS 15+.
         </li>
       </ul>
-      <p class="req__note">macOS only. Not affiliated with Apple.</p>
+      <p class="req__note">Not affiliated with Apple.</p>
     </div>
 
     <div class="req__steps">
-      <h3>Install</h3>
-      <pre><code><span class="c"># signed, notarized build via Homebrew</span>
-{INSTALL_COMMAND}
+      <h3>Install on macOS</h3>
+      <pre><code><span class="c"># signed, notarized; installs Kode Mono</span>
+{INSTALL_COMMANDS.macos}
 nu11signal</code></pre>
+      <h3>Install on Linux</h3>
+      <pre><code><span class="c"># Homebrew on Linux, then the font</span>
+{INSTALL_COMMANDS.linux}
+{LINUX_FONT_COMMAND}
+nu11signal</code></pre>
+      <p>
+        Or install a <code>linux-amd64</code> or <code>linux-arm64</code> release archive; see
+        the <a href={LINKS.installLinux} rel="noopener">Linux install guide</a>.
+      </p>
       <h3>No subscription handy?</h3>
-      <p>Build from source and try the UI against a simulated player:</p>
+      <p>Point it at your music files, or build from source and try the UI against a simulated player:</p>
       <pre><code>make demo</code></pre>
       <p>
-        Release archives for a manual install are on <a href={LINKS.releases} rel="noopener">GitHub Releases</a>. See
+        Release archives for a manual install on either platform are on <a href={LINKS.releases} rel="noopener">GitHub Releases</a>. See
         the <a href={LINKS.docs} rel="noopener">documentation</a> for building, usage and troubleshooting.
       </p>
     </div>
@@ -61,8 +84,14 @@ nu11signal</code></pre>
     left: 0.25rem;
     color: var(--accent-text);
   }
-  .req__list strong {
+  .req__list strong,
+  .req__list code,
+  .req__steps p code {
     color: var(--text);
+  }
+  .req__list code,
+  .req__steps p code {
+    overflow-wrap: anywhere;
   }
   .req__note {
     margin-top: 1rem;

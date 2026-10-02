@@ -1,6 +1,6 @@
 # nu11signal-web
 
-The website for [nu11signal](https://github.com/wahh-22/nu11signal), a cyberpunk car radio for Apple Music in your terminal.
+The website for [nu11signal](https://github.com/wahh-22/nu11signal), a cyberpunk car radio for Apple Music in your terminal (Apple Music and local files on macOS, local files on Linux).
 
 It is a static [Astro](https://astro.build) site published on GitHub Pages:
 
@@ -42,7 +42,7 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 
 | Path | What |
 |------|------|
-| `src/config.ts` | Links, the install command, page title and description, **donation URLs** |
+| `src/config.ts` | Links, the macOS and Linux install commands, page title and description, **donation URLs** |
 | `public/logo/` | The official vector logos, one per theme (`nu11signal-<theme>.svg`, 1650x520), and their head-only marks (`nu11signal-mark-<theme>.svg`, the same paths cropped to a 500x500 viewBox). The hero shows the full logo and the header, footer and 404 page the mark, all through `src/components/ThemeArt.astro`; global.css `.theme-art` shows the file for the active theme |
 | `src/components/SignalGlitch.astro` | The periodic page glitch that also advances the theme |
 | `src/components/` | Page sections: header, hero, screens, features, requirements, keys, support, footer |
