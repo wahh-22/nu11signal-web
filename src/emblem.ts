@@ -150,7 +150,12 @@ export function dotsPath(dots: readonly Dot[], part: DotPart, ox = 0, oy = 0, r 
     .join('');
 }
 
-/** The NIGHT CITY, BLUE and MATRIX palettes (nu11signal/internal/radio/theme.go). */
+/**
+ * The NIGHT CITY, BLUE, MATRIX, ROSE and NEON ROSE palettes
+ * (nu11signal/internal/radio/theme.go). ROSE and NEON ROSE are the app's
+ * pinkTheme laid on NIGHT CITY's roles: red the main accent, yellow the
+ * active color, cyan the success color, deep and muted the mauve frame.
+ */
 export const PALETTES = {
   nightCity: {
     red: '#FF5F57',
@@ -181,6 +186,26 @@ export const PALETTES = {
     dim: '#0A3314',
     ink: '#000000',
     select: '#062610',
+  },
+  rose: {
+    red: '#F095C8',
+    deep: '#A78E9B',
+    cyan: '#B4E7C7',
+    yellow: '#FFB1DD',
+    muted: '#A78E9B',
+    dim: '#28121E',
+    ink: '#060407',
+    select: '#28121E',
+  },
+  neonRose: {
+    red: '#F43888',
+    deep: '#A78E9B',
+    cyan: '#D2CBD0',
+    yellow: '#FF4F9A',
+    muted: '#A78E9B',
+    dim: '#28121E',
+    ink: '#060407',
+    select: '#28121E',
   },
 } as const;
 

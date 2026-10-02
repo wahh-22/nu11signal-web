@@ -43,7 +43,7 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 | Path | What |
 |------|------|
 | `src/config.ts` | Links, the install command, page title and description, **donation URLs** |
-| `src/emblem.ts` | The Braille null emblem (large and compact rows and masks), the name and the five thin bars, copied from the app (`internal/radio/emblem.go`), the dot decoder, and the NIGHT CITY / BLUE / MATRIX palettes (`internal/radio/theme.go`) |
+| `src/emblem.ts` | The Braille null emblem (large and compact rows and masks), the name and the five thin bars, copied from the app (`internal/radio/emblem.go`), the dot decoder, and the NIGHT CITY / BLUE / MATRIX / ROSE / NEON ROSE palettes (`internal/radio/theme.go`) |
 | `src/components/Emblem.astro`, `Bars.astro` | The emblem and the bars drawn as SVG dots, one circle per raised Braille dot (footer and 404 page) |
 | `public/logo/` | The official vector logos, one per theme (`nu11signal-<theme>.svg`, 1650x520), and their head-only marks (`nu11signal-mark-<theme>.svg`, the same paths cropped to a 500x500 viewBox). The hero shows the full logo and the header the mark; global.css `.theme-art` shows the file for the active theme |
 | `src/components/SignalGlitch.astro` | The periodic page glitch that also advances the theme |
@@ -59,7 +59,7 @@ If the app's screen renders change, copy them into `public/screens/` again.
 
 ## Themes
 
-The site has the app's three themes: **NIGHT CITY** (neon red, cyan and yellow, the default), **BLUE** (electric blue and violet) and **MATRIX** (the greens of falling code). The theme button in the header shows the current one and cycles NIGHT CITY → BLUE → MATRIX → NIGHT CITY; the choice is saved per browser. The palettes live as CSS tokens per `data-theme` in `src/styles/global.css`, and the main screenshot swaps to the matching render.
+The site has the app's five themes: **NIGHT CITY** (neon red, cyan and yellow, the default), **BLUE** (electric blue and violet), **MATRIX** (the greens of falling code), **ROSE** (soft pinks with mint) and **NEON ROSE** (hot pinks with silver). The theme button in the header shows the current one and cycles NIGHT CITY → BLUE → MATRIX → ROSE → NEON ROSE → NIGHT CITY; the choice is saved per browser. The palettes live as CSS tokens per `data-theme` in `src/styles/global.css`, and the main screenshot swaps to the matching render (the ROSE themes keep the NIGHT CITY render until the app has ROSE renders).
 
 ## Signal effects and accessibility
 
@@ -67,7 +67,7 @@ Like the app, the page now and then loses the signal: every 10 to 22 seconds a b
 
 - No bursts and no automatic theme switch when the visitor prefers reduced motion (`prefers-reduced-motion: reduce`) or turns the effects off (**FX OFF**, saved per browser).
 - Nothing flashes faster than three times a second: burst frames last 110 to 140 ms and change only small areas, and the `NO SIGNAL` sign stays up for the whole burst (WCAG 2.3.1).
-- A manual theme click cancels a running burst and restarts the wait; the next burst continues the rotation from the chosen theme, so bursts rotate through all three. The wait pauses while the tab is hidden.
+- A manual theme click cancels a running burst and restarts the wait; the next burst continues the rotation from the chosen theme, so bursts rotate through all five. The wait pauses while the tab is hidden.
 - Add `?glitch=now` to the URL to see the first burst after 300 ms.
 
 ## Donation links
