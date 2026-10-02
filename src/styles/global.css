@@ -1,10 +1,10 @@
 /* nu11signal — site styles.
-   Palettes mirror the app (internal/radio/theme.go): NIGHT CITY by default,
+   Palettes mirror the app (internal/radio/theme.go): REDSHIFT by default,
    BLUE when <html data-theme="blue">, MATRIX when <html data-theme="matrix">,
    ROSE when <html data-theme="rose">, NEON ROSE when <html data-theme="neon-rose">. */
 
 :root,
-:root[data-theme='night-city'] {
+:root[data-theme='redshift'] {
   --red: #ff5f57;
   --deep: #e8554e;
   --cyan: #5ef6ff;
@@ -42,7 +42,7 @@
   --glow: rgb(52 122 255 / 0.2);
 }
 
-/* MATRIX recolors NIGHT CITY in the greens of falling code (theme.go):
+/* MATRIX recolors REDSHIFT in the greens of falling code (theme.go):
    mid green for red, code green for cyan, a pale glow for yellow. */
 :root[data-theme='matrix'] {
   --red: #00c832;
@@ -63,7 +63,7 @@
 }
 
 /* ROSE and NEON ROSE are the app's pinkTheme (theme.go) mapped by role onto
-   the NIGHT CITY tokens: red takes the main accent (hi, alert, the rain's
+   the REDSHIFT tokens: red takes the main accent (hi, alert, the rain's
    bright step), yellow the active color (fill, focus, accent marks, onAir,
    the rain's tip), cyan the success color (ok), deep and muted the mauve
    frame, dim and select the shadow, ink and bg the near-black. Links follow
@@ -103,7 +103,7 @@
   --radius: 4px;
   --max: 72rem;
   --gutter: clamp(1rem, 4vw, 2rem);
-  /* Text-safe accent: yellow in NIGHT CITY, a lighter violet in BLUE
+  /* Text-safe accent: yellow in REDSHIFT, a lighter violet in BLUE
      (the app's #7C5CFF is too dark for body text on near-black), and the
      pale glow #D2FFD2 itself in MATRIX, and the active pink in ROSE and
      NEON ROSE (#FFB1DD and #FF4F9A both read on their near-black, and dark
@@ -363,8 +363,8 @@ kbd {
   height: 100%;
   object-fit: contain;
 }
-:root[data-theme='night-city'] .theme-art__img--night-city,
-:root:not([data-theme]) .theme-art__img--night-city,
+:root[data-theme='redshift'] .theme-art__img--redshift,
+:root:not([data-theme]) .theme-art__img--redshift,
 :root[data-theme='blue'] .theme-art__img--blue,
 :root[data-theme='matrix'] .theme-art__img--matrix,
 :root[data-theme='rose'] .theme-art__img--rose,

@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "description": "The nu11signal website: a cyberpunk car radio for Apple Music, in your terminal.",
+  "description": "The nu11signal website: a neon car radio for Apple Music, in your terminal.",
   "license": "MIT",
   "engines": {
     "node": ">=22.12.0"
@@ -13,7 +13,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "brand": "cp public/logo/nu11signal-mark-night-city.svg public/favicon.svg && node tools/og-card.mjs && rsvg-convert -w 1200 -h 630 src/assets/og-card.svg -o public/og.png",
+    "brand": "cp public/logo/nu11signal-mark-redshift.svg public/favicon.svg && node tools/og-card.mjs && rsvg-convert -w 1200 -h 630 src/assets/og-card.svg -o public/og.png",
     "check:links": "node tools/check-links.mjs",
     "check:brand": "node tools/check-brand.mjs",
     "astro": "astro"

@@ -5,7 +5,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const src = (name: string) => `${base}screens/${name}.svg`;
 
 const themes = [
-  { id: 'night-city', label: 'NIGHT CITY' },
+  { id: 'redshift', label: 'REDSHIFT' },
   { id: 'blue', label: 'BLUE' },
   { id: 'matrix', label: 'MATRIX' },
   { id: 'rose', label: 'ROSE' },
@@ -40,8 +40,8 @@ const gallery = [
   {
     name: 'settings',
     title: 'SETTINGS',
-    alt: 'The SETTINGS panel offering the NIGHT CITY, BLUE, MATRIX, ROSE and NEON ROSE themes',
-    caption: 's opens the themes: NIGHT CITY, BLUE, MATRIX, ROSE or NEON ROSE; the choice is saved.',
+    alt: 'The SETTINGS panel offering the REDSHIFT, BLUE, MATRIX, ROSE and NEON ROSE themes',
+    caption: 's opens the themes: REDSHIFT, BLUE, MATRIX, ROSE or NEON ROSE; the choice is saved.',
   },
   {
     name: 'boot',
@@ -80,7 +80,7 @@ const gallery = [
       }
       <figcaption>
         The main screen in the {themes.map((t) => <span data-theme-art={t.id}>{t.label}</span>)} theme, one of five:
-        NIGHT CITY, BLUE, MATRIX, ROSE and NEON ROSE. Switch the site theme above to see each one.
+        REDSHIFT, BLUE, MATRIX, ROSE and NEON ROSE. Switch the site theme above to see each one.
       </figcaption>
     </figure>
 
@@ -113,17 +113,17 @@ const gallery = [
       0 0 0 1px var(--dim),
       0 1.5rem 4rem -1rem var(--glow);
   }
-  /* Only the active theme's render and name show; NIGHT CITY by default. */
+  /* Only the active theme's render and name show; REDSHIFT by default. */
   [data-theme-art] {
     display: none;
   }
-  img[data-theme-art='night-city'] {
+  img[data-theme-art='redshift'] {
     display: block;
   }
-  span[data-theme-art='night-city'] {
+  span[data-theme-art='redshift'] {
     display: inline;
   }
-  :global(:root[data-theme='blue']) [data-theme-art='night-city'] {
+  :global(:root[data-theme='blue']) [data-theme-art='redshift'] {
     display: none;
   }
   :global(:root[data-theme='blue']) img[data-theme-art='blue'] {
@@ -132,7 +132,7 @@ const gallery = [
   :global(:root[data-theme='blue']) span[data-theme-art='blue'] {
     display: inline;
   }
-  :global(:root[data-theme='matrix']) [data-theme-art='night-city'] {
+  :global(:root[data-theme='matrix']) [data-theme-art='redshift'] {
     display: none;
   }
   :global(:root[data-theme='matrix']) img[data-theme-art='matrix'] {
@@ -141,7 +141,7 @@ const gallery = [
   :global(:root[data-theme='matrix']) span[data-theme-art='matrix'] {
     display: inline;
   }
-  :global(:root[data-theme='rose']) [data-theme-art='night-city'] {
+  :global(:root[data-theme='rose']) [data-theme-art='redshift'] {
     display: none;
   }
   :global(:root[data-theme='rose']) img[data-theme-art='rose'] {
@@ -150,7 +150,7 @@ const gallery = [
   :global(:root[data-theme='rose']) span[data-theme-art='rose'] {
     display: inline;
   }
-  :global(:root[data-theme='neon-rose']) [data-theme-art='night-city'] {
+  :global(:root[data-theme='neon-rose']) [data-theme-art='redshift'] {
     display: none;
   }
   :global(:root[data-theme='neon-rose']) img[data-theme-art='neon-rose'] {

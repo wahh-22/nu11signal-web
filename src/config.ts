@@ -26,10 +26,10 @@ export const INSTALL_COMMANDS = {
 export const LINUX_FONT_COMMAND = 'brew install --cask font-kode-mono';
 
 export const SITE = {
-  title: 'nu11signal — a cyberpunk car radio for Apple Music, in your terminal',
+  title: 'nu11signal — a neon car radio for Apple Music, in your terminal',
   shortTitle: 'nu11signal',
   description:
-    'nu11signal is a cyberpunk car radio for Apple Music, in your terminal: playlists on a pseudo FM dial, catalog search, favorites, your own music files, and data rain that plays the music. Apple Music and local files on macOS 14+, local files on Linux.',
+    'nu11signal is a neon car radio for Apple Music, in your terminal: playlists on a pseudo FM dial, catalog search, favorites, your own music files, and data rain that plays the music. Apple Music and local files on macOS 14+, local files on Linux.',
 } as const;
 
 // ---------------------------------------------------------------------------
