@@ -4,7 +4,12 @@ const features = [
   {
     glyph: '♪',
     title: 'Apple Music, natively',
-    body: 'Plays through MusicKit in a tiny signed, windowless Swift helper: no browser, no Electron, no Music app window, near 0% CPU at idle.',
+    body: 'On macOS, plays through MusicKit in a tiny signed, windowless Swift helper: no browser, no Electron, no Music app window, near 0% CPU at idle.',
+  },
+  {
+    glyph: '▤',
+    title: 'Your own music files',
+    body: 'mp3, flac, ogg and wav from ~/Music or your music_dirs, folders and m3u files as playlists: beside Apple Music on macOS, on their own on Linux.',
   },
   {
     glyph: '⌕',
@@ -19,7 +24,7 @@ const features = [
   {
     glyph: '░▒▓',
     title: 'Data rain that plays the music',
-    body: 'Hex digits and half-width katakana fall under NOW PLAYING, driven by the real spectrum on macOS 15+: loud bands rain harder, bass hits send a wave, silence is dry.',
+    body: 'Hex digits and half-width katakana fall under NOW PLAYING, driven by the real spectrum (Apple Music on macOS 15+, local files everywhere): loud bands rain harder, bass hits send a wave, silence is dry.',
   },
   {
     glyph: '▚▞',
@@ -44,7 +49,7 @@ const features = [
   {
     glyph: 'VOL',
     title: 'Its own volume',
-    body: 'VOL is independent of the system volume, through a Core Audio process tap (macOS 14.2+), falling back to the system volume (SYS) when it cannot.',
+    body: 'VOL is independent of the system volume: on macOS through a Core Audio process tap (14.2+), falling back to the system volume (SYS) when it cannot.',
   },
   {
     glyph: 'Ø',
@@ -54,12 +59,12 @@ const features = [
   {
     glyph: 'Aa',
     title: 'Designed in Kode Mono',
-    body: 'The Homebrew cask installs Kode Mono, the font the UI is designed with. Any monospaced font works.',
+    body: 'The macOS Homebrew cask installs Kode Mono, the font the UI is designed with; on Linux, add it with brew install --cask font-kode-mono. Any monospaced font works.',
   },
   {
     glyph: '✓',
-    title: 'Signed and notarized',
-    body: 'A signed, notarized build for Apple Silicon and Intel, one Homebrew command away. Open source under MIT.',
+    title: 'Signed, notarized, and on Linux',
+    body: 'A signed, notarized macOS build for Apple Silicon and Intel, and Linux builds for x86_64 and ARM64, each one Homebrew command away. Open source under MIT.',
   },
 ];
 ---

@@ -11,16 +11,25 @@ export const LINKS = {
   license: `${REPO_URL}/blob/main/LICENSE`,
   docs: `${REPO_URL}#documentation`,
   usage: `${REPO_URL}/blob/main/docs/usage.md`,
+  installLinux: `${REPO_URL}/blob/main/docs/install.md#linux`,
+  localFiles: `${REPO_URL}/blob/main/docs/usage.md#local-files`,
   siteRepo: 'https://github.com/wahh-22/nu11signal-web',
 } as const;
 
-export const INSTALL_COMMAND = 'brew install --cask wahh-22/tap/nu11signal';
+// Homebrew install commands. The cask is macOS-only (it also installs the
+// Kode Mono font); Linux uses the formula through Homebrew on Linux.
+export const INSTALL_COMMANDS = {
+  macos: 'brew install --cask wahh-22/tap/nu11signal',
+  linux: 'brew install wahh-22/tap/nu11signal',
+} as const;
+
+export const LINUX_FONT_COMMAND = 'brew install --cask font-kode-mono';
 
 export const SITE = {
   title: 'nu11signal — a cyberpunk car radio for Apple Music, in your terminal',
   shortTitle: 'nu11signal',
   description:
-    'nu11signal is a cyberpunk car radio for Apple Music, in your terminal: library playlists on a pseudo FM dial, catalog search, favorites, and data rain that plays the music. macOS 14+.',
+    'nu11signal is a cyberpunk car radio for Apple Music, in your terminal: playlists on a pseudo FM dial, catalog search, favorites, your own music files, and data rain that plays the music. Apple Music and local files on macOS 14+, local files on Linux.',
 } as const;
 
 // ---------------------------------------------------------------------------

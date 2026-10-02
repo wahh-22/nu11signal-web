@@ -1,6 +1,6 @@
 # nu11signal-web
 
-The website for [nu11signal](https://github.com/wahh-22/nu11signal), a cyberpunk car radio for Apple Music in your terminal.
+The website for [nu11signal](https://github.com/wahh-22/nu11signal), a cyberpunk car radio for Apple Music in your terminal (Apple Music and local files on macOS, local files on Linux).
 
 It is a static [Astro](https://astro.build) site published on GitHub Pages:
 
@@ -42,17 +42,17 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 
 | Path | What |
 |------|------|
-| `src/config.ts` | Links, the install command, page title and description, **donation URLs** |
+| `src/config.ts` | Links, the macOS and Linux install commands, page title and description, **donation URLs** |
 | `public/logo/` | The official vector logos, one per theme (`nu11signal-<theme>.svg`, 1650x520), and their head-only marks (`nu11signal-mark-<theme>.svg`, the same paths cropped to a 500x500 viewBox). The hero shows the full logo and the header, footer and 404 page the mark, all through `src/components/ThemeArt.astro`; global.css `.theme-art` shows the file for the active theme |
 | `src/components/SignalGlitch.astro` | The periodic page glitch that also advances the theme |
 | `src/components/` | Page sections: header, hero, screens, features, requirements, keys, support, footer |
 | `src/styles/global.css` | Theme tokens and shared styles |
 | `public/screens/` | The app's 80x24 screen renders, copied from the app repo's `docs/assets/screens/` |
 | `public/favicon.svg` | A copy of `public/logo/nu11signal-mark-night-city.svg` |
-| `public/og.png` | The 1200x630 social card, rendered from `src/assets/og-card.svg` (the Night City logo on the site background): `rsvg-convert -w 1200 -h 630 src/assets/og-card.svg -o public/og.png` |
+| `public/og.png` | The 1200x630 social card, rendered from `src/assets/og-card.svg` (the Night City logo on the site background), which `tools/og-card.mjs` generates from `public/logo/nu11signal-night-city.svg`; do not edit the card by hand |
 | `tools/check-links.mjs` | Internal link and asset checker for `dist/` |
 
-If the logos change, replace the files in `public/logo/` (keep the marks and `src/assets/og-card.svg` in step) and run `npm run brand` (needs `rsvg-convert`, from librsvg) to refresh the favicon and `public/og.png`.
+If the logos change, replace the files in `public/logo/` (keep the marks in step) and run `npm run brand` (needs `rsvg-convert`, from librsvg) to refresh the favicon, regenerate `src/assets/og-card.svg` and render `public/og.png`. `npm run check:brand` fails when the card or the favicon no longer match the logos.
 If the app's screen renders change, copy them into `public/screens/` again.
 
 ## Themes
