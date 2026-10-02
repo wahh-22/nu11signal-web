@@ -1,6 +1,5 @@
 ---
-import Emblem from './Emblem.astro';
-import Bars from './Bars.astro';
+import ThemeArt from './ThemeArt.astro';
 import { LINKS } from '../config';
 
 const year = new Date().getFullYear();
@@ -9,7 +8,7 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
   <div class="container site-footer__inner">
     <div class="site-footer__brand">
-      <Emblem size={40} variant="compact" />
+      <ThemeArt kind="mark" class="site-footer__mark" aria-hidden="true" />
       <div>
         <p class="site-footer__name">NU11SIGNAL</p>
         <p class="site-footer__fine">
@@ -28,7 +27,6 @@ const year = new Date().getFullYear();
       </ul>
     </nav>
   </div>
-  <div class="site-footer__mark"><Bars class="site-footer__bars" /></div>
 </footer>
 
 <style>
@@ -71,11 +69,8 @@ const year = new Date().getFullYear();
     font-size: 0.9375rem;
   }
   .site-footer__mark {
-    display: flex;
-    justify-content: center;
-    margin: 2rem 0 0;
-  }
-  .site-footer__mark :global(.site-footer__bars) {
-    width: 12rem;
+    flex: none;
+    width: 2.5rem;
+    height: 2.5rem;
   }
 </style>

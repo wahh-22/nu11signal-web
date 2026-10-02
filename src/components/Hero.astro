@@ -1,13 +1,9 @@
 ---
+import ThemeArt from './ThemeArt.astro';
 import { INSTALL_COMMAND, LINKS, REPO } from '../config';
 
-// The official logo, one file per theme in public/logo/. All five are in the
-// page; CSS in global.css (.theme-art) shows the one matching
-// <html data-theme>, so the logo follows a theme change at once. The glitch
-// layers repeat the stack, tinted, and tear across it now and then.
-const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
-const THEMES = ['night-city', 'blue', 'matrix', 'rose', 'neon-rose'] as const;
-const logo = (theme: (typeof THEMES)[number]) => `${base}logo/nu11signal-${theme}.svg`;
+// The official logo, one file per theme (ThemeArt). The glitch layers repeat
+// the stack, tinted, and tear across it now and then.
 const layers = ['glitch__main', 'glitch__layer glitch__layer--a', 'glitch__layer glitch__layer--b'];
 
 const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-the-badge&labelColor=0A0A0A&color=FF5F57&label=latest`;
@@ -18,22 +14,7 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
     <h1 id="hero-title" class="hero__title">
       <span class="sr-only">nu11signal</span>
       <span class="hero__logo glitch" aria-hidden="true">
-        {
-          layers.map((layer) => (
-            <span class:list={['theme-art', layer]}>
-              {THEMES.map((theme) => (
-                <img
-                  class={`theme-art__img theme-art__img--${theme}`}
-                  src={logo(theme)}
-                  alt=""
-                  width="1650"
-                  height="520"
-                  decoding="async"
-                />
-              ))}
-            </span>
-          ))
-        }
+        {layers.map((layer) => <ThemeArt kind="logo" class={layer} />)}
       </span>
     </h1>
 
