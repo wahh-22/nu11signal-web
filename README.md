@@ -43,22 +43,20 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 | Path | What |
 |------|------|
 | `src/config.ts` | Links, the macOS and Linux install commands, page title and description, **donation URLs** |
-| `public/logo/` | The official vector logos, one per theme (`nu11signal-<theme>.svg`, 1650x520), and their head-only marks (`nu11signal-mark-<theme>.svg`, the same paths cropped to a 500x500 viewBox). The hero shows the full logo and the header, footer and 404 page the mark, all through `src/components/ThemeArt.astro`; global.css `.theme-art` shows the file for the active theme |
+| `public/logo/` | The official vector logos, one per site theme — BLUESHIFT, REDSHIFT and NEON ROSE (`nu11signal-<theme>.svg`, 1650x520), and their head-only marks (`nu11signal-mark-<theme>.svg`, the same paths cropped to a 500x500 viewBox). The hero shows the full logo and the header, footer and 404 page the mark, all through `src/components/ThemeArt.astro`; global.css `.theme-art` shows the file for the active theme |
 | `src/components/SignalGlitch.astro` | The periodic page glitch that also advances the theme |
 | `src/components/` | Page sections: header, hero, screens, features, requirements, keys, support, footer |
 | `src/styles/global.css` | Theme tokens and shared styles |
-| `public/demo/` | The recorded demo at the top of the screens section: `overview.webm` and `overview.mp4` (encoded from the GIF with ffmpeg) and `overview-poster.jpg` |
-| `public/screens/` | The app's 80x24 screen renders for the gallery, copied from the app repo's `docs/assets/screens/` |
+| `public/demo/` | The three recordings of the screens section, each as `<name>.webm`, `<name>.mp4` (encoded from the owner's GIFs with ffmpeg) and `<name>-poster.jpg`: `overview` (the main figure), `search` (SEARCH) and `themes` (switching themes in SETTINGS and quitting). The section shows recordings only, no still renders |
 | `public/favicon.svg` | A copy of `public/logo/nu11signal-mark-blueshift.svg` |
 | `public/og.png` | The 1200x630 social card, rendered from `src/assets/og-card.svg` (the Blueshift logo on the BLUESHIFT background), which `tools/og-card.mjs` generates from `public/logo/nu11signal-blueshift.svg`; do not edit the card by hand |
 | `tools/check-links.mjs` | Internal link and asset checker for `dist/` |
 
 If the logos change, replace the files in `public/logo/` (keep the marks in step) and run `npm run brand` (needs `rsvg-convert`, from librsvg) to refresh the favicon, regenerate `src/assets/og-card.svg` and render `public/og.png`. `npm run check:brand` fails when the card or the favicon no longer match the logos.
-If the app's screen renders change, copy them into `public/screens/` again.
 
 ## Themes
 
-The site has the app's five themes: **BLUESHIFT** (electric blue and violet, the default), **REDSHIFT** (neon red, cyan and yellow), **MATRIX** (the greens of falling code), **ROSE** (soft pinks with mint) and **NEON ROSE** (hot pinks with silver). The theme button in the header shows the current one and cycles BLUESHIFT → REDSHIFT → MATRIX → ROSE → NEON ROSE → BLUESHIFT; the choice is saved per browser (a choice saved under an old theme id, `night-city` or `blue`, loads as its renamed theme). The palettes live as CSS tokens per `data-theme` in `src/styles/global.css`.
+The app has five themes; the site has three of them, the ones in the themes recording: **BLUESHIFT** (electric blue and violet, the default), **REDSHIFT** (neon red, cyan and yellow) and **NEON ROSE** (hot pinks with silver). The theme button in the header shows the current one and cycles BLUESHIFT → REDSHIFT → NEON ROSE → BLUESHIFT; the choice is saved per browser. A choice saved under an old theme id, `night-city` or `blue`, loads as its renamed theme (REDSHIFT or BLUESHIFT); any other saved value, including the app's themes the site does not show, loads BLUESHIFT and is rewritten. The palettes live as CSS tokens per `data-theme` in `src/styles/global.css`.
 
 ## Signal effects and accessibility
 
@@ -66,7 +64,7 @@ Like the app, the page now and then loses the signal: every 10 to 22 seconds a b
 
 - No bursts and no automatic theme switch when the visitor prefers reduced motion (`prefers-reduced-motion: reduce`) or turns the effects off (**FX OFF**, saved per browser).
 - Nothing flashes faster than three times a second: burst frames last 110 to 140 ms and change only small areas, and the `NO SIGNAL` sign stays up for the whole burst (WCAG 2.3.1).
-- A manual theme click cancels a running burst and restarts the wait; the next burst continues the rotation from the chosen theme, so bursts rotate through all five. The wait pauses while the tab is hidden.
+- A manual theme click cancels a running burst and restarts the wait; the next burst continues the rotation from the chosen theme, so bursts rotate through all three. The wait pauses while the tab is hidden.
 - Add `?glitch=now` to the URL to see the first burst after 300 ms.
 
 ## Donation links

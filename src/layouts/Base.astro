@@ -62,7 +62,14 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
             t = renamed[t];
             localStorage.setItem('nu11signal:theme', t);
           }
-          if (t === 'blueshift' || t === 'redshift' || t === 'matrix' || t === 'rose' || t === 'neon-rose') d.dataset.theme = t;
+          // The site has three themes. Any other saved value (themes the site
+          // no longer shows, or anything unknown) loads the default BLUESHIFT
+          // and is rewritten.
+          if (t && t !== 'blueshift' && t !== 'redshift' && t !== 'neon-rose') {
+            t = 'blueshift';
+            localStorage.setItem('nu11signal:theme', t);
+          }
+          if (t) d.dataset.theme = t;
           var fx = localStorage.getItem('nu11signal:fx');
           if (fx === 'on' || fx === 'off') d.dataset.fx = fx;
         } catch (e) {}
@@ -74,29 +81,24 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
     <slot />
 
     <!-- Theme and effects toggles: [data-theme-toggle] and [data-fx-toggle].
-         The theme button cycles BLUESHIFT -> REDSHIFT -> MATRIX -> ROSE ->
-         NEON ROSE -> BLUESHIFT (BLUESHIFT is the default).
+         The theme button cycles BLUESHIFT -> REDSHIFT -> NEON ROSE ->
+         BLUESHIFT (BLUESHIFT is the default).
          A manual theme pick dispatches nu11signal:theme-picked on document;
-         nu11signal:set-theme (detail: 'blueshift' | 'redshift' | 'matrix' | 'rose' |
-         'neon-rose', or
-         'next' for the following theme in the cycle) switches the theme the
+         nu11signal:set-theme (detail: 'blueshift' | 'redshift' | 'neon-rose',
+         or 'next' for the following theme in the cycle) switches the theme the
          same way, saved like a pick (the signal glitch uses 'next'). -->
     <script is:inline>
       (function () {
         var d = document.documentElement;
-        var THEMES = ['blueshift', 'redshift', 'matrix', 'rose', 'neon-rose'];
+        var THEMES = ['blueshift', 'redshift', 'neon-rose'];
         var LABELS = {
           blueshift: 'BLUESHIFT',
           redshift: 'REDSHIFT',
-          matrix: 'MATRIX',
-          rose: 'ROSE',
           'neon-rose': 'NEON ROSE',
         };
         var COLORS = {
           blueshift: '#03050c',
           redshift: '#070707',
-          matrix: '#000000',
-          rose: '#060407',
           'neon-rose': '#060407',
         };
         function save(key, value) {
