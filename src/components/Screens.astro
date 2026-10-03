@@ -1,27 +1,41 @@
 ---
 // The screens section: three recordings of the real app (public/demo,
 // encoded from the owner's GIFs). The overview is the main figure; SEARCH and
-// the themes-and-quit recording sit below it as two cards. The panes carry
-// the titles; the section's heading is for screen readers only. In fit mode
-// (global.css) the overview fills one screen and the two cards the next,
-// each video scaled to fit the screen's height at 1278:702.
+// the themes-and-quit recording follow as two rows, each its video beside a
+// short caption, three points and a docs link (stacked on narrow windows).
+// The panes carry the titles; the section's heading is for screen readers
+// only. In fit mode (global.css) the overview fills one screen and the two
+// rows the next (half its height each), every video as large as the
+// screen's height allows at 1278:702, in a container up to 100rem wide.
+import { LINKS } from '../config';
 import Pane from './Pane.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const demo = (name: string) => `${base}demo/${name}`;
 
-const recordings: { video: string; title: string; alt: string; caption: string }[] = [
+const recordings: {
+  video: string;
+  title: string;
+  alt: string;
+  caption: string;
+  points: string[];
+  link: { href: string; label: string };
+}[] = [
   {
     video: 'search',
     title: 'SEARCH // CATALOG',
     alt: 'SEARCH in action: recent searches, live suggestions while typing, then an artist page with its top songs and albums, and a song playing',
     caption: 'Search the catalog.',
+    points: ['Recent searches', 'Live suggestions as you type', 'Artist pages: top songs and albums'],
+    link: { href: LINKS.browsing, label: 'Browsing' },
   },
   {
     video: 'themes',
     title: 'THEMES // QUIT',
     alt: 'The SETTINGS panel switching the app between the BLUESHIFT, REDSHIFT and NEON ROSE themes, then quitting: the confirmation prompt and the shutdown',
     caption: 'Switch themes, then quit.',
+    points: ['Themes live in SETTINGS', 'BLUESHIFT, REDSHIFT, NEON ROSE', 'Quit asks first, then signs off'],
+    link: { href: LINKS.settings, label: 'Settings' },
   },
 ];
 ---
@@ -60,8 +74,8 @@ const recordings: { video: string; title: string; alt: string; caption: string }
         {
           recordings.map((rec) => (
             <li>
-              <Pane title={rec.title} class="screen">
-                <figure>
+              <Pane title={rec.title} class="screen screen--row">
+                <figure class="row">
                   <video
                     width="1278"
                     height="702"
@@ -77,7 +91,15 @@ const recordings: { video: string; title: string; alt: string; caption: string }
                     <source src={demo(`${rec.video}.webm`)} type="video/webm" />
                     <source src={demo(`${rec.video}.mp4`)} type="video/mp4" />
                   </video>
-                  <figcaption>{rec.caption}</figcaption>
+                  <figcaption class="row__text">
+                    <p class="row__caption">{rec.caption}</p>
+                    <ul class="row__points">
+                      {rec.points.map((pt) => <li>{pt}</li>)}
+                    </ul>
+                    <a class="row__link" href={rec.link.href} rel="noopener">
+                      {rec.link.label} <span aria-hidden="true">→</span>
+                    </a>
+                  </figcaption>
                 </figure>
               </Pane>
             </li>
@@ -135,42 +157,114 @@ const recordings: { video: string; title: string; alt: string; caption: string }
     font-size: 0.8125rem;
     letter-spacing: 0.08em;
   }
-  figcaption::before {
+  .screen--main figcaption::before,
+  .row__caption::before {
     content: '▶ ';
     color: var(--accent-text);
   }
   .recordings {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2.25rem 1.75rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
     margin: 2.5rem 0 0;
     padding: 0;
     list-style: none;
   }
-  @media (max-width: 48rem) {
-    .recordings {
-      grid-template-columns: minmax(0, 1fr);
+  .row__text {
+    margin-top: 0.85rem;
+  }
+  .row__caption {
+    margin: 0;
+    color: var(--text);
+    font-size: 0.9375rem;
+  }
+  .row__points {
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    line-height: 1.75;
+  }
+  .row__points li::before {
+    content: '─ ';
+    color: var(--deep);
+  }
+  .row__link {
+    display: inline-block;
+    margin-top: 0.6rem;
+  }
+
+  /* Wider windows: each row is its video beside its text, the second row
+     mirrored. */
+  @media (min-width: 40.0625rem) {
+    .row {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      align-items: center;
+      gap: 1rem 1.75rem;
+    }
+    .recordings > li:nth-child(even) .row {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    }
+    .recordings > li:nth-child(even) video {
+      order: 2;
+    }
+    .row__text {
+      margin-top: 0;
     }
   }
 
-  /* Fit mode (global.css): each video gets the screen's height less the
-     screen's padding, the pane's padding and border, and the caption, and
-     its pane is as wide as that height allows at 1278:702 (never wider than
-     the container). */
+  /* Fit mode (global.css), in a container up to 100rem wide. The overview's
+     video gets the screen's height less the screen's padding, the pane's
+     padding and border, and the caption, and its pane is as wide as that
+     height allows at 1278:702 (never wider than the container). Each row
+     gets half the next screen (less the padding and the gap between the
+     rows); its video takes that height less the pane's padding and border,
+     as wide as it allows at 1278:702 but leaving the text at least 15rem,
+     and the text takes the rest. */
   @media (min-width: 52.0625rem) and (min-height: 35rem) {
     .screens {
       --video-h: calc(var(--screen-h) - 2 * var(--fit-pad) - 2.5rem - 2px - 2.35rem);
       --pane-w: calc(var(--video-h) * 1278 / 702 + 1.8rem + 2px);
+      --row-gap: clamp(1.25rem, 3.2vh, 2.25rem);
+      --row-video-h: calc((var(--screen-h) - 2 * var(--fit-pad) - var(--row-gap)) / 2 - 2.5rem - 2px);
+      --row-video-w: min(calc(var(--row-video-h) * 1278 / 702), calc(100% - 15rem));
       padding-block: 0;
+    }
+    .screens .container {
+      max-width: 100rem;
     }
     .screen--main {
       width: min(100%, var(--pane-w));
       margin-inline: auto;
     }
     .recordings {
-      grid-template-columns: repeat(2, minmax(0, var(--pane-w)));
-      justify-content: center;
+      gap: var(--row-gap);
       margin-top: 0;
+    }
+    .row,
+    .recordings > li:nth-child(even) .row {
+      grid-template-columns: var(--row-video-w) minmax(0, 1fr);
+      gap: 1rem clamp(1.25rem, 3vw, 3rem);
+    }
+    .recordings > li:nth-child(even) .row {
+      grid-template-columns: minmax(0, 1fr) var(--row-video-w);
+    }
+    .recordings > li:nth-child(even) .row__text {
+      text-align: right;
+    }
+    .screen--row {
+      padding-inline: clamp(0.9rem, 1.6vw, 1.5rem);
+    }
+    .row__caption {
+      font-size: clamp(0.9375rem, 0.4rem + 1.5vh, 1.375rem);
+    }
+    .row__points {
+      margin-top: clamp(0.4rem, 1.6vh, 1.1rem);
+      font-size: clamp(0.8125rem, 0.35rem + 1.15vh, 1.0625rem);
+    }
+    .row__link {
+      margin-top: clamp(0.5rem, 1.8vh, 1.25rem);
+      font-size: clamp(0.8125rem, 0.35rem + 1.1vh, 1rem);
     }
   }
 </style>

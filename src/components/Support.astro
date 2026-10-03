@@ -1,6 +1,8 @@
 ---
 // Donation links come from src/config.ts (DONATIONS). An unset URL shows its
 // button as "coming soon"; with both unset the section says so.
+// In fit mode SUPPORT and the footer close the page as a compact last view
+// (no forced height), which ends with the footer on the status line.
 import { DONATIONS } from '../config';
 import Pane from './Pane.astro';
 
@@ -11,7 +13,7 @@ const buttons = [
 const anyLive = buttons.some((b) => b.url !== '');
 ---
 
-<section class="section fit support" id="support" aria-labelledby="support-title" data-section="SUPPORT">
+<section class="section support" id="support" aria-labelledby="support-title" data-section="SUPPORT">
   <div class="container">
     <div class="section-head">
       <h2 class="section-kicker" id="support-title"><span data-scramble>Support // keep it on air</span></h2>
@@ -46,10 +48,9 @@ const anyLive = buttons.some((b) => b.url !== '');
 </section>
 
 <style>
-  /* Fit mode: SUPPORT and the footer below it share the last screen. */
   @media (min-width: 52.0625rem) and (min-height: 35rem) {
     .support {
-      min-height: calc(var(--screen-h) - var(--footer-h));
+      padding-block: clamp(1.5rem, 4vh, 3rem);
     }
   }
   .support__pane {

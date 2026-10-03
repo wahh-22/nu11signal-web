@@ -2,12 +2,13 @@
 // The page's terminal behavior, all progressive: without JavaScript none of
 // it runs and the content reads as usual.
 //
-// - Status line (StatusBar.astro): the section in view (IntersectionObserver
-//   over main's [data-section] elements), a node id per session, a live
-//   HH:MM:SS clock and the theme name.
+// - Status line (StatusBar.astro): the section in view (the last of main's
+//   [data-section] elements whose top has passed a line a third of the way
+//   down the viewport, and the last one at the page's end), a node id
+//   per session, a live HH:MM:SS clock and the theme name.
 // - Keys: ? opens the KEYS dialog (KeysDialog.astro), S cycles the theme
-//   (like the theme button), 1-4 jump to the top, SCREENS, FEATURES and
-//   INSTALL. Ignored while focus is in anything editable (fields, content-
+//   (like the theme button), 1-4 jump to the top, SCREENS, FEATURES (the
+//   screen it shares with INSTALL) and SUPPORT (the page's end). Ignored while focus is in anything editable (fields, content-
 //   editable, ARIA text boxes), while the boot runs, on key repeat, and with
 //   Ctrl, Alt or Cmd held, so browser shortcuts stay untouched. The KEYS
 //   dialog's SHORTCUTS button turns them all off (WCAG 2.1.4), saved per
@@ -18,24 +19,21 @@
 //   character keeps its color; screen readers read a hidden copy of the real
 //   text while it runs. It waits for the boot to end, and never runs with
 //   prefers-reduced-motion.
-// - Screen size: keeps --header-h and --footer-h (global.css) equal to the
-//   header's and footer's real heights, so fit mode's screens (each section
-//   between the header and the status line) and the 1-4 jumps land exactly.
-//   Without JavaScript the CSS defaults apply.
+// - Screen size: keeps --header-h (global.css) equal to the header's real
+//   height, so fit mode's screens (each one between the header and the
+//   status line) and the 1-4 jumps land exactly. Without JavaScript the CSS
+//   default applies.
 ---
 
 <script>
   const d = document.documentElement;
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const LABELS: Record<string, string> = { blueshift: 'BLUESHIFT', redshift: 'REDSHIFT', 'neon-rose': 'NEON ROSE' };
-  const JUMPS: Record<string, string> = { '1': 'top', '2': 'screens', '3': 'features', '4': 'install' };
+  const JUMPS: Record<string, string> = { '1': 'top', '2': 'screens', '3': 'features', '4': 'support' };
 
   // ---- screen size -----------------------------------------------------------
 
-  const measured: [string, string][] = [
-    ['.site-header', '--header-h'],
-    ['.site-footer', '--footer-h'],
-  ];
+  const measured: [string, string][] = [['.site-header', '--header-h']];
   if ('ResizeObserver' in window) {
     const ro = new ResizeObserver(() => {
       for (const [sel, prop] of measured) {
@@ -91,17 +89,31 @@
 
   const sectionLabel = document.querySelector<HTMLElement>('[data-status-section]');
   const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-section]'));
-  if (sectionLabel && sections.length && 'IntersectionObserver' in window) {
-    // The section crossing a line a little above the middle of the viewport.
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) sectionLabel.textContent = (e.target as HTMLElement).dataset.section || '';
-        }
-      },
-      { rootMargin: '-40% 0px -55% 0px' },
-    );
-    sections.forEach((s) => io.observe(s));
+  if (sectionLabel && sections.length) {
+    // The last section whose top has passed a line 35% down the viewport;
+    // at the page's end, where the short last sections share the view, the
+    // last one.
+    let queued = false;
+    const syncSection = () => {
+      queued = false;
+      const se = document.scrollingElement || d;
+      const atEnd = window.scrollY + window.innerHeight >= se.scrollHeight - 2;
+      const line = window.innerHeight * 0.35;
+      let current = sections[0];
+      if (atEnd) current = sections[sections.length - 1];
+      else for (const s of sections) if (s.getBoundingClientRect().top <= line) current = s;
+      const label = current.dataset.section || '';
+      if (sectionLabel.textContent !== label) sectionLabel.textContent = label;
+    };
+    const queue = () => {
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(syncSection);
+      }
+    };
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    syncSection();
   }
 
   // ---- theme and keys --------------------------------------------------------
