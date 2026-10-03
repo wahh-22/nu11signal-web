@@ -62,10 +62,10 @@ const gallery = [
         class="terminal__img"
         width="1278"
         height="702"
-        autoplay
         loop
         muted
         playsinline
+        controls
         preload="metadata"
         poster={demo('overview-poster.jpg')}
         aria-label="nu11signal in action: launching from the shell, the boot splash, opening a playlist, playing a song, and the data rain reacting to the music"
@@ -95,14 +95,27 @@ const gallery = [
 </section>
 
 <script>
-  // Respect reduced motion: no autoplay, controls instead.
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.querySelectorAll<HTMLVideoElement>('video[data-demo]').forEach((v) => {
-      v.removeAttribute('autoplay');
-      v.pause();
+  // The demo starts itself unless the visitor prefers reduced motion; it
+  // stays paused with its controls then (and without JS). Click, Enter or
+  // Space pauses and resumes it.
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLVideoElement>('video[data-demo]').forEach((v) => {
+    if (reduce) return;
+    v.controls = false;
+    v.tabIndex = 0;
+    v.title = 'Click to pause or play';
+    const toggle = () => (v.paused ? v.play() : v.pause());
+    v.addEventListener('click', toggle);
+    v.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggle();
+      }
+    });
+    v.play().catch(() => {
       v.controls = true;
     });
-  }
+  });
 </script>
 
 <style>
