@@ -66,11 +66,9 @@ const platforms = [
   }
 
   @media (min-width: 52.0625rem) and (min-height: 35rem) {
-    /* A snap point of its own, so the header's Install link stays put. */
     .install-sec {
       flex: none;
       padding-block: clamp(0.75rem, 3.6vh, 3rem) 0;
-      scroll-snap-align: start;
     }
     .install-sec .section-lede {
       margin-top: clamp(0.25rem, 1vh, 0.75rem);
