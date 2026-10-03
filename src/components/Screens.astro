@@ -1,7 +1,10 @@
 ---
 // The screens section: three recordings of the real app (public/demo,
 // encoded from the owner's GIFs). The overview is the main figure; SEARCH and
-// the themes-and-quit recording sit below it as two cards.
+// the themes-and-quit recording sit below it as two cards. The panes carry
+// the titles; the section's heading is for screen readers only. In fit mode
+// (global.css) the overview fills one screen and the two cards the next,
+// each video scaled to fit the screen's height at 1278:702.
 import Pane from './Pane.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
@@ -23,63 +26,65 @@ const recordings: { video: string; title: string; alt: string; caption: string }
 ];
 ---
 
-<section class="section" id="screens" aria-labelledby="screens-title" data-section="SCREENS">
-  <div class="container">
-    <div class="section-head">
-      <p class="section-kicker">Screens // signal acquired</p>
-      <h2 class="section-title" id="screens-title" data-scramble>The radio, in 80×24</h2>
-      <p class="section-lede">Three recordings of the real app.</p>
+<section class="section screens" id="screens" aria-labelledby="screens-title" data-section="SCREENS">
+  <h2 class="sr-only" id="screens-title">Screens</h2>
+
+  <div class="fit screens__main">
+    <div class="container">
+      <Pane title="NOW PLAYING // OVERVIEW" class="screen screen--main">
+        <figure>
+          <video
+            width="1278"
+            height="702"
+            loop
+            muted
+            playsinline
+            controls
+            preload="metadata"
+            poster={demo('overview-poster.jpg')}
+            aria-label="nu11signal in action: launching from the shell, the boot splash, opening a playlist, playing a song, and the data rain reacting to the music"
+            data-demo
+          >
+            <source src={demo('overview.webm')} type="video/webm" />
+            <source src={demo('overview.mp4')} type="video/mp4" />
+          </video>
+          <figcaption>Launch, open a playlist, play.</figcaption>
+        </figure>
+      </Pane>
     </div>
+  </div>
 
-    <Pane title="NOW PLAYING // OVERVIEW" class="screen screen--main">
-    <figure>
-      <video
-        width="1278"
-        height="702"
-        loop
-        muted
-        playsinline
-        controls
-        preload="metadata"
-        poster={demo('overview-poster.jpg')}
-        aria-label="nu11signal in action: launching from the shell, the boot splash, opening a playlist, playing a song, and the data rain reacting to the music"
-        data-demo
-      >
-        <source src={demo('overview.webm')} type="video/webm" />
-        <source src={demo('overview.mp4')} type="video/mp4" />
-      </video>
-      <figcaption>Launch, open a playlist, play.</figcaption>
-    </figure>
-    </Pane>
-
-    <ul class="recordings">
-      {
-        recordings.map((rec) => (
-          <li>
-            <Pane title={rec.title} class="screen">
-            <figure>
-              <video
-                width="1278"
-                height="702"
-                loop
-                muted
-                playsinline
-                controls
-                preload="none"
-                poster={demo(`${rec.video}-poster.jpg`)}
-                aria-label={rec.alt}
-                data-demo
-              >
-                <source src={demo(`${rec.video}.webm`)} type="video/webm" />
-                <source src={demo(`${rec.video}.mp4`)} type="video/mp4" />
-              </video>
-              <figcaption>{rec.caption}</figcaption>
-            </figure>
-            </Pane>
-          </li>
-        ))
-      }
-    </ul>
+  <div class="fit screens__pair">
+    <div class="container">
+      <ul class="recordings">
+        {
+          recordings.map((rec) => (
+            <li>
+              <Pane title={rec.title} class="screen">
+                <figure>
+                  <video
+                    width="1278"
+                    height="702"
+                    loop
+                    muted
+                    playsinline
+                    controls
+                    preload="none"
+                    poster={demo(`${rec.video}-poster.jpg`)}
+                    aria-label={rec.alt}
+                    data-demo
+                  >
+                    <source src={demo(`${rec.video}.webm`)} type="video/webm" />
+                    <source src={demo(`${rec.video}.mp4`)} type="video/mp4" />
+                  </video>
+                  <figcaption>{rec.caption}</figcaption>
+                </figure>
+              </Pane>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -145,6 +150,27 @@ const recordings: { video: string; title: string; alt: string; caption: string }
   @media (max-width: 48rem) {
     .recordings {
       grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* Fit mode (global.css): each video gets the screen's height less the
+     screen's padding, the pane's padding and border, and the caption, and
+     its pane is as wide as that height allows at 1278:702 (never wider than
+     the container). */
+  @media (min-width: 52.0625rem) and (min-height: 35rem) {
+    .screens {
+      --video-h: calc(var(--screen-h) - 2 * var(--fit-pad) - 2.5rem - 2px - 2.35rem);
+      --pane-w: calc(var(--video-h) * 1278 / 702 + 1.8rem + 2px);
+      padding-block: 0;
+    }
+    .screen--main {
+      width: min(100%, var(--pane-w));
+      margin-inline: auto;
+    }
+    .recordings {
+      grid-template-columns: repeat(2, minmax(0, var(--pane-w)));
+      justify-content: center;
+      margin-top: 0;
     }
   }
 </style>

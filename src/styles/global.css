@@ -79,7 +79,15 @@
   /* The fixed status line's height (StatusBar.astro); the page keeps this
      much room at the bottom so the bar never covers content. */
   --statusbar-h: 2.25rem;
-  --header-h: 4rem;
+  /* The sticky header's height (Header.astro) and the footer's; Immersive.astro
+     measures both and keeps them exact. */
+  --header-h: calc(3.75rem + 1px);
+  --footer-h: 0px;
+  /* One screen: the visible area between the header and the status line.
+     Fit mode (below) sizes each section to it. */
+  --screen-h: calc(100vh - var(--header-h) - var(--statusbar-h));
+  /* A screen's vertical padding, smaller on shorter windows. */
+  --fit-pad: clamp(0.75rem, 3vh, 2.5rem);
   --max: 72rem;
   --gutter: clamp(1rem, 4vw, 2rem);
   /* Text-safe accent: yellow in REDSHIFT, a lighter violet in BLUESHIFT
@@ -87,6 +95,11 @@
      active pink in NEON ROSE (#FF4F9A reads on its near-black, and dark ink
      reads on it as a fill, so its primary buttons keep the ink). */
   --accent-text: var(--yellow);
+}
+@supports (height: 100svh) {
+  :root {
+    --screen-h: calc(100svh - var(--header-h) - var(--statusbar-h));
+  }
 }
 :root:is([data-theme='blueshift'], :not([data-theme])) {
   --accent-text: #a995ff;
@@ -226,13 +239,16 @@ pre {
   margin-bottom: 2rem;
 }
 
-/* /─▮ FEATURES ──────── : the section's frame line, like the app's. */
+/* /─▮ FEATURES ──────── : the section's frame line, like the app's. It is
+   the section's heading (an h2), drawn as a thin frame line. */
 .section-kicker {
   display: flex;
   align-items: center;
   gap: 0.6rem;
   margin: 0 0 0.75rem;
   font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.65;
   letter-spacing: 0.22em;
   color: var(--accent-text);
 }
@@ -247,20 +263,38 @@ pre {
   background: linear-gradient(90deg, var(--deep), transparent);
 }
 
-.section-title {
-  margin: 0;
-  font-size: clamp(1.4rem, 3.6vw, 2.1rem);
-  letter-spacing: 0.06em;
-  color: var(--red);
-}
-:root:is([data-theme='blueshift'], :not([data-theme])) .section-title {
-  color: var(--cyan);
-}
-
 .section-lede {
   max-width: 44rem;
   margin: 0.75rem 0 0;
   color: var(--text-dim);
+}
+
+/* ---- fit mode: one section per screen ----------------------------------- */
+
+/* On windows wide and tall enough, every section (.fit) fills
+   exactly one screen between the header and the status line, its content
+   scaled to fit (the components size their own content), and the page snaps
+   gently between screens. Proximity snapping never traps the scroll; it is
+   off with reduced motion. Narrow or short windows keep natural heights and
+   no snapping, so nothing is clipped. Keep this query in step with the
+   components' fit rules (Hero, Screens). */
+@media (min-width: 52.0625rem) and (min-height: 35rem) {
+  html {
+    scroll-snap-type: y proximity;
+    scroll-padding-top: var(--header-h);
+    scroll-padding-bottom: var(--statusbar-h);
+  }
+  .fit {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: var(--screen-h);
+    padding-block: var(--fit-pad);
+    scroll-snap-align: start;
+  }
+  .section-head {
+    margin-bottom: clamp(1rem, 3vh, 2rem);
+  }
 }
 
 /* ---- HUD buttons ([ LIKE THIS ]) --------------------------------------- */
@@ -555,6 +589,7 @@ kbd {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+    scroll-snap-type: none;
   }
   .glitch__layer,
   .glitch__main {

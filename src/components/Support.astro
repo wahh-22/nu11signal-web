@@ -11,11 +11,10 @@ const buttons = [
 const anyLive = buttons.some((b) => b.url !== '');
 ---
 
-<section class="section" id="support" aria-labelledby="support-title" data-section="SUPPORT">
-  <div class="container support">
+<section class="section fit support" id="support" aria-labelledby="support-title" data-section="SUPPORT">
+  <div class="container">
     <div class="section-head">
-      <p class="section-kicker">Support // keep it on air</p>
-      <h2 class="section-title" id="support-title" data-scramble>Support the signal</h2>
+      <h2 class="section-kicker" id="support-title"><span data-scramble>Support // keep it on air</span></h2>
       <p class="section-lede">
         nu11signal is free and open source.{' '}
         {
@@ -47,6 +46,12 @@ const anyLive = buttons.some((b) => b.url !== '');
 </section>
 
 <style>
+  /* Fit mode: SUPPORT and the footer below it share the last screen. */
+  @media (min-width: 52.0625rem) and (min-height: 35rem) {
+    .support {
+      min-height: calc(var(--screen-h) - var(--footer-h));
+    }
+  }
   .support__pane {
     max-width: 44rem;
     padding: 1.75rem 1.25rem 1.25rem;
