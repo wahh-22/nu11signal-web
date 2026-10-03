@@ -1,52 +1,22 @@
 ---
-// The screens section: a recording of the real app on top, then a gallery
-// of recordings (public/demo, encoded from the owner's GIFs) and the app's
-// own 80x24 screen renders (copied from the app repo's docs/assets/screens)
-// for the views not recorded yet.
+// The screens section: three recordings of the real app (public/demo,
+// encoded from the owner's GIFs). The overview is the main figure; SEARCH and
+// the themes-and-quit recording sit below it as two cards.
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
-const src = (name: string) => `${base}screens/${name}.svg`;
-
 const demo = (name: string) => `${base}demo/${name}`;
 
-// A shot with `video` plays that recording from public/demo instead of
-// showing the still render.
-const gallery: { name: string; title: string; alt: string; caption: string; video?: string }[] = [
+const recordings: { video: string; title: string; alt: string; caption: string }[] = [
   {
-    name: 'search',
     video: 'search',
     title: 'SEARCH',
     alt: 'SEARCH in action: recent searches, live suggestions while typing, then an artist page with its top songs and albums, and a song playing',
-    caption: 'Live suggestions, recent searches, artists, albums, songs and playlists.',
+    caption: 'Live suggestions, artist pages, play from any result.',
   },
   {
-    name: 'expanded',
-    title: 'Expanded player',
-    alt: 'The expanded player with the data rain under the transport controls',
-    caption: 'f expands NOW PLAYING to the full width, rain and all.',
-  },
-  {
-    name: 'no-signal',
-    title: 'Signal effects',
-    alt: 'A glitch burst tearing rows and flashing NO SIGNAL over the UI',
-    caption: 'Torn rows, corrupted cells, static bars, and now and then NO SIGNAL.',
-  },
-  {
-    name: 'keys',
-    title: 'KEYS',
-    alt: 'The KEYS overlay listing every binding by group',
-    caption: '? opens every binding in one panel.',
-  },
-  {
-    name: 'settings',
-    title: 'SETTINGS',
-    alt: 'The SETTINGS panel offering the BLUESHIFT, REDSHIFT, MATRIX, ROSE and NEON ROSE themes',
-    caption: 's opens the themes: BLUESHIFT, REDSHIFT, MATRIX, ROSE or NEON ROSE; the choice is saved.',
-  },
-  {
-    name: 'boot',
-    title: 'Boot splash',
-    alt: 'The boot splash: the logo over BOOTING NU11SIGNAL',
-    caption: 'The app boots and shuts down over the logo.',
+    video: 'themes',
+    title: 'Themes and quit',
+    alt: 'The SETTINGS panel switching the app between the BLUESHIFT, REDSHIFT and NEON ROSE themes, then quitting: the confirmation prompt and the shutdown',
+    caption: 'Switch BLUESHIFT, REDSHIFT and NEON ROSE in SETTINGS; quitting always asks first.',
   },
 ];
 ---
@@ -58,7 +28,7 @@ const gallery: { name: string; title: string; alt: string; caption: string; vide
       <h2 class="section-title" id="screens-title">The radio, in 80×24</h2>
       <p class="section-lede">
         Playlists on the dial at the left, NOW PLAYING with bracketed transport controls and data rain at the right.
-        Recorded from the real app.
+        Three recordings of the real app: playing, searching, and switching themes.
       </p>
     </div>
 
@@ -82,32 +52,28 @@ const gallery: { name: string; title: string; alt: string; caption: string; vide
       <figcaption>Launch, open a playlist, play: the rain follows the music.</figcaption>
     </figure>
 
-    <ul class="gallery">
+    <ul class="recordings">
       {
-        gallery.map((shot) => (
+        recordings.map((rec) => (
           <li>
             <figure>
-              {shot.video ? (
-                <video
-                  width="1278"
-                  height="702"
-                  loop
-                  muted
-                  playsinline
-                  controls
-                  preload="none"
-                  poster={demo(`${shot.video}-poster.jpg`)}
-                  aria-label={shot.alt}
-                  data-demo
-                >
-                  <source src={demo(`${shot.video}.webm`)} type="video/webm" />
-                  <source src={demo(`${shot.video}.mp4`)} type="video/mp4" />
-                </video>
-              ) : (
-                <img src={src(shot.name)} width="840" height="556" alt={shot.alt} loading="lazy" decoding="async" />
-              )}
+              <video
+                width="1278"
+                height="702"
+                loop
+                muted
+                playsinline
+                controls
+                preload="none"
+                poster={demo(`${rec.video}-poster.jpg`)}
+                aria-label={rec.alt}
+                data-demo
+              >
+                <source src={demo(`${rec.video}.webm`)} type="video/webm" />
+                <source src={demo(`${rec.video}.mp4`)} type="video/mp4" />
+              </video>
               <figcaption>
-                <strong>{shot.title}</strong> — {shot.caption}
+                <strong>{rec.title}</strong> — {rec.caption}
               </figcaption>
             </figure>
           </li>
@@ -163,22 +129,29 @@ const gallery: { name: string; title: string; alt: string; caption: string; vide
     font-family: var(--font-ui);
     font-weight: 600;
   }
-  .gallery {
+  .recordings {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
-    gap: 1.75rem 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1.75rem;
     margin: 3rem 0 0;
     padding: 0;
     list-style: none;
   }
-  .gallery figure {
+  @media (max-width: 48rem) {
+    .recordings {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .recordings figure {
     margin: 0;
   }
-  .gallery img,
-  .gallery video {
+  .recordings video {
+    display: block;
     width: 100%;
     height: auto;
-    border-radius: 8px;
-    box-shadow: 0 0 0 1px var(--dim);
+    border-radius: 10px;
+    box-shadow:
+      0 0 0 1px var(--dim),
+      0 1rem 3rem -1rem var(--glow);
   }
 </style>
