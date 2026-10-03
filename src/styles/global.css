@@ -855,11 +855,19 @@ video:focus-visible {
 
 /* ---- KEYS dialog (src/components/KeysDialog.astro) ------------------------ */
 
+/* Centered by the UA's modal dialog rules (inset 0, margin auto); the box
+   keeps a margin for its title chip, which sits half above the frame, so the
+   list scrolls inside .keys__body instead of the dialog clipping it. */
 .keys {
+  /* .pane sets position: relative; a modal dialog must stay fixed to the
+     viewport, or it opens at the top of the document on a scrolled page. */
+  position: fixed;
   width: min(32rem, calc(100vw - 2rem));
-  max-height: calc(100vh - 4rem);
+  max-width: none;
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
   margin: auto;
-  padding: 2rem 1.5rem 1.25rem;
+  padding: 1.75rem 1.5rem 1.25rem;
   overflow: visible;
   border-color: var(--deep);
   color: var(--text);
@@ -870,7 +878,15 @@ video:focus-visible {
   backdrop-filter: blur(3px);
 }
 .keys[open] {
+  display: flex;
+  flex-direction: column;
   animation: keys-in 0.18s steps(3, end);
+}
+.keys__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 @keyframes keys-in {
   0% {
@@ -910,8 +926,20 @@ video:focus-visible {
 }
 .keys__actions {
   display: flex;
+  flex: none;
+  flex-wrap: wrap;
   justify-content: flex-end;
+  gap: 0.5rem;
   margin-top: 1rem;
+}
+@media (max-width: 26rem) {
+  .keys {
+    padding-inline: 1rem;
+  }
+  .keys__row {
+    grid-template-columns: 3.25rem 1fr;
+    gap: 0.75rem;
+  }
 }
 
 /* ---- boot sequence (src/components/Boot.astro) ---------------------------- */

@@ -9,6 +9,11 @@
 // reads as usual. The inline script runs right after <body> opens, so the
 // overlay is in place before the first paint; it is position: fixed, so it
 // shifts nothing. Any key, click, touch, wheel or scroll skips it.
+//
+// While it shows, <html> carries data-booting; when it is gone the attribute
+// is removed and document gets a nu11signal:boot-end event. The signal
+// glitch and the scramble-in titles wait for it; without a boot neither
+// the attribute nor the event happens and they start at once.
 import ThemeArt from './ThemeArt.astro';
 
 const lines = ['NU11SIGNAL // SIGNAL ACQUIRED', 'LINKING APPLE MUSIC ...', 'AUTH OK', 'TUNING 88.0 - 108.0 MHZ ... OK'];
@@ -39,7 +44,9 @@ const lines = ['NU11SIGNAL // SIGNAL ACQUIRED', 'LINKING APPLE MUSIC ...', 'AUTH
     } catch (e) {}
     if (seen || reduce) return;
 
+    var d = document.documentElement;
     var node = tpl.content.firstElementChild.cloneNode(true);
+    d.setAttribute('data-booting', '');
     document.body.appendChild(node);
     var done = false;
     var EVENTS = ['keydown', 'pointerdown', 'wheel', 'touchstart', 'scroll'];
@@ -53,6 +60,8 @@ const lines = ['NU11SIGNAL // SIGNAL ACQUIRED', 'LINKING APPLE MUSIC ...', 'AUTH
       node.classList.add(fast ? 'boot--skip' : 'boot--out');
       setTimeout(function () {
         node.remove();
+        d.removeAttribute('data-booting');
+        document.dispatchEvent(new CustomEvent('nu11signal:boot-end'));
       }, fast ? 160 : 260);
     }
     function skip() {

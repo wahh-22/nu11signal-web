@@ -3,6 +3,15 @@
 // A modal <dialog> (the rest of the page is inert while it is open, so focus
 // stays inside); Esc or CLOSE shuts it and focus returns where it was.
 // Immersive.astro opens it with ? or the status line's KEYS button.
+//
+// Layout: centered in the viewport (top layer, so above the sticky header
+// and the status line), at most the viewport's height less a margin; on a
+// short viewport the list scrolls inside .keys__body while the title and
+// the buttons stay in view.
+//
+// The SHORTCUTS button turns the single-key shortcuts off and on (WCAG
+// 2.1.4), saved per browser as nu11signal:shortcuts; the status line's KEYS
+// button still opens this list when they are off.
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 
 const keys: { key: string; label: string }[] = [
@@ -21,6 +30,7 @@ const keys: { key: string; label: string }[] = [
   <h2 class="pane__title" id="keys-title">
     <span class="pane__mark" aria-hidden="true">▮</span> Keys
   </h2>
+  <div class="keys__body">
   <dl class="keys__list">
     {
       keys.map((k) => (
@@ -34,7 +44,11 @@ const keys: { key: string; label: string }[] = [
     }
   </dl>
   <p class="keys__note">Shortcuts pause while you type, and never use Ctrl, Alt or Cmd.</p>
+  </div>
   <form method="dialog" class="keys__actions">
+    <button type="button" class="hud-btn hud-btn--small" data-shortcuts-toggle aria-pressed="true">
+      Shortcuts: <span data-label>On</span>
+    </button>
     <button type="submit" class="hud-btn hud-btn--small" data-keys-close>Close</button>
   </form>
 </dialog>

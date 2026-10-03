@@ -10,7 +10,9 @@
 // the theme change.
 //
 // No burst and no automatic switch while the visitor prefers reduced motion
-// (the effects are otherwise always on). A manual theme pick cancels a running
+// (the effects are otherwise always on), and none while the boot sequence
+// shows (Boot.astro, <html data-booting>): the first wait starts when the
+// boot ends (its nu11signal:boot-end event). A manual theme pick cancels a running
 // burst and restarts the wait; the next burst switches from the picked
 // theme. The wait pauses while the tab is hidden.
 //
@@ -48,8 +50,11 @@
     function pick(n) {
       return Math.floor(Math.random() * n);
     }
+    function booting() {
+      return document.documentElement.hasAttribute('data-booting');
+    }
     function active() {
-      return !(motion && motion.matches) && !document.hidden && !document.querySelector('.boot');
+      return !(motion && motion.matches) && !document.hidden && !booting();
     }
     function braille() {
       return String.fromCharCode(0x2801 + pick(255));
@@ -197,6 +202,17 @@
       }
     });
 
-    arm(/[?&]glitch=now\b/.test(window.location.search) ? 300 : null);
+    var first = /[?&]glitch=now\b/.test(window.location.search) ? 300 : null;
+    if (booting()) {
+      document.addEventListener(
+        'nu11signal:boot-end',
+        function () {
+          arm(first);
+        },
+        { once: true },
+      );
+    } else {
+      arm(first);
+    }
   })();
 </script>

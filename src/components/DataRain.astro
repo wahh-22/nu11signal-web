@@ -28,10 +28,15 @@
     const FRAME = 1000 / 30;
     const RADIUS = 140;
 
+    // Units: the canvas is drawn in CSS pixels (setTransform scales by the
+    // device pixel ratio), on a grid of CELL x CELL cells. A drop's y, len and
+    // speed are in rows (cells); a column index is x / CELL. Only drawing
+    // turns rows into pixels (row * CELL).
     type Drop = { y: number; speed: number; len: number; chars: string[] };
     let cols: (Drop | null)[] = [];
-    let w = 0;
-    let h = 0;
+    let w = 0; // CSS px
+    let h = 0; // CSS px
+    let rows = 1; // h / CELL
     let colors = { tip: '#fff', bright: '#fff', trail: '#888' };
     let raf = 0;
     let last = 0;
@@ -41,10 +46,11 @@
     const pointer = { x: -1e4, y: -1e4 };
 
     const glyph = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+    // A new drop with its head at row y; by default just above the top.
     const newDrop = (y?: number): Drop => {
       const len = 6 + Math.floor(Math.random() * 14);
       return {
-        y: y ?? -Math.random() * h * 0.6,
+        y: y ?? -Math.random() * rows * 0.6,
         speed: 0.18 + Math.random() * 0.32,
         len,
         chars: Array.from({ length: len }, glyph),
@@ -65,6 +71,7 @@
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       w = Math.max(1, Math.round(r.width));
       h = Math.max(1, Math.round(r.height));
+      rows = h / CELL;
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       canvas.style.width = `${w}px`;
@@ -72,8 +79,11 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const n = Math.ceil(w / CELL);
       // Fill the whole height at once, so the rain is there from the start.
-      cols = Array.from({ length: n }, (_, i) => cols[i] ?? (Math.random() < 0.7 ? newDrop(Math.random() * (h / CELL + 10)) : null));
+      cols = Array.from({ length: n }, (_, i) => cols[i] ?? (Math.random() < 0.7 ? newDrop(Math.random() * (rows + 10)) : null));
     };
+
+    // A drop whose tail has left the bottom of the canvas.
+    const gone = (d: Drop) => Math.floor(d.y) - d.len > rows;
 
     const draw = () => {
       ctx.clearRect(0, 0, w, h);
@@ -106,7 +116,7 @@
           }
           ctx.fillText(d.chars[k], x, y);
         }
-        if ((headRow - d.len) * CELL > h) cols[i] = Math.random() < 0.75 ? newDrop() : null;
+        if (gone(d)) cols[i] = Math.random() < 0.75 ? newDrop() : null;
       }
       ctx.globalAlpha = 1;
       boost *= 0.9;
@@ -130,10 +140,12 @@
       const r = canvas.getBoundingClientRect();
       pointer.x = e.clientX - r.left;
       pointer.y = e.clientY - r.top;
-      // Start a drop under the pointer now and then.
+      // Now and then start a drop in the pointer's free column, its head two
+      // rows above the pointer's row.
       const i = Math.floor(pointer.x / CELL);
-      if (i >= 0 && i < cols.length && Math.random() < 0.25 && (!cols[i] || cols[i]!.y * CELL > h)) {
-        cols[i] = newDrop(pointer.y / CELL - 2);
+      const d = cols[i];
+      if (i >= 0 && i < cols.length && Math.random() < 0.25 && (!d || gone(d))) {
+        cols[i] = newDrop(Math.floor(pointer.y / CELL) - 2);
       }
     });
     host.addEventListener('pointerleave', () => {
@@ -150,6 +162,20 @@
     );
 
     new ResizeObserver(resize).observe(host);
+    // A zoom or a move to another screen changes devicePixelRatio without
+    // resizing the hero: redo the backing store then too.
+    const watchDpr = () => {
+      const mq = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+      mq.addEventListener(
+        'change',
+        () => {
+          resize();
+          watchDpr();
+        },
+        { once: true },
+      );
+    };
+    watchDpr();
     new MutationObserver(readColors).observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['data-theme'],

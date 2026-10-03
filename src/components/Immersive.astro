@@ -7,8 +7,11 @@
 //   HH:MM:SS clock and the theme name.
 // - Keys: ? opens the KEYS dialog (KeysDialog.astro), S cycles the theme
 //   (like the theme button), 1-4 jump to the top, SCREENS, FEATURES and
-//   INSTALL. Ignored while typing in a field, while the boot runs, and with
-//   Ctrl, Alt or Cmd held, so browser shortcuts stay untouched.
+//   INSTALL. Ignored while focus is in anything editable (fields, content-
+//   editable, ARIA text boxes), while the boot runs, on key repeat, and with
+//   Ctrl, Alt or Cmd held, so browser shortcuts stay untouched. The KEYS
+//   dialog's SHORTCUTS button turns them all off (WCAG 2.1.4), saved per
+//   browser as nu11signal:shortcuts = 'off'.
 // - Scramble-in: every [data-scramble] title resolves from glyphs to its
 //   text, left to right in about 0.9 s, once, when it first scrolls into
 //   view (like the app's content intros). Only text nodes change, so each
@@ -124,12 +127,36 @@
     else history.replaceState(null, '', window.location.pathname + window.location.search);
   };
 
+  const EDITABLE = 'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="textbox"], [role="searchbox"], [role="combobox"], [role="spinbutton"]';
   const typing = (t: EventTarget | null) =>
-    t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+    t instanceof Element && ((t instanceof HTMLElement && t.isContentEditable) || !!t.closest(EDITABLE));
+
+  // The off switch for the single-key shortcuts.
+  const SHORTCUTS_KEY = 'nu11signal:shortcuts';
+  let shortcutsOn = true;
+  try {
+    shortcutsOn = localStorage.getItem(SHORTCUTS_KEY) !== 'off';
+  } catch {}
+  const toggle = document.querySelector<HTMLButtonElement>('[data-shortcuts-toggle]');
+  const syncShortcuts = () => {
+    if (!toggle) return;
+    toggle.setAttribute('aria-pressed', String(shortcutsOn));
+    const label = toggle.querySelector('[data-label]');
+    if (label) label.textContent = shortcutsOn ? 'On' : 'Off';
+  };
+  toggle?.addEventListener('click', () => {
+    shortcutsOn = !shortcutsOn;
+    try {
+      if (shortcutsOn) localStorage.removeItem(SHORTCUTS_KEY);
+      else localStorage.setItem(SHORTCUTS_KEY, 'off');
+    } catch {}
+    syncShortcuts();
+  });
+  syncShortcuts();
 
   document.addEventListener('keydown', (e) => {
-    if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey || e.isComposing) return;
-    if (typing(e.target) || document.querySelector('.boot')) return;
+    if (!shortcutsOn || e.defaultPrevented || e.repeat || e.ctrlKey || e.metaKey || e.altKey || e.isComposing) return;
+    if (typing(e.target) || d.hasAttribute('data-booting')) return;
     if (e.key === '?') {
       e.preventDefault();
       if (dialog?.open) dialog.close();
@@ -199,10 +226,6 @@
   };
 
   const observeTitles = () => {
-    if (document.querySelector('.boot')) {
-      setTimeout(observeTitles, 100);
-      return;
-    }
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) {
         if (!e.isIntersecting) continue;
@@ -212,5 +235,9 @@
     });
     document.querySelectorAll<HTMLElement>('[data-scramble]').forEach((el) => io.observe(el));
   };
-  if (!motion.matches && 'IntersectionObserver' in window) observeTitles();
+  if (!motion.matches && 'IntersectionObserver' in window) {
+    // Titles behind the boot wait for it to end (Boot.astro).
+    if (d.hasAttribute('data-booting')) document.addEventListener('nu11signal:boot-end', observeTitles, { once: true });
+    else observeTitles();
+  }
 </script>
