@@ -7,6 +7,7 @@
 //
 // Script: Immersive.astro fills the section, node, clock and theme. Without
 // JavaScript the bar shows its static defaults, and its buttons are hidden.
+import { DEFAULT_THEME, themeById } from '../themes.mjs';
 ---
 
 <aside class="statusbar" aria-label="Status line">
@@ -26,6 +27,6 @@
     <span class="statusbar__sig">SIG <span class="sig-bars"><i></i><i></i><i></i><i></i><i></i></span></span>
     <span class="statusbar__node">NODE <span data-status-node>0000</span></span>
     <span class="statusbar__clock" data-status-clock>--:--:--</span>
-    <span class="statusbar__theme" data-status-theme-name>BLUESHIFT</span>
+    <span class="statusbar__theme" data-status-theme-name>{themeById(DEFAULT_THEME).label}</span>
   </span>
 </aside>

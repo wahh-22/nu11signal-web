@@ -26,9 +26,10 @@
 ---
 
 <script>
+  import { DEFAULT_THEME, themeById } from '../themes.mjs';
+
   const d = document.documentElement;
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const LABELS: Record<string, string> = { blueshift: 'BLUESHIFT', redshift: 'REDSHIFT', 'neon-rose': 'NEON ROSE' };
   const JUMPS: Record<string, string> = { '1': 'top', '2': 'screens', '3': 'features', '4': 'support' };
 
   // ---- screen size -----------------------------------------------------------
@@ -53,7 +54,7 @@
 
   const themeName = document.querySelector<HTMLElement>('[data-status-theme-name]');
   const syncTheme = () => {
-    if (themeName) themeName.textContent = LABELS[d.dataset.theme || ''] || LABELS.blueshift;
+    if (themeName) themeName.textContent = themeById(d.dataset.theme || DEFAULT_THEME).label;
   };
   syncTheme();
   new MutationObserver(syncTheme).observe(d, { attributes: true, attributeFilter: ['data-theme'] });
