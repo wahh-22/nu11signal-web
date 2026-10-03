@@ -54,7 +54,7 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 | `src/components/StatusBar.astro` | The fixed status line at the bottom |
 | `src/components/KeysDialog.astro` | The KEYS dialog that lists the shortcuts |
 | `src/components/Immersive.astro` | The status line's live parts, the keyboard shortcuts and the scramble-in titles |
-| `src/components/` | Page sections: header, hero (logo, tagline, install toggle), screens (the three recordings), features (what it does, linking to the app docs), install, support, footer. The page presents the app and how to install it; details live in the app's docs |
+| `src/components/` | Page sections: header, hero (logo, tagline, install toggle, donation links beside the chips), screens (the three recordings), features (what it does, linking to the app docs), install, support, footer. The page presents the app and how to install it; details live in the app's docs |
 | `src/styles/global.css` | Theme tokens and shared styles |
 | `public/demo/` | The three recordings of the screens section, each as `<name>.webm`, `<name>.mp4` (encoded from the owner's GIFs with ffmpeg) and `<name>-poster.jpg`: `overview` (the main figure), `search` (SEARCH) and `themes` (switching themes in SETTINGS and quitting). The section shows recordings only, no still renders |
 | `public/favicon.svg` | A copy of `public/logo/nu11signal-mark-blueshift.svg` |
@@ -72,7 +72,7 @@ The app has five themes; the site has three of them, the ones in the themes reco
 
 The site looks and behaves like the app: Kode Mono everywhere, all text uppercase (CSS `text-transform` on `body`; the DOM keeps the real case, and commands in `code` and `pre` show as typed because they are case-sensitive), sections in framed panes, bracketed HUD buttons, and `▶` focus markers.
 
-- **One screen at a time:** on windows at least 833 px wide and 560 px tall, the page is a run of full screens, each filling exactly the area between the header and the status line, with its content sized to it: the hero (its logo shrinks so the install box, buttons and chips stay in view); the overview recording, as large as the screen's height allows at 1278:702; the two other recordings as two rows on the next screen, each video beside a short caption, three points and a docs link; then FEATURES and INSTALL together, the cards stretching into the room INSTALL leaves, with spacing and type that grow with the window's height. SUPPORT and the footer close the page at their natural height, and the page ends exactly with the footer on the status line. Scrolling is free, with no snapping; the `1`-`4` keys and the header links land on their content. Narrower or shorter windows, phones included, keep natural heights.
+- **One screen at a time:** on windows at least 833 px wide and 560 px tall, the page is a run of full screens, each filling exactly the area between the header and the status line, with its content sized to it: the hero (its logo shrinks so the install box, buttons, chips and donation links stay in view); the overview recording, as large as the screen's height allows at 1278:702; the two other recordings as two rows on the next screen, each video beside a short caption, three points and a docs link; then FEATURES and INSTALL together, the cards stretching into the room INSTALL leaves, with spacing and type that grow with the window's height. SUPPORT and the footer close the page at their natural height, and the page ends exactly with the footer on the status line. Scrolling is free, with no snapping; the `1`-`4` keys and the header links land on their content. Narrower or shorter windows, phones included, keep natural heights.
 - **Boot:** on the first visit of a browser session, a full-screen boot splash (the head mark, a few boot-log lines and `B O O T I N G   N U 1 1 S I G N A L . . .`) runs for 1.5 seconds and dissolves with a glitch. Any key, click, touch, wheel or scroll skips it. Without JavaScript nothing renders.
 - **Status line:** a fixed bar at the bottom shows the section in view, key hints (`[?] KEYS`, `[S] THEME`, `[1-4] JUMP`; the first two are buttons), animated `SIG` bars, a `NODE` id per session, a live clock and the theme. The page reserves its height at the bottom. On phones it keeps only the section, clock and theme.
 - **Keys:** `?` opens the KEYS dialog (Esc closes it and focus returns), `S` cycles the theme, `1` to `4` jump to the top, SCREENS, FEATURES (with INSTALL, on the same screen) and SUPPORT (the page's end). Keys are ignored while typing in a field and whenever Ctrl, Alt or Cmd is held.
@@ -99,7 +99,7 @@ export const DONATIONS = {
 };
 ```
 
-While a URL is an empty string, its button shows "coming soon" instead of a link; with both empty, the "Support the signal" section says donations are coming soon.
+While a URL is an empty string, its button shows "coming soon" instead of a link; with both empty, the "Support the signal" section says donations are coming soon. The hero shows small links for the set URLs only, beside its chips; with both empty it shows none.
 
 ## Deploy
 

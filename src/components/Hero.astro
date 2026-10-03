@@ -2,7 +2,7 @@
 import ThemeArt from './ThemeArt.astro';
 import Pane from './Pane.astro';
 import DataRain from './DataRain.astro';
-import { INSTALL_COMMANDS, LINKS, REPO } from '../config';
+import { DONATIONS, INSTALL_COMMANDS, LINKS, REPO } from '../config';
 import { releaseBadgeScript } from '../release.mjs';
 
 // The official logo, one file per theme (ThemeArt). The glitch layers repeat
@@ -12,6 +12,14 @@ const layers = ['glitch__main', 'glitch__layer glitch__layer--a', 'glitch__layer
 // The latest-release badge: a plain link until the inline script (release.mjs)
 // fills in the current tag, so a new release shows without a redeploy.
 const releaseScript = releaseBadgeScript(`https://api.github.com/repos/${REPO}/releases/latest`, `${LINKS.releases}/tag/`);
+
+// Donation links (src/config.ts DONATIONS), small and beside the chips so they
+// read as secondary to install and GitHub. Only set URLs show; with none set
+// the row is left out (the SUPPORT section further down says "coming soon").
+const donations = [
+  { label: 'Buy me a coffee', glyph: '☕', url: DONATIONS.coffee.trim() },
+  { label: 'GitHub Sponsors', glyph: '<3', url: DONATIONS.sponsors.trim() },
+].filter((d) => d.url !== '');
 ---
 
 <section class="hero fit" id="top" aria-labelledby="hero-title" data-section="ON AIR">
@@ -75,6 +83,7 @@ const releaseScript = releaseBadgeScript(`https://api.github.com/repos/${REPO}/r
       <a class="hud-btn" href={LINKS.latestRelease} rel="noopener">Latest release</a>
     </div>
 
+    <div class="hero__foot">
     <ul class="hero__meta">
       <li>
         <a class="release-badge" href={LINKS.latestRelease} rel="noopener" data-release-badge>
@@ -85,6 +94,20 @@ const releaseScript = releaseBadgeScript(`https://api.github.com/repos/${REPO}/r
       <li class="chip">Linux</li>
       <li class="chip">MIT</li>
     </ul>
+
+    {
+      donations.length > 0 && (
+        <nav class="hero__support" aria-label="Support nu11signal">
+          <span class="hero__support-label" aria-hidden="true">Support</span>
+          {donations.map((d) => (
+            <a class="hud-btn hud-btn--small hero__support-link" href={d.url} rel="noopener">
+              <span aria-hidden="true">{d.glyph}</span> {d.label}
+            </a>
+          ))}
+        </nav>
+      )
+    }
+    </div>
   </Pane>
   </div>
 </section>
@@ -300,14 +323,52 @@ const releaseScript = releaseBadgeScript(`https://api.github.com/repos/${REPO}/r
     gap: 0.75rem;
     margin-top: 1.5rem;
   }
+  /* The chips and, at the right end of the same row (under them when the
+     row is too narrow, about 1100px and less), the donation links. */
+  .hero__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    width: 100%;
+    margin-top: 1.75rem;
+  }
   .hero__meta {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem 0.75rem;
-    margin: 1.75rem 0 0;
+    margin: 0;
     padding: 0;
     list-style: none;
+  }
+  /* Secondary to the buttons above: outlined, small, with a dim HUD label. */
+  .hero__support {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .hero__support-label {
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .hero__support-label::before {
+    content: '─▮ ';
+    color: var(--accent-text);
+  }
+  .hero__support-link {
+    min-height: 2rem;
+    padding-block: 0.2rem;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+  .hero__support-link:hover,
+  .hero__support-link:focus-visible {
+    color: var(--accent-text);
   }
   /* The latest-release badge: a two-part HUD tag in the theme's colors, the
      label filled with the active color. The value keeps room for the longest
@@ -401,12 +462,31 @@ const releaseScript = releaseBadgeScript(`https://api.github.com/repos/${REPO}/r
     .hero__actions {
       margin-top: clamp(0.6rem, 2.2vh, 1.5rem);
     }
-    .hero__meta {
+    .hero__foot {
       margin-top: clamp(0.6rem, 2.2vh, 1.75rem);
+    }
+    /* As tall as the chips, so sharing their line costs the logo nothing. */
+    .hero__support-link {
+      min-height: 1.75rem;
+      padding-block: 0.1rem;
     }
     /* A wider lede wraps to fewer lines, leaving the logo more room. */
     .hero__lede {
       max-width: 56rem;
+    }
+  }
+  /* Narrower fit windows (up to about 1180px): drop the SUPPORT label and
+     tighten the row so the donation links still share the chips' line down
+     to about 1000px, instead of taking a line from the logo. */
+  @media (min-width: 52.0625rem) and (max-width: 74rem) and (min-height: 35rem) {
+    .hero__foot {
+      column-gap: 1rem;
+    }
+    .hero__meta {
+      column-gap: 0.5rem;
+    }
+    .hero__support-label {
+      display: none;
     }
   }
   /* Short windows (up to 720px tall): smaller text and controls, so the
