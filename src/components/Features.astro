@@ -1,70 +1,34 @@
 ---
-// Features, kept accurate to the app's README and docs.
+// What it does, kept in step with the app's README. Each card links to its docs page.
+import { LINKS } from '../config';
+
 const features = [
   {
     glyph: '♪',
-    title: 'Apple Music, natively',
-    body: 'On macOS, plays through MusicKit in a tiny signed, windowless Swift helper: no browser, no Electron, no Music app window, near 0% CPU at idle.',
+    title: 'Apple Music in the terminal',
+    body: 'Plays through a tiny windowless MusicKit helper, not a browser or the Music app.',
+    links: [{ href: LINKS.architecture, label: 'Architecture' }],
   },
   {
     glyph: '▤',
     title: 'Your own music files',
-    body: 'mp3, flac, ogg and wav from ~/Music or your music_dirs, folders and m3u files as playlists: beside Apple Music on macOS, on their own on Linux.',
+    body: 'mp3, flac, ogg and wav play beside Apple Music on macOS, and on their own on Linux.',
+    links: [{ href: LINKS.localFiles, label: 'Local files' }],
   },
   {
     glyph: '⌕',
-    title: 'Library, playlists, search',
-    body: 'Your playlists on a pseudo FM dial. Search the catalog with live suggestions and recent terms; open artists, albums, songs and playlists.',
-  },
-  {
-    glyph: '<3',
-    title: 'Favorites and playlist editing',
-    body: 'Love a song with l, add it to a playlist with a, or create a new playlist on the spot, from any song row or the song playing.',
-  },
-  {
-    glyph: '░▒▓',
-    title: 'Data rain that plays the music',
-    body: 'Hex digits and half-width katakana fall under NOW PLAYING, driven by the real spectrum (Apple Music on macOS 15+, local files everywhere): loud bands rain harder, bass hits send a wave, silence is dry.',
-  },
-  {
-    glyph: '▚▞',
-    title: 'Signal glitches and intros',
-    body: 'Every so often the signal drops: torn rows, corrupted cells, static and NO SIGNAL. New content scrambles in. x toggles it; --calm starts without.',
-  },
-  {
-    glyph: '[ ]',
-    title: 'Bracket HUD, keys or mouse',
-    body: 'Bracketed buttons for transport, loop, volume and expand. Every control answers to the keyboard and a click; the wheel scrolls the lists.',
-  },
-  {
-    glyph: '◐',
-    title: 'Five themes',
-    body: 'BLUESHIFT (electric blue and violet, the default), REDSHIFT (neon red, cyan and yellow), MATRIX (the greens of falling code), ROSE (soft pink) or NEON ROSE (hot pink). The whole UI recolors at once and the choice is saved; this site lets you try three of them.',
+    title: 'Search and browse',
+    body: 'Search the catalog, open artists, albums and playlists, love songs and edit playlists.',
+    links: [{ href: LINKS.browsing, label: 'Browsing' }],
   },
   {
     glyph: '?',
-    title: 'KEYS overlay',
-    body: 'Press ? for every binding in one panel, grouped by view. Quitting always asks first.',
-  },
-  {
-    glyph: 'VOL',
-    title: 'Its own volume',
-    body: 'VOL is independent of the system volume: on macOS through a Core Audio process tap (14.2+), falling back to the system volume (SYS) when it cannot.',
-  },
-  {
-    glyph: 'Ø',
-    title: 'Boot and shutdown splash',
-    body: 'The app boots and shuts down over the logo, with a signal line that scrambles in.',
-  },
-  {
-    glyph: 'Aa',
-    title: 'Designed in Kode Mono',
-    body: 'The macOS Homebrew cask installs Kode Mono, the font the UI is designed with; on Linux, add it with brew install --cask font-kode-mono. Any monospaced font works.',
-  },
-  {
-    glyph: '✓',
-    title: 'Signed, notarized, and on Linux',
-    body: 'A signed, notarized macOS build for Apple Silicon and Intel, and Linux builds for x86_64 and ARM64, each one Homebrew command away. Open source under MIT.',
+    title: 'Themes and keys',
+    body: 'Five color themes in SETTINGS, BLUESHIFT by default. Keyboard or mouse; ? lists every key.',
+    links: [
+      { href: LINKS.settings, label: 'Settings' },
+      { href: LINKS.keys, label: 'Keys' },
+    ],
   },
 ];
 ---
@@ -73,7 +37,7 @@ const features = [
   <div class="container">
     <div class="section-head">
       <p class="section-kicker">Features</p>
-      <h2 class="section-title" id="features-title">Everything on the dial</h2>
+      <h2 class="section-title" id="features-title">What it does</h2>
     </div>
     <ul class="features">
       {
@@ -84,17 +48,23 @@ const features = [
             </span>
             <h3 class="feature__title">{f.title}</h3>
             <p class="feature__body">{f.body}</p>
+            <p class="feature__links">
+              {f.links.map((l) => (
+                <a href={l.href} rel="noopener">
+                  {l.label} <span aria-hidden="true">→</span>
+                </a>
+              ))}
+            </p>
           </li>
         ))
       }
     </ul>
   </div>
 </section>
-
 <style>
   .features {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
     margin: 0;
     padding: 0;
@@ -141,9 +111,23 @@ const features = [
     color: var(--text-dim);
     font-size: 0.9625rem;
   }
+  .feature__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+    margin: 0.75rem 0 0;
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+  }
   @media (prefers-reduced-motion: reduce) {
     .feature {
       transition: none;
+    }
+  }
+  @media (max-width: 40rem) {
+    .features {
+      grid-template-columns: 1fr;
     }
   }
 </style>

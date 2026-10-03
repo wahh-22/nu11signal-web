@@ -10,9 +10,12 @@ export const LINKS = {
   issues: `${REPO_URL}/issues`,
   license: `${REPO_URL}/blob/main/LICENSE`,
   docs: `${REPO_URL}#documentation`,
-  usage: `${REPO_URL}/blob/main/docs/usage.md`,
-  installLinux: `${REPO_URL}/blob/main/docs/install.md#linux`,
+  install: `${REPO_URL}/blob/main/docs/install.md`,
+  architecture: `${REPO_URL}/blob/main/docs/architecture.md`,
   localFiles: `${REPO_URL}/blob/main/docs/usage.md#local-files`,
+  browsing: `${REPO_URL}/blob/main/docs/usage.md#browsing-the-catalog`,
+  settings: `${REPO_URL}/blob/main/docs/usage.md#settings`,
+  keys: `${REPO_URL}/blob/main/docs/usage.md#keys`,
   siteRepo: 'https://github.com/wahh-22/nu11signal-web',
 } as const;
 
@@ -23,13 +26,11 @@ export const INSTALL_COMMANDS = {
   linux: 'brew install wahh-22/tap/nu11signal',
 } as const;
 
-export const LINUX_FONT_COMMAND = 'brew install --cask font-kode-mono';
-
 export const SITE = {
   title: 'nu11signal — a neon car radio for Apple Music, in your terminal',
   shortTitle: 'nu11signal',
   description:
-    'nu11signal is a neon car radio for Apple Music, in your terminal: playlists on a pseudo FM dial, catalog search, favorites, your own music files, and data rain that plays the music. Apple Music and local files on macOS 14+, local files on Linux.',
+    'A neon car radio for Apple Music, in your terminal. Apple Music and your own music files on macOS 14+, your music files on Linux.',
 } as const;
 
 // ---------------------------------------------------------------------------

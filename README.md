@@ -45,7 +45,7 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 | `src/config.ts` | Links, the macOS and Linux install commands, page title and description, **donation URLs** |
 | `public/logo/` | The official vector logos, one per site theme — BLUESHIFT, REDSHIFT and NEON ROSE (`nu11signal-<theme>.svg`, 1650x520), and their head-only marks (`nu11signal-mark-<theme>.svg`, the same paths cropped to a 500x500 viewBox). The hero shows the full logo and the header, footer and 404 page the mark, all through `src/components/ThemeArt.astro`; global.css `.theme-art` shows the file for the active theme |
 | `src/components/SignalGlitch.astro` | The periodic page glitch that also advances the theme |
-| `src/components/` | Page sections: header, hero, screens, features, requirements, keys, support, footer |
+| `src/components/` | Page sections: header, hero (logo, tagline, install toggle), screens (the three recordings), features (what it does, linking to the app docs), install, support, footer. The page presents the app and how to install it; details live in the app's docs |
 | `src/styles/global.css` | Theme tokens and shared styles |
 | `public/demo/` | The three recordings of the screens section, each as `<name>.webm`, `<name>.mp4` (encoded from the owner's GIFs with ffmpeg) and `<name>-poster.jpg`: `overview` (the main figure), `search` (SEARCH) and `themes` (switching themes in SETTINGS and quitting). The section shows recordings only, no still renders |
 | `public/favicon.svg` | A copy of `public/logo/nu11signal-mark-blueshift.svg` |
