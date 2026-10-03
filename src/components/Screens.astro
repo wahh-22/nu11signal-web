@@ -2,36 +2,38 @@
 // The screens section: three recordings of the real app (public/demo,
 // encoded from the owner's GIFs). The overview is the main figure; SEARCH and
 // the themes-and-quit recording sit below it as two cards.
+import Pane from './Pane.astro';
+
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const demo = (name: string) => `${base}demo/${name}`;
 
 const recordings: { video: string; title: string; alt: string; caption: string }[] = [
   {
     video: 'search',
-    title: 'SEARCH',
+    title: 'SEARCH // CATALOG',
     alt: 'SEARCH in action: recent searches, live suggestions while typing, then an artist page with its top songs and albums, and a song playing',
     caption: 'Search the catalog.',
   },
   {
     video: 'themes',
-    title: 'Themes and quit',
+    title: 'THEMES // QUIT',
     alt: 'The SETTINGS panel switching the app between the BLUESHIFT, REDSHIFT and NEON ROSE themes, then quitting: the confirmation prompt and the shutdown',
     caption: 'Switch themes, then quit.',
   },
 ];
 ---
 
-<section class="section" id="screens" aria-labelledby="screens-title">
+<section class="section" id="screens" aria-labelledby="screens-title" data-section="SCREENS">
   <div class="container">
     <div class="section-head">
-      <p class="section-kicker">Signal acquired</p>
-      <h2 class="section-title" id="screens-title">The radio, in 80×24</h2>
+      <p class="section-kicker">Screens // signal acquired</p>
+      <h2 class="section-title" id="screens-title" data-scramble>The radio, in 80×24</h2>
       <p class="section-lede">Three recordings of the real app.</p>
     </div>
 
-    <figure class="terminal">
+    <Pane title="NOW PLAYING // OVERVIEW" class="screen screen--main">
+    <figure>
       <video
-        class="terminal__img"
         width="1278"
         height="702"
         loop
@@ -48,11 +50,13 @@ const recordings: { video: string; title: string; alt: string; caption: string }
       </video>
       <figcaption>Launch, open a playlist, play.</figcaption>
     </figure>
+    </Pane>
 
     <ul class="recordings">
       {
         recordings.map((rec) => (
           <li>
+            <Pane title={rec.title} class="screen">
             <figure>
               <video
                 width="1278"
@@ -69,10 +73,9 @@ const recordings: { video: string; title: string; alt: string; caption: string }
                 <source src={demo(`${rec.video}.webm`)} type="video/webm" />
                 <source src={demo(`${rec.video}.mp4`)} type="video/mp4" />
               </video>
-              <figcaption>
-                <strong>{rec.title}</strong> — {rec.caption}
-              </figcaption>
+              <figcaption>{rec.caption}</figcaption>
             </figure>
+            </Pane>
           </li>
         ))
       }
@@ -105,32 +108,37 @@ const recordings: { video: string; title: string; alt: string; caption: string }
 </script>
 
 <style>
-  .terminal {
+  .screen {
+    padding: 1.6rem 0.9rem 0.9rem;
+  }
+  .screen figure {
     margin: 0;
   }
-  .terminal__img {
+  .screen video {
+    display: block;
     width: 100%;
     height: auto;
-    border-radius: 12px;
+    border-radius: 4px;
+    background: var(--ink);
     box-shadow:
       0 0 0 1px var(--dim),
-      0 1.5rem 4rem -1rem var(--glow);
+      0 1.25rem 3rem -1.25rem var(--glow);
   }
   figcaption {
     margin-top: 0.75rem;
     color: var(--text-dim);
-    font-size: 0.9375rem;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
   }
-  figcaption strong {
-    color: var(--text);
-    font-family: var(--font-ui);
-    font-weight: 600;
+  figcaption::before {
+    content: '▶ ';
+    color: var(--accent-text);
   }
   .recordings {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2rem 1.75rem;
-    margin: 3rem 0 0;
+    gap: 2.25rem 1.75rem;
+    margin: 2.5rem 0 0;
     padding: 0;
     list-style: none;
   }
@@ -138,17 +146,5 @@ const recordings: { video: string; title: string; alt: string; caption: string }
     .recordings {
       grid-template-columns: minmax(0, 1fr);
     }
-  }
-  .recordings figure {
-    margin: 0;
-  }
-  .recordings video {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    box-shadow:
-      0 0 0 1px var(--dim),
-      0 1rem 3rem -1rem var(--glow);
   }
 </style>

@@ -1,0 +1,31 @@
+---
+// The fixed status line along the bottom, like the app's: the section in
+// view on the left, key hints in the middle, and on the right the signal
+// bars, the node id, a live clock and the theme. The page reserves its
+// height at the bottom (global.css, --statusbar-h), so it covers nothing;
+// it holds two ordinary buttons (KEYS, THEME) and traps no focus.
+//
+// Script: Immersive.astro fills the section, node, clock and theme. Without
+// JavaScript the bar shows its static defaults, and its buttons are hidden.
+---
+
+<aside class="statusbar" aria-label="Status line">
+  <span class="statusbar__section" aria-hidden="true">
+    <span class="statusbar__mark">▮</span> <span data-status-section>ON AIR</span>
+  </span>
+  <span class="statusbar__hints" data-status-js hidden>
+    <button type="button" class="statusbar__key" data-keys-open aria-haspopup="dialog">
+      <kbd>?</kbd> Keys
+    </button>
+    <button type="button" class="statusbar__key" data-status-theme>
+      <kbd>S</kbd> Theme<span class="sr-only">: switch to the next color theme</span>
+    </button>
+    <span class="statusbar__hint" aria-hidden="true"><kbd>1-4</kbd> Jump</span>
+  </span>
+  <span class="statusbar__right" aria-hidden="true">
+    <span class="statusbar__sig">SIG <span class="sig-bars"><i></i><i></i><i></i><i></i><i></i></span></span>
+    <span class="statusbar__node">NODE <span data-status-node>0000</span></span>
+    <span class="statusbar__clock" data-status-clock>--:--:--</span>
+    <span class="statusbar__theme" data-status-theme-name>BLUESHIFT</span>
+  </span>
+</aside>

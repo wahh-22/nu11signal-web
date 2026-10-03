@@ -10,7 +10,7 @@
 // the theme change.
 //
 // No burst and no automatic switch while the visitor prefers reduced motion
-// or has the effects off (FX OFF). A manual theme pick cancels a running
+// (the effects are otherwise always on). A manual theme pick cancels a running
 // burst and restarts the wait; the next burst switches from the picked
 // theme. The wait pauses while the tab is hidden.
 //
@@ -25,7 +25,6 @@
 
 <script is:inline>
   (function () {
-    var d = document.documentElement;
     var motion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
     var GAP_MIN = 10000;
     var GAP_MAX = 22000;
@@ -50,7 +49,7 @@
       return Math.floor(Math.random() * n);
     }
     function active() {
-      return d.dataset.fx !== 'off' && !(motion && motion.matches) && !document.hidden;
+      return !(motion && motion.matches) && !document.hidden && !document.querySelector('.boot');
     }
     function braille() {
       return String.fromCharCode(0x2801 + pick(255));
@@ -179,11 +178,6 @@
       abort();
       arm();
     });
-    // FX on/off.
-    new MutationObserver(function () {
-      abort();
-      arm();
-    }).observe(d, { attributes: true, attributeFilter: ['data-fx'] });
     if (motion) {
       var onMotion = function () {
         abort();

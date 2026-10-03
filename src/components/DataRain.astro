@@ -1,0 +1,174 @@
+---
+// Data rain behind the hero, like the app's rain visualizer
+// (internal/radio/viz_rain.go): hex digits and half-width katakana falling
+// in columns, the tip bright, the trail fading. Drawn on a canvas in the
+// theme's colors (read from the CSS custom properties, again on every theme
+// change).
+//
+// It reacts to the pointer (drops near it brighten and new drops start under
+// it) and to scrolling (the rain speeds up for a moment). Light on the page:
+// at most ~30 frames a second, sized to devicePixelRatio, paused while the
+// hero is offscreen or the tab is hidden. Nothing renders without
+// JavaScript or with prefers-reduced-motion (the canvas stays empty).
+---
+
+<canvas class="rain" aria-hidden="true" data-rain></canvas>
+
+<script>
+  const canvas = document.querySelector<HTMLCanvasElement>('canvas[data-rain]');
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const ctx = canvas?.getContext('2d');
+
+  if (canvas && ctx) {
+    const host = canvas.parentElement as HTMLElement;
+    const GLYPHS = Array.from('0123456789ABCDEF').concat(
+      Array.from({ length: 0xff9d - 0xff66 + 1 }, (_, i) => String.fromCharCode(0xff66 + i)),
+    );
+    const CELL = 18;
+    const FRAME = 1000 / 30;
+    const RADIUS = 140;
+
+    type Drop = { y: number; speed: number; len: number; chars: string[] };
+    let cols: (Drop | null)[] = [];
+    let w = 0;
+    let h = 0;
+    let colors = { tip: '#fff', bright: '#fff', trail: '#888' };
+    let raf = 0;
+    let last = 0;
+    let visible = true;
+    let boost = 0;
+    let lastScroll = window.scrollY;
+    const pointer = { x: -1e4, y: -1e4 };
+
+    const glyph = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+    const newDrop = (y?: number): Drop => {
+      const len = 6 + Math.floor(Math.random() * 14);
+      return {
+        y: y ?? -Math.random() * h * 0.6,
+        speed: 0.18 + Math.random() * 0.32,
+        len,
+        chars: Array.from({ length: len }, glyph),
+      };
+    };
+
+    const readColors = () => {
+      const s = getComputedStyle(document.documentElement);
+      colors = {
+        tip: s.getPropertyValue('--yellow').trim() || '#fff',
+        bright: s.getPropertyValue('--cyan').trim() || '#fff',
+        trail: s.getPropertyValue('--red').trim() || '#888',
+      };
+    };
+
+    const resize = () => {
+      const r = host.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = Math.max(1, Math.round(r.width));
+      h = Math.max(1, Math.round(r.height));
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const n = Math.ceil(w / CELL);
+      // Fill the whole height at once, so the rain is there from the start.
+      cols = Array.from({ length: n }, (_, i) => cols[i] ?? (Math.random() < 0.7 ? newDrop(Math.random() * (h / CELL + 10)) : null));
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+      ctx.font = `${CELL - 4}px 'Kode Mono', monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      const speedUp = 1 + boost;
+      for (let i = 0; i < cols.length; i++) {
+        let d = cols[i];
+        if (!d) {
+          if (Math.random() < 0.03) cols[i] = newDrop();
+          continue;
+        }
+        d.y += d.speed * speedUp;
+        if (Math.random() < 0.08) d.chars[Math.floor(Math.random() * d.len)] = glyph();
+        const x = i * CELL + CELL / 2;
+        const headRow = Math.floor(d.y);
+        for (let k = 0; k < d.len; k++) {
+          const row = headRow - k;
+          const y = row * CELL;
+          if (y < -CELL || y > h) continue;
+          const near = Math.hypot(x - pointer.x, y - pointer.y) < RADIUS;
+          const fade = 1 - k / d.len;
+          if (k === 0) {
+            ctx.fillStyle = colors.tip;
+            ctx.globalAlpha = near ? 1 : 0.85;
+          } else {
+            ctx.fillStyle = k < 3 || near ? colors.bright : colors.trail;
+            ctx.globalAlpha = Math.min(1, fade * (near ? 1 : 0.7));
+          }
+          ctx.fillText(d.chars[k], x, y);
+        }
+        if ((headRow - d.len) * CELL > h) cols[i] = Math.random() < 0.75 ? newDrop() : null;
+      }
+      ctx.globalAlpha = 1;
+      boost *= 0.9;
+    };
+
+    const loop = (t: number) => {
+      raf = requestAnimationFrame(loop);
+      if (t - last < FRAME) return;
+      last = t;
+      draw();
+    };
+    const start = () => {
+      if (!raf && visible && !document.hidden && !motion.matches) raf = requestAnimationFrame(loop);
+    };
+    const stop = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    host.addEventListener('pointermove', (e) => {
+      const r = canvas.getBoundingClientRect();
+      pointer.x = e.clientX - r.left;
+      pointer.y = e.clientY - r.top;
+      // Start a drop under the pointer now and then.
+      const i = Math.floor(pointer.x / CELL);
+      if (i >= 0 && i < cols.length && Math.random() < 0.25 && (!cols[i] || cols[i]!.y * CELL > h)) {
+        cols[i] = newDrop(pointer.y / CELL - 2);
+      }
+    });
+    host.addEventListener('pointerleave', () => {
+      pointer.x = pointer.y = -1e4;
+    });
+    window.addEventListener(
+      'scroll',
+      () => {
+        const y = window.scrollY;
+        boost = Math.min(6, boost + Math.abs(y - lastScroll) / 40);
+        lastScroll = y;
+      },
+      { passive: true },
+    );
+
+    new ResizeObserver(resize).observe(host);
+    new MutationObserver(readColors).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+    new IntersectionObserver((entries) => {
+      visible = entries[entries.length - 1].isIntersecting;
+      if (visible) start();
+      else stop();
+    }).observe(host);
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+    motion.addEventListener('change', () => {
+      if (motion.matches) {
+        stop();
+        ctx.clearRect(0, 0, w, h);
+      } else start();
+    });
+
+    readColors();
+    resize();
+    start();
+  }
+</script>

@@ -1,5 +1,7 @@
 ---
 import ThemeArt from './ThemeArt.astro';
+import Pane from './Pane.astro';
+import DataRain from './DataRain.astro';
 import { INSTALL_COMMANDS, LINKS, REPO } from '../config';
 
 // The official logo, one file per theme (ThemeArt). The glitch layers repeat
@@ -9,8 +11,10 @@ const layers = ['glitch__main', 'glitch__layer glitch__layer--a', 'glitch__layer
 const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-the-badge&labelColor=0A0A0A&color=FF5F57&label=latest`;
 ---
 
-<section class="hero" aria-labelledby="hero-title">
-  <div class="container hero__inner">
+<section class="hero" id="top" aria-labelledby="hero-title" data-section="ON AIR">
+  <DataRain />
+  <div class="container">
+  <Pane title="NU11SIGNAL // ON AIR" class="hero__inner">
     <h1 id="hero-title" class="hero__title">
       <span class="sr-only">nu11signal</span>
       <span class="hero__logo glitch" aria-hidden="true">
@@ -28,7 +32,7 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
       Without JavaScript both install lines show, each labeled. With it, the
       platform toggle shows one line at a time and the copy button follows it.
     -->
-    <div class="install" role="group" aria-label="Install with Homebrew" data-install>
+    <Pane title="INSTALL // HOMEBREW" class="install" role="group" aria-label="Install with Homebrew" data-install>
       <div class="install__tabs" role="group" aria-label="Platform" hidden data-install-tabs>
         <button type="button" class="hud-btn hud-btn--small install__tab" aria-pressed="true" data-platform="macos">
           macOS
@@ -61,7 +65,7 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
         </button>
       </div>
       <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
-    </div>
+    </Pane>
 
     <div class="hero__actions">
       <a class="hud-btn hud-btn--primary" href={LINKS.repo} rel="noopener">View on GitHub</a>
@@ -78,6 +82,7 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
       <li class="chip">Linux</li>
       <li class="chip">MIT</li>
     </ul>
+  </Pane>
   </div>
 </section>
 
@@ -122,7 +127,7 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
         var text = src.textContent || '';
         var key = src.getAttribute('data-copy-key') || 'Ctrl+C';
         function done(ok) {
-          if (label) label.textContent = ok ? 'Copied' : 'Press ' + key;
+          if (label) label.textContent = ok ? 'Copied ✓' : 'Press ' + key;
           if (status) status.textContent = ok ? 'Install command copied to the clipboard.' : 'Copy failed; select the command and copy it.';
           if (!ok) {
             var r = document.createRange();
@@ -156,35 +161,42 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
 
 <style>
   .hero {
-    padding: clamp(3rem, 9vw, 6rem) 0 clamp(3rem, 7vw, 4.5rem);
+    position: relative;
+    padding: clamp(2.25rem, 6vw, 4rem) 0 clamp(2.5rem, 6vw, 4rem);
     /* The glitch layers shift sideways; never let them widen the page. */
     overflow-x: clip;
+    isolation: isolate;
   }
+  /* The pane lets the rain show through, dimmed, so the text stays clear. */
   .hero__inner {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 4vw, 2.5rem) clamp(1.75rem, 4vw, 2.5rem);
+    background: color-mix(in srgb, var(--bg) 58%, transparent);
   }
   .hero__title {
     width: 100%;
     margin: 0;
     line-height: 0;
   }
-  /* 1650 x 520 artwork: about 328 x 103 at a 360px phone, 46rem at most. */
+  /* 1650 x 520 artwork: about 300 x 95 at a 360px phone, 46rem at most. */
   .hero__logo {
     display: block;
     width: min(100%, 46rem);
     aspect-ratio: 1650 / 520;
   }
   .hero__tagline {
-    margin: 2rem 0 0;
-    font-family: var(--font-ui);
-    font-size: clamp(1.2rem, 3vw, 1.6rem);
-    font-weight: 600;
+    margin: 1.75rem 0 0;
+    font-size: clamp(1.05rem, 2.6vw, 1.45rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
     color: var(--cyan);
   }
   .hero__lede {
-    max-width: 42rem;
+    max-width: 44rem;
     margin: 0.75rem 0 0;
     color: var(--text-dim);
   }
@@ -193,12 +205,9 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
     flex-direction: column;
     gap: 0.75rem;
     width: 100%;
-    max-width: 42rem;
-    margin-top: 2rem;
-    padding: 0.75rem 0.75rem 0.75rem 1rem;
-    border: 1px solid var(--deep);
-    border-left: 3px solid var(--yellow);
-    border-radius: var(--radius);
+    max-width: 44rem;
+    margin-top: 2.25rem;
+    padding: 1.5rem 1rem 1rem;
     background: var(--surface);
   }
   .install__tabs {
@@ -208,10 +217,6 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
   }
   .install__tabs[hidden] {
     display: none;
-  }
-  /* Keep the platform names' own casing inside the HUD brackets. */
-  .install__tab {
-    text-transform: none;
   }
   /* The selected platform reads like a primary HUD button (white ink on BLUESHIFT). */
   .install__tab[aria-pressed='true'] {
@@ -260,10 +265,8 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
     flex: none;
     min-width: 3.5rem;
     color: var(--cyan);
-    font-family: var(--font-ui);
     font-size: 0.8125rem;
     letter-spacing: 0.06em;
-    text-transform: uppercase;
   }
   /* The toggle names the platform once JavaScript runs. */
   [data-js] .install__os {
@@ -271,7 +274,6 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
   }
   .install__prompt {
     color: var(--accent-text);
-    font-family: var(--font-ui);
   }
   .install__cmd {
     flex: 1 1 auto;
@@ -310,12 +312,15 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
     width: auto;
   }
   .chip {
-    padding: 0.2rem 0.6rem;
+    padding: 0.15rem 0.55rem;
     border: 1px solid var(--muted);
-    border-radius: 999px;
+    border-radius: 2px;
     color: var(--text-dim);
-    font-family: var(--font-ui);
-    font-size: 0.8125rem;
-    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+  }
+  .chip::before {
+    content: '▮ ';
+    color: var(--accent-text);
   }
 </style>

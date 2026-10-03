@@ -73,8 +73,13 @@
 
 :root {
   --font-ui: 'Kode Mono', 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
-  --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Kode Mono everywhere, like the app (its cask installs the font). */
+  --font-body: var(--font-ui);
   --radius: 4px;
+  /* The fixed status line's height (StatusBar.astro); the page keeps this
+     much room at the bottom so the bar never covers content. */
+  --statusbar-h: 2.25rem;
+  --header-h: 4rem;
   --max: 72rem;
   --gutter: clamp(1rem, 4vw, 2rem);
   /* Text-safe accent: yellow in REDSHIFT, a lighter violet in BLUESHIFT
@@ -96,6 +101,8 @@
 html {
   background: var(--bg);
   scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+  scroll-padding-bottom: calc(var(--statusbar-h) + 1rem);
   -webkit-text-size-adjust: 100%;
 }
 
@@ -106,9 +113,19 @@ body {
     var(--bg);
   color: var(--text);
   font-family: var(--font-body);
-  font-size: 1.0625rem;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.65;
+  letter-spacing: 0.03em;
+  /* All text reads uppercase, like the app; the DOM keeps the real case for
+     screen readers, search and copying. */
+  text-transform: uppercase;
+  padding-bottom: var(--statusbar-h);
   overflow-x: hidden;
+}
+
+::selection {
+  background: var(--yellow);
+  color: var(--ink);
 }
 
 img,
@@ -156,6 +173,12 @@ kbd,
 pre {
   font-family: var(--font-ui);
 }
+/* Commands are case-sensitive: they show (and copy by hand) as typed. */
+code,
+pre {
+  text-transform: none;
+  letter-spacing: 0;
+}
 
 .sr-only {
   position: absolute;
@@ -196,34 +219,38 @@ pre {
 /* ---- section chrome ---------------------------------------------------- */
 
 .section {
-  padding: clamp(3rem, 8vw, 5.5rem) 0;
-  border-top: 1px solid var(--dim);
+  padding: clamp(3rem, 7vw, 5rem) 0;
 }
 
 .section-head {
   margin-bottom: 2rem;
 }
 
+/* /─▮ FEATURES ──────── : the section's frame line, like the app's. */
 .section-kicker {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin: 0 0 0.5rem;
-  font-family: var(--font-ui);
+  gap: 0.6rem;
+  margin: 0 0 0.75rem;
   font-size: 0.8125rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
+  letter-spacing: 0.22em;
   color: var(--accent-text);
 }
 .section-kicker::before {
-  content: '⡾⡾⡾';
-  color: var(--accent-text);
+  content: '/─▮';
   letter-spacing: 0;
+}
+.section-kicker::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--deep), transparent);
 }
 
 .section-title {
   margin: 0;
-  font-size: clamp(1.6rem, 4vw, 2.25rem);
+  font-size: clamp(1.4rem, 3.6vw, 2.1rem);
+  letter-spacing: 0.06em;
   color: var(--red);
 }
 :root:is([data-theme='blueshift'], :not([data-theme])) .section-title {
@@ -250,9 +277,9 @@ pre {
   background: transparent;
   color: var(--text);
   font-family: var(--font-ui);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-decoration: none;
   text-transform: uppercase;
   cursor: pointer;
@@ -272,6 +299,33 @@ pre {
 .hud-btn:hover {
   border-color: var(--accent-text);
   color: var(--accent-text);
+}
+/* A tiny signal glitch on hover: a two-frame colour split, once. */
+.hud-btn:not([aria-disabled='true']):hover {
+  animation: hud-glitch 0.24s steps(1, end) 1;
+}
+@keyframes hud-glitch {
+  0% {
+    translate: 1px 0;
+    text-shadow:
+      -2px 0 var(--cyan),
+      2px 0 var(--red);
+  }
+  33% {
+    translate: -1px 0;
+    text-shadow:
+      2px 0 var(--cyan),
+      -2px 0 var(--red);
+  }
+  66%,
+  100% {
+    translate: none;
+    text-shadow: none;
+  }
+}
+/* Keyboard focus: the opening bracket turns into the app's focus marker. */
+.hud-btn:focus-visible::before {
+  content: '▶';
 }
 .hud-btn--primary {
   background: var(--yellow);
@@ -441,14 +495,6 @@ kbd {
   }
 }
 
-:root[data-fx='off'] .glitch__layer,
-:root[data-fx='off'] .glitch__main {
-  animation: none;
-}
-:root[data-fx='off'] .glitch__layer {
-  display: none;
-}
-
 /* ---- page-wide signal glitch (src/components/SignalGlitch.astro) ------- */
 
 .sig-glitch {
@@ -521,6 +567,490 @@ kbd {
     transition: none;
   }
   .sig-glitch {
+    display: none;
+  }
+}
+
+/* ---- focus markers ------------------------------------------------------- */
+
+/* Like the app's focus: a ▶ marker beside the focused link, drawn outside
+   the text so nothing shifts. (HUD buttons swap their bracket, above.) */
+a:not(.hud-btn, .skip-link):focus-visible {
+  position: relative;
+  outline-offset: 2px;
+  background: var(--select);
+}
+a:not(.hud-btn, .skip-link):focus-visible::before {
+  content: '▶';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  translate: -0.3em -50%;
+  color: var(--accent-text);
+  font-size: 0.75em;
+  line-height: 1;
+  text-decoration: none;
+  pointer-events: none;
+}
+/* A block-caret feel on links: a selection-coloured cell under them. */
+a:not(.hud-btn, .skip-link):hover {
+  background: var(--select);
+}
+[tabindex='-1']:focus {
+  outline: none;
+}
+video:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 3px;
+}
+
+/* ---- panes (src/components/Pane.astro) ------------------------------------ */
+
+/* ╭─▮ TITLE ─────╮ : a framed pane with the title set into its top edge and
+   accent ticks on two corners; the frame brightens on hover or focus. */
+.pane {
+  position: relative;
+  border: 1px solid var(--dim);
+  border-radius: 6px;
+  background: var(--surface);
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
+}
+.pane::before,
+.pane::after {
+  content: '';
+  position: absolute;
+  width: 0.9rem;
+  height: 0.9rem;
+  pointer-events: none;
+  transition: border-color 0.18s;
+}
+.pane::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--yellow);
+  border-left: 2px solid var(--yellow);
+  border-top-left-radius: 6px;
+}
+.pane::after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 2px solid var(--deep);
+  border-bottom: 2px solid var(--deep);
+  border-bottom-right-radius: 6px;
+}
+.pane:hover,
+.pane:focus-within {
+  border-color: var(--deep);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--deep) 35%, transparent),
+    0 0 1.5rem -0.5rem var(--glow);
+}
+.pane:hover::after,
+.pane:focus-within::after {
+  border-color: var(--accent-text);
+}
+.pane__title {
+  position: absolute;
+  top: 0;
+  left: 1rem;
+  max-width: calc(100% - 2rem);
+  translate: 0 -50%;
+  margin: 0;
+  padding: 0 0.5rem 0 0.35rem;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.pane__title::before {
+  content: '─';
+  margin-right: 0.35rem;
+  color: var(--deep);
+  letter-spacing: 0;
+}
+.pane__mark {
+  margin-right: 0.45em;
+  color: var(--accent-text);
+}
+.pane:hover > .pane__title,
+.pane:focus-within > .pane__title {
+  color: var(--accent-text);
+}
+
+/* ---- status line (src/components/StatusBar.astro) ------------------------ */
+
+.statusbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: var(--statusbar-h);
+  padding: 0 var(--gutter);
+  border-top: 1px solid var(--dim);
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.statusbar__section {
+  flex: none;
+  min-width: 8.5rem;
+  color: var(--text);
+  font-weight: 700;
+}
+.statusbar__mark {
+  margin-right: 0.3em;
+  color: var(--accent-text);
+}
+.statusbar__hints {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0 auto;
+}
+.statusbar__hints[hidden] {
+  display: none;
+}
+.statusbar__key,
+.statusbar__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.5rem;
+  color: var(--text-dim);
+}
+.statusbar__key {
+  border: 0;
+  border-radius: 2px;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+.statusbar__key:hover {
+  background: var(--select);
+  color: var(--accent-text);
+}
+.statusbar kbd {
+  min-width: 0;
+  padding: 0.05em 0.35em;
+  border-bottom-width: 1px;
+  font-size: 0.95em;
+  line-height: 1.3;
+}
+.statusbar__right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+}
+.statusbar__hints:not([hidden]) + .statusbar__right {
+  margin-left: 0;
+}
+.statusbar__clock {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.statusbar__theme {
+  min-width: 6.5rem;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid var(--deep);
+  border-radius: 2px;
+  color: var(--accent-text);
+  text-align: center;
+}
+.sig-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 0.75rem;
+  margin-left: 0.25rem;
+  vertical-align: -0.1rem;
+}
+.sig-bars i {
+  width: 3px;
+  background: var(--cyan);
+  animation: sig-bar 1.6s ease-in-out infinite;
+}
+.sig-bars i:nth-child(1) {
+  height: 30%;
+}
+.sig-bars i:nth-child(2) {
+  height: 50%;
+  animation-delay: -0.3s;
+}
+.sig-bars i:nth-child(3) {
+  height: 70%;
+  animation-delay: -0.9s;
+}
+.sig-bars i:nth-child(4) {
+  height: 85%;
+  animation-delay: -0.5s;
+}
+.sig-bars i:nth-child(5) {
+  height: 100%;
+  animation-delay: -1.2s;
+}
+@keyframes sig-bar {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scaleY(0.55);
+  }
+}
+.sig-bars i {
+  transform-origin: bottom;
+}
+@media (max-width: 60rem) {
+  .statusbar__hint,
+  .statusbar__node {
+    display: none;
+  }
+}
+@media (max-width: 40rem) {
+  .statusbar {
+    gap: 0.6rem;
+    font-size: 0.6875rem;
+  }
+  .statusbar__hints,
+  .statusbar__sig {
+    display: none;
+  }
+  .statusbar__hints:not([hidden]) {
+    display: none;
+  }
+  .statusbar__section {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .statusbar__right {
+    gap: 0.6rem;
+    margin-left: auto !important;
+  }
+  .statusbar__theme {
+    min-width: 0;
+  }
+}
+
+/* ---- KEYS dialog (src/components/KeysDialog.astro) ------------------------ */
+
+.keys {
+  width: min(32rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 4rem);
+  margin: auto;
+  padding: 2rem 1.5rem 1.25rem;
+  overflow: visible;
+  border-color: var(--deep);
+  color: var(--text);
+  font-size: 0.875rem;
+}
+.keys::backdrop {
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(3px);
+}
+.keys[open] {
+  animation: keys-in 0.18s steps(3, end);
+}
+@keyframes keys-in {
+  0% {
+    clip-path: inset(0 0 100% 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.keys .pane__title {
+  font-size: 0.875rem;
+}
+.keys__list {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+}
+.keys__row {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px dashed var(--dim);
+}
+.keys__row dt {
+  margin: 0;
+}
+.keys__row dd {
+  margin: 0;
+  color: var(--text-dim);
+}
+.keys__note {
+  margin: 1rem 0 0;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+}
+.keys__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* ---- boot sequence (src/components/Boot.astro) ---------------------------- */
+
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(40rem 24rem at 50% 45%, var(--glow), transparent 70%),
+    var(--bg);
+  color: var(--text-dim);
+  font-size: clamp(0.75rem, 2.4vw, 0.9375rem);
+  letter-spacing: 0.12em;
+}
+.boot__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem;
+  text-align: center;
+}
+.boot__mark {
+  width: clamp(6rem, 22vw, 9rem);
+  height: clamp(6rem, 22vw, 9rem);
+  animation: boot-flicker 0.36s steps(2, end) 2;
+}
+.boot__log {
+  display: grid;
+  gap: 0.2rem;
+  min-height: 6.5em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+.boot__log li {
+  opacity: 0;
+  animation: boot-line 0.01s linear forwards;
+  animation-delay: calc(0.12s + var(--i) * 0.16s);
+}
+.boot__log li::before {
+  content: '> ';
+  color: var(--accent-text);
+}
+.boot__text {
+  margin: 0;
+  color: var(--accent-text);
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  animation: boot-line 0.01s linear 0.78s forwards;
+}
+.boot__dots {
+  animation: boot-blink 0.3s steps(2, end) infinite;
+}
+@keyframes boot-line {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes boot-blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+@keyframes boot-flicker {
+  50% {
+    opacity: 0.5;
+    translate: 3px 0;
+  }
+}
+/* The dissolve: two torn frames, then gone. */
+.boot--out {
+  animation: boot-out 0.26s steps(1, end) forwards;
+}
+.boot--skip {
+  animation: boot-skip 0.16s linear forwards;
+}
+@keyframes boot-out {
+  0% {
+    clip-path: inset(0 0 0 0);
+    translate: 0 0;
+  }
+  25% {
+    clip-path: polygon(0 0, 100% 0, 100% 30%, 0 30%, 0 42%, 100% 42%, 100% 100%, 0 100%);
+    translate: 12px 0;
+    filter: hue-rotate(90deg);
+  }
+  50% {
+    clip-path: inset(18% 0 34% 0);
+    translate: -18px 0;
+    opacity: 0.75;
+  }
+  75% {
+    clip-path: inset(46% 0 44% 0);
+    translate: 8px 0;
+    opacity: 0.4;
+  }
+  100% {
+    clip-path: inset(50% 0 50% 0);
+    opacity: 0;
+  }
+}
+@keyframes boot-skip {
+  to {
+    opacity: 0;
+  }
+}
+
+/* ---- data rain (src/components/DataRain.astro) ---------------------------- */
+
+.rain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pane,
+  .pane::after {
+    transition: none;
+  }
+  .hud-btn:not([aria-disabled='true']):hover {
+    animation: none;
+  }
+  .sig-bars i,
+  .keys[open] {
+    animation: none;
+  }
+  .boot,
+  .rain {
     display: none;
   }
 }

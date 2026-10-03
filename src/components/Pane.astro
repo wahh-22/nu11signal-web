@@ -1,0 +1,26 @@
+---
+// A framed pane like the app's (/─▮ PLAYLISTS): a thin border with the title
+// set into the top edge, small accent ticks on the corners, and a frame that
+// brightens on hover or when something inside has focus. The title scrambles
+// in once when it scrolls into view (Immersive.astro, [data-scramble]).
+//
+// `tag` picks the title element: a heading when the title names the content
+// (feature cards, install platforms), else a plain span.
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'div'> {
+  title: string;
+  tag?: 'h2' | 'h3' | 'span';
+  titleId?: string;
+}
+
+const { title, tag: Tag = 'span', titleId, class: className, ...rest } = Astro.props;
+---
+
+<div class:list={['pane', className]} {...rest}>
+  <Tag class="pane__title" id={titleId}>
+    <span class="pane__mark" aria-hidden="true">▮</span>
+    <span data-scramble>{title}</span>
+  </Tag>
+  <slot />
+</div>

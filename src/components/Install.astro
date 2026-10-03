@@ -1,5 +1,6 @@
 ---
 import { INSTALL_COMMANDS, LINKS } from '../config';
+import Pane from './Pane.astro';
 
 const platforms = [
   { title: 'macOS', note: 'macOS 14+. Apple Music needs a subscription.', cmd: INSTALL_COMMANDS.macos },
@@ -7,11 +8,11 @@ const platforms = [
 ];
 ---
 
-<section class="section" id="install" aria-labelledby="install-title">
+<section class="section" id="install" aria-labelledby="install-title" data-section="INSTALL">
   <div class="container">
     <div class="section-head">
       <p class="section-kicker">Install</p>
-      <h2 class="section-title" id="install-title">Tune in</h2>
+      <h2 class="section-title" id="install-title" data-scramble>Tune in</h2>
       <p class="section-lede">
         One Homebrew command, then run <code>nu11signal</code>. See the{' '}
         <a href={LINKS.install} rel="noopener">install guide</a> or <a href={LINKS.releases} rel="noopener">GitHub Releases</a>.
@@ -20,11 +21,10 @@ const platforms = [
     <div class="platforms">
       {
         platforms.map((p) => (
-          <div>
-            <h3>{p.title}</h3>
+          <Pane title={p.title} tag="h3" class="platform">
             <p>{p.note}</p>
-            <pre><code>{p.cmd}</code></pre>
-          </div>
+            <pre><span class="prompt" aria-hidden="true">$ </span><code>{p.cmd}</code></pre>
+          </Pane>
         ))
       }
     </div>
@@ -35,30 +35,31 @@ const platforms = [
   .platforms {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
-    gap: 1.5rem 2.5rem;
+    gap: 2rem 1.5rem;
   }
-  .platforms h3 {
-    margin: 0 0 0.25rem;
-    color: var(--cyan);
-    font-size: 1.0625rem;
+  .platform {
+    padding: 1.6rem 1.25rem 1.25rem;
   }
-  .platforms p {
+  .platform p {
     margin: 0 0 0.75rem;
     color: var(--text-dim);
+    font-size: 0.875rem;
   }
   .section-lede code {
     color: var(--text);
   }
   pre {
     margin: 0;
-    padding: 1rem 1.25rem;
+    padding: 0.85rem 1rem;
     overflow-x: auto;
     border: 1px solid var(--dim);
-    border-left: 3px solid var(--yellow);
-    border-radius: var(--radius);
-    background: var(--surface);
+    border-left: 2px solid var(--yellow);
+    background: var(--bg);
     color: var(--text);
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     line-height: 1.7;
+  }
+  .prompt {
+    color: var(--accent-text);
   }
 </style>
