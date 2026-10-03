@@ -1,16 +1,10 @@
 ---
-// The terminal mock: the app's own 80x24 screen renders (copied from the
-// app repo's docs/assets/screens). The main screen follows the site theme.
+// The screens section: a recording of the real app on top, then the app's
+// own 80x24 screen renders (copied from the app repo's docs/assets/screens).
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const src = (name: string) => `${base}screens/${name}.svg`;
 
-const themes = [
-  { id: 'blueshift', label: 'BLUESHIFT' },
-  { id: 'redshift', label: 'REDSHIFT' },
-  { id: 'matrix', label: 'MATRIX' },
-  { id: 'rose', label: 'ROSE' },
-  { id: 'neon-rose', label: 'NEON ROSE' },
-];
+const demo = (name: string) => `${base}demo/${name}`;
 
 const gallery = [
   {
@@ -59,29 +53,28 @@ const gallery = [
       <h2 class="section-title" id="screens-title">The radio, in 80×24</h2>
       <p class="section-lede">
         Playlists on the dial at the left, NOW PLAYING with bracketed transport controls and data rain at the right.
-        These are renders of the real UI.
+        Recorded from the real app.
       </p>
     </div>
 
     <figure class="terminal">
-      {
-        themes.map((t, i) => (
-          <img
-            class="terminal__img"
-            data-theme-art={t.id}
-            src={src(t.id)}
-            width="840"
-            height="556"
-            alt={`nu11signal in the ${t.label} theme: the PLAYLISTS dial on the left, NOW PLAYING with transport buttons and data rain on the right`}
-            loading={i === 0 ? undefined : 'lazy'}
-            decoding="async"
-          />
-        ))
-      }
-      <figcaption>
-        The main screen in the {themes.map((t) => <span data-theme-art={t.id}>{t.label}</span>)} theme, one of five:
-        BLUESHIFT, REDSHIFT, MATRIX, ROSE and NEON ROSE. Switch the site theme above to see each one.
-      </figcaption>
+      <video
+        class="terminal__img"
+        width="1278"
+        height="702"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="metadata"
+        poster={demo('overview-poster.jpg')}
+        aria-label="nu11signal in action: launching from the shell, the boot splash, opening a playlist, playing a song, and the data rain reacting to the music"
+        data-demo
+      >
+        <source src={demo('overview.webm')} type="video/webm" />
+        <source src={demo('overview.mp4')} type="video/mp4" />
+      </video>
+      <figcaption>Launch, open a playlist, play: the rain follows the music.</figcaption>
     </figure>
 
     <ul class="gallery">
@@ -101,6 +94,17 @@ const gallery = [
   </div>
 </section>
 
+<script>
+  // Respect reduced motion: no autoplay, controls instead.
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<HTMLVideoElement>('video[data-demo]').forEach((v) => {
+      v.removeAttribute('autoplay');
+      v.pause();
+      v.controls = true;
+    });
+  }
+</script>
+
 <style>
   .terminal {
     margin: 0;
@@ -112,53 +116,6 @@ const gallery = [
     box-shadow:
       0 0 0 1px var(--dim),
       0 1.5rem 4rem -1rem var(--glow);
-  }
-  /* Only the active theme's render and name show; BLUESHIFT by default
-     (also when <html> has no data-theme). */
-  [data-theme-art] {
-    display: none;
-  }
-  img[data-theme-art='blueshift'] {
-    display: block;
-  }
-  span[data-theme-art='blueshift'] {
-    display: inline;
-  }
-  :global(:root[data-theme='redshift']) [data-theme-art='blueshift'] {
-    display: none;
-  }
-  :global(:root[data-theme='redshift']) img[data-theme-art='redshift'] {
-    display: block;
-  }
-  :global(:root[data-theme='redshift']) span[data-theme-art='redshift'] {
-    display: inline;
-  }
-  :global(:root[data-theme='matrix']) [data-theme-art='blueshift'] {
-    display: none;
-  }
-  :global(:root[data-theme='matrix']) img[data-theme-art='matrix'] {
-    display: block;
-  }
-  :global(:root[data-theme='matrix']) span[data-theme-art='matrix'] {
-    display: inline;
-  }
-  :global(:root[data-theme='rose']) [data-theme-art='blueshift'] {
-    display: none;
-  }
-  :global(:root[data-theme='rose']) img[data-theme-art='rose'] {
-    display: block;
-  }
-  :global(:root[data-theme='rose']) span[data-theme-art='rose'] {
-    display: inline;
-  }
-  :global(:root[data-theme='neon-rose']) [data-theme-art='blueshift'] {
-    display: none;
-  }
-  :global(:root[data-theme='neon-rose']) img[data-theme-art='neon-rose'] {
-    display: block;
-  }
-  :global(:root[data-theme='neon-rose']) span[data-theme-art='neon-rose'] {
-    display: inline;
   }
   figcaption {
     margin-top: 0.75rem;

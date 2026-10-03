@@ -47,7 +47,8 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 | `src/components/SignalGlitch.astro` | The periodic page glitch that also advances the theme |
 | `src/components/` | Page sections: header, hero, screens, features, requirements, keys, support, footer |
 | `src/styles/global.css` | Theme tokens and shared styles |
-| `public/screens/` | The app's 80x24 screen renders, copied from the app repo's `docs/assets/screens/` |
+| `public/demo/` | The recorded demo at the top of the screens section: `overview.webm` and `overview.mp4` (encoded from the GIF with ffmpeg) and `overview-poster.jpg` |
+| `public/screens/` | The app's 80x24 screen renders for the gallery, copied from the app repo's `docs/assets/screens/` |
 | `public/favicon.svg` | A copy of `public/logo/nu11signal-mark-blueshift.svg` |
 | `public/og.png` | The 1200x630 social card, rendered from `src/assets/og-card.svg` (the Blueshift logo on the BLUESHIFT background), which `tools/og-card.mjs` generates from `public/logo/nu11signal-blueshift.svg`; do not edit the card by hand |
 | `tools/check-links.mjs` | Internal link and asset checker for `dist/` |
@@ -57,7 +58,7 @@ If the app's screen renders change, copy them into `public/screens/` again.
 
 ## Themes
 
-The site has the app's five themes: **BLUESHIFT** (electric blue and violet, the default), **REDSHIFT** (neon red, cyan and yellow), **MATRIX** (the greens of falling code), **ROSE** (soft pinks with mint) and **NEON ROSE** (hot pinks with silver). The theme button in the header shows the current one and cycles BLUESHIFT → REDSHIFT → MATRIX → ROSE → NEON ROSE → BLUESHIFT; the choice is saved per browser (a choice saved under an old theme id, `night-city` or `blue`, loads as its renamed theme). The palettes live as CSS tokens per `data-theme` in `src/styles/global.css`, and the main screenshot swaps to the matching render.
+The site has the app's five themes: **BLUESHIFT** (electric blue and violet, the default), **REDSHIFT** (neon red, cyan and yellow), **MATRIX** (the greens of falling code), **ROSE** (soft pinks with mint) and **NEON ROSE** (hot pinks with silver). The theme button in the header shows the current one and cycles BLUESHIFT → REDSHIFT → MATRIX → ROSE → NEON ROSE → BLUESHIFT; the choice is saved per browser (a choice saved under an old theme id, `night-city` or `blue`, loads as its renamed theme). The palettes live as CSS tokens per `data-theme` in `src/styles/global.css`.
 
 ## Signal effects and accessibility
 
