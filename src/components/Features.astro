@@ -1,5 +1,8 @@
 ---
 // What it does, kept in step with the app's README. Each card links to its docs page.
+// In fit mode (global.css) FEATURES and INSTALL share one screen (index.astro's
+// .duo): the cards take the room INSTALL leaves, their two rows stretch to
+// fill it, and spacing and type grow with the window's height.
 import { LINKS } from '../config';
 import Pane from './Pane.astro';
 
@@ -34,7 +37,7 @@ const features = [
 ];
 ---
 
-<section class="section fit" id="features" aria-labelledby="features-title" data-section="FEATURES">
+<section class="section features-sec" id="features" aria-labelledby="features-title" data-section="FEATURES">
   <div class="container">
     <div class="section-head">
       <h2 class="section-kicker" id="features-title"><span data-scramble>Features</span></h2>
@@ -74,16 +77,21 @@ const features = [
   .features > li {
     display: flex;
   }
+  /* Glyph on the left; the text, then the links pinned to the card's foot. */
   .feature {
     flex: 1;
     display: grid;
     grid-template-columns: auto 1fr;
-    align-content: start;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'glyph body'
+      'glyph links';
     gap: 0.25rem 1rem;
     padding: 1.6rem 1.25rem 1.25rem;
   }
   .feature__glyph {
-    grid-row: span 2;
+    grid-area: glyph;
+    align-self: start;
     display: grid;
     place-items: center;
     width: 2.5rem;
@@ -94,12 +102,15 @@ const features = [
     font-weight: 700;
   }
   .feature__body {
+    grid-area: body;
     margin: 0;
     color: var(--text-dim);
     font-size: 0.875rem;
     line-height: 1.7;
   }
   .feature__links {
+    grid-area: links;
+    align-self: end;
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem 1.25rem;
@@ -110,6 +121,68 @@ const features = [
   @media (max-width: 40rem) {
     .features {
       grid-template-columns: 1fr;
+    }
+  }
+
+  /* Fit mode: the section grows into the screen's free height (a flex
+     chain down to the grid, whose two rows share it), and lands with the
+     screen's top padding above it, so a jump shows the whole screen. */
+  @media (min-width: 52.0625rem) and (min-height: 35rem) {
+    .features-sec {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      padding-block: 0;
+      scroll-margin-top: var(--fit-pad);
+    }
+    .features-sec > .container {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      width: 100%;
+    }
+    .features {
+      flex: 1 1 auto;
+      grid-auto-rows: 1fr;
+      gap: clamp(0.75rem, 2.4vh, 2rem) clamp(1rem, 2vw, 1.75rem);
+    }
+    .feature {
+      column-gap: clamp(1rem, 1.6vw, 1.5rem);
+      padding: clamp(1.35rem, 3.6vh, 2.75rem) clamp(1.1rem, 2vw, 2rem) clamp(0.8rem, 2.6vh, 2rem);
+    }
+    .feature__glyph {
+      width: clamp(2.25rem, 6.5vh, 4rem);
+      height: clamp(2.25rem, 6.5vh, 4rem);
+      font-size: clamp(1rem, 2.6vh, 1.75rem);
+    }
+    .feature__body {
+      font-size: clamp(0.8125rem, 0.35rem + 1.15vh, 1.125rem);
+      line-height: 1.65;
+    }
+    .feature__links {
+      font-size: clamp(0.75rem, 0.3rem + 1vh, 1rem);
+    }
+  }
+  /* Short windows (up to 720px tall): the glyphs step aside, so each text
+     runs full width in fewer lines and INSTALL keeps its room. */
+  @media (min-width: 52.0625rem) and (min-height: 35rem) and (max-height: 45rem) {
+    .feature {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        'body'
+        'links';
+    }
+    .feature__glyph {
+      display: none;
+    }
+    .feature {
+      padding-block: clamp(1.25rem, 3.4vh, 1.6rem) clamp(0.7rem, 2vh, 1rem);
+    }
+    .feature__body {
+      line-height: 1.55;
+    }
+    .feature__links {
+      margin-top: 0.35rem;
     }
   }
 </style>

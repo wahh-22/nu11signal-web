@@ -1,4 +1,7 @@
 ---
+// The install commands. In fit mode (global.css) INSTALL sits under the
+// FEATURES cards on their shared screen (index.astro's .duo), its spacing
+// and type growing with the window's height.
 import { INSTALL_COMMANDS, LINKS } from '../config';
 import Pane from './Pane.astro';
 
@@ -8,7 +11,7 @@ const platforms = [
 ];
 ---
 
-<section class="section fit" id="install" aria-labelledby="install-title" data-section="INSTALL">
+<section class="section install-sec" id="install" aria-labelledby="install-title" data-section="INSTALL">
   <div class="container">
     <div class="section-head">
       <h2 class="section-kicker" id="install-title"><span data-scramble>Install</span></h2>
@@ -60,5 +63,32 @@ const platforms = [
   }
   .prompt {
     color: var(--accent-text);
+  }
+
+  @media (min-width: 52.0625rem) and (min-height: 35rem) {
+    /* A snap point of its own, so the header's Install link stays put. */
+    .install-sec {
+      flex: none;
+      padding-block: clamp(0.75rem, 3.6vh, 3rem) 0;
+      scroll-snap-align: start;
+    }
+    .install-sec .section-lede {
+      margin-top: clamp(0.25rem, 1vh, 0.75rem);
+      font-size: clamp(0.8125rem, 0.35rem + 1.15vh, 1.0625rem);
+    }
+    .platforms {
+      gap: clamp(0.75rem, 2.4vh, 2rem) clamp(1rem, 2vw, 1.75rem);
+    }
+    .platform {
+      padding: clamp(1.35rem, 3.4vh, 2.5rem) clamp(1.1rem, 2vw, 2rem) clamp(0.8rem, 2.4vh, 1.75rem);
+    }
+    .platform p {
+      margin-bottom: clamp(0.5rem, 1.6vh, 1rem);
+      font-size: clamp(0.8125rem, 0.35rem + 1.15vh, 1.0625rem);
+    }
+    pre {
+      padding: clamp(0.55rem, 1.8vh, 1.15rem) clamp(0.85rem, 1.4vw, 1.25rem);
+      font-size: clamp(0.8125rem, 0.35rem + 1.15vh, 0.9375rem);
+    }
   }
 </style>

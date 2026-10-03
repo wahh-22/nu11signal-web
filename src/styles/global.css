@@ -79,10 +79,9 @@
   /* The fixed status line's height (StatusBar.astro); the page keeps this
      much room at the bottom so the bar never covers content. */
   --statusbar-h: 2.25rem;
-  /* The sticky header's height (Header.astro) and the footer's; Immersive.astro
-     measures both and keeps them exact. */
+  /* The sticky header's height (Header.astro); Immersive.astro measures it
+     and keeps it exact. */
   --header-h: calc(3.75rem + 1px);
-  --footer-h: 0px;
   /* One screen: the visible area between the header and the status line.
      Fit mode (below) sizes each section to it. */
   --screen-h: calc(100vh - var(--header-h) - var(--statusbar-h));
@@ -269,15 +268,19 @@ pre {
   color: var(--text-dim);
 }
 
-/* ---- fit mode: one section per screen ----------------------------------- */
+/* ---- fit mode: one screen at a time ------------------------------------ */
 
-/* On windows wide and tall enough, every section (.fit) fills
-   exactly one screen between the header and the status line, its content
-   scaled to fit (the components size their own content), and the page snaps
-   gently between screens. Proximity snapping never traps the scroll; it is
-   off with reduced motion. Narrow or short windows keep natural heights and
-   no snapping, so nothing is clipped. Keep this query in step with the
-   components' fit rules (Hero, Screens). */
+/* On windows wide and tall enough, every .fit block fills exactly one
+   screen between the header and the status line, its content sized to it
+   (the components size their own content), and the page snaps gently
+   between screens: the hero, the overview recording, the two other
+   recordings, then FEATURES and INSTALL together (index.astro's .duo).
+   SUPPORT and the footer close the page at their natural height; the
+   footer's snap point is the page's end, the footer's bottom on the status
+   line. Proximity snapping never traps the scroll; it is off with reduced
+   motion. Narrow or short windows keep natural heights and no snapping, so
+   nothing is clipped. Keep this query in step with the components' fit
+   rules (Hero, Screens, Features, Install, Support). */
 @media (min-width: 52.0625rem) and (min-height: 35rem) {
   html {
     scroll-snap-type: y proximity;
@@ -293,7 +296,13 @@ pre {
     scroll-snap-align: start;
   }
   .section-head {
-    margin-bottom: clamp(1rem, 3vh, 2rem);
+    margin-bottom: clamp(0.75rem, 2.6vh, 2rem);
+  }
+  .section-kicker {
+    margin-bottom: 0;
+  }
+  .site-footer {
+    scroll-snap-align: end;
   }
 }
 
