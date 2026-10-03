@@ -18,6 +18,10 @@
 //   character keeps its color; screen readers read a hidden copy of the real
 //   text while it runs. It waits for the boot to end, and never runs with
 //   prefers-reduced-motion.
+// - Screen size: keeps --header-h and --footer-h (global.css) equal to the
+//   header's and footer's real heights, so fit mode's screens (each section
+//   between the header and the status line) and the 1-4 jumps land exactly.
+//   Without JavaScript the CSS defaults apply.
 ---
 
 <script>
@@ -25,6 +29,25 @@
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const LABELS: Record<string, string> = { blueshift: 'BLUESHIFT', redshift: 'REDSHIFT', 'neon-rose': 'NEON ROSE' };
   const JUMPS: Record<string, string> = { '1': 'top', '2': 'screens', '3': 'features', '4': 'install' };
+
+  // ---- screen size -----------------------------------------------------------
+
+  const measured: [string, string][] = [
+    ['.site-header', '--header-h'],
+    ['.site-footer', '--footer-h'],
+  ];
+  if ('ResizeObserver' in window) {
+    const ro = new ResizeObserver(() => {
+      for (const [sel, prop] of measured) {
+        const el = document.querySelector<HTMLElement>(sel);
+        if (el) d.style.setProperty(prop, `${el.getBoundingClientRect().height}px`);
+      }
+    });
+    measured.forEach(([sel]) => {
+      const el = document.querySelector(sel);
+      if (el) ro.observe(el);
+    });
+  }
 
   // ---- status line ---------------------------------------------------------
 

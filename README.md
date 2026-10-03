@@ -68,6 +68,7 @@ The app has five themes; the site has three of them, the ones in the themes reco
 
 The site looks and behaves like the app: Kode Mono everywhere, all text uppercase (CSS `text-transform` on `body`; the DOM keeps the real case, and commands in `code` and `pre` show as typed because they are case-sensitive), sections in framed panes, bracketed HUD buttons, and `▶` focus markers.
 
+- **One section per screen:** on windows at least 833 px wide and 560 px tall, each section fills exactly the area between the header and the status line, with its content scaled to fit: the hero's logo shrinks so the install box, buttons and chips stay in view, the overview recording gets its own screen and the two other recordings share the next, each video sized to the screen's height at 1278:702, and SUPPORT shares the last screen with the footer. Scrolling snaps gently between screens (proximity snapping, off with reduced motion), and the `1`-`4` keys and the header links land each section exactly in view. Narrower or shorter windows, phones included, keep natural heights and no snapping.
 - **Boot:** on the first visit of a browser session, a full-screen boot splash (the head mark, a few boot-log lines and `B O O T I N G   N U 1 1 S I G N A L . . .`) runs for 1.5 seconds and dissolves with a glitch. Any key, click, touch, wheel or scroll skips it. Without JavaScript nothing renders.
 - **Status line:** a fixed bar at the bottom shows the section in view, key hints (`[?] KEYS`, `[S] THEME`, `[1-4] JUMP`; the first two are buttons), animated `SIG` bars, a `NODE` id per session, a live clock and the theme. The page reserves its height at the bottom. On phones it keeps only the section, clock and theme.
 - **Keys:** `?` opens the KEYS dialog (Esc closes it and focus returns), `S` cycles the theme, `1` to `4` jump to the top, SCREENS, FEATURES and INSTALL. Keys are ignored while typing in a field and whenever Ctrl, Alt or Cmd is held.
@@ -78,7 +79,7 @@ The site looks and behaves like the app: Kode Mono everywhere, all text uppercas
 
 Like the app, the page now and then loses the signal: every 10 to 22 seconds a burst of 0.6 to 1 second tears a few bands of the page sideways, scatters noise cells (blocks and Braille) in the theme's colors, and one burst in four flashes `NO SIGNAL`. Midway through each burst the theme advances one step, saved like a click on the theme button.
 
-- Effects are always on, except when the visitor prefers reduced motion (`prefers-reduced-motion: reduce`): then there is no boot, no rain, no glitch burst, no automatic theme switch, no scramble, and the recordings stay paused with their controls.
+- Effects are always on, except when the visitor prefers reduced motion (`prefers-reduced-motion: reduce`): then there is no boot, no rain, no glitch burst, no automatic theme switch, no scramble, no scroll snapping, and the recordings stay paused with their controls.
 - Nothing flashes faster than three times a second: burst frames last 110 to 140 ms and change only small areas, and the `NO SIGNAL` sign stays up for the whole burst (WCAG 2.3.1).
 - A manual theme click cancels a running burst and restarts the wait; the next burst continues the rotation from the chosen theme, so bursts rotate through all three. The wait pauses while the tab is hidden.
 - Add `?glitch=now` to the URL to see the first burst after 300 ms.
