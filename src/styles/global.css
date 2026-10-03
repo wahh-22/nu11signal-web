@@ -272,18 +272,15 @@ pre {
 
 /* On windows wide and tall enough, every .fit block fills exactly one
    screen between the header and the status line, its content sized to it
-   (the components size their own content), and the page snaps gently
-   between screens: the hero, the overview recording, the two other
+   (the components size their own content), one after another: the hero, the overview recording, the two other
    recordings, then FEATURES and INSTALL together (index.astro's .duo).
-   SUPPORT and the footer close the page at their natural height; the
-   footer's snap point is the page's end, the footer's bottom on the status
-   line. Proximity snapping never traps the scroll; it is off with reduced
-   motion. Narrow or short windows keep natural heights and no snapping, so
-   nothing is clipped. Keep this query in step with the components' fit
+   SUPPORT and the footer close the page at their natural height, the
+   footer's bottom on the status line. Scrolling is free (no snapping); the
+   anchors and the 1-4 jumps still land a section under the header.
+   Narrow or short windows keep natural heights, so nothing is clipped. Keep this query in step with the components' fit
    rules (Hero, Screens, Features, Install, Support). */
 @media (min-width: 52.0625rem) and (min-height: 35rem) {
   html {
-    scroll-snap-type: y proximity;
     scroll-padding-top: var(--header-h);
     scroll-padding-bottom: var(--statusbar-h);
   }
@@ -293,16 +290,12 @@ pre {
     justify-content: center;
     min-height: var(--screen-h);
     padding-block: var(--fit-pad);
-    scroll-snap-align: start;
   }
   .section-head {
     margin-bottom: clamp(0.75rem, 2.6vh, 2rem);
   }
   .section-kicker {
     margin-bottom: 0;
-  }
-  .site-footer {
-    scroll-snap-align: end;
   }
 }
 
@@ -598,7 +591,6 @@ kbd {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-    scroll-snap-type: none;
   }
   .glitch__layer,
   .glitch__main {
