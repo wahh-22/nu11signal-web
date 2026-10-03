@@ -10,7 +10,9 @@
 // the theme change.
 //
 // No burst and no automatic switch while the visitor prefers reduced motion
-// or has the effects off (FX OFF). A manual theme pick cancels a running
+// (the effects are otherwise always on), and none while the boot sequence
+// shows (Boot.astro, <html data-booting>): the first wait starts when the
+// boot ends (its nu11signal:boot-end event). A manual theme pick cancels a running
 // burst and restarts the wait; the next burst switches from the picked
 // theme. The wait pauses while the tab is hidden.
 //
@@ -25,7 +27,6 @@
 
 <script is:inline>
   (function () {
-    var d = document.documentElement;
     var motion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
     var GAP_MIN = 10000;
     var GAP_MAX = 22000;
@@ -49,8 +50,11 @@
     function pick(n) {
       return Math.floor(Math.random() * n);
     }
+    function booting() {
+      return document.documentElement.hasAttribute('data-booting');
+    }
     function active() {
-      return d.dataset.fx !== 'off' && !(motion && motion.matches) && !document.hidden;
+      return !(motion && motion.matches) && !document.hidden && !booting();
     }
     function braille() {
       return String.fromCharCode(0x2801 + pick(255));
@@ -179,11 +183,6 @@
       abort();
       arm();
     });
-    // FX on/off.
-    new MutationObserver(function () {
-      abort();
-      arm();
-    }).observe(d, { attributes: true, attributeFilter: ['data-fx'] });
     if (motion) {
       var onMotion = function () {
         abort();
@@ -203,6 +202,17 @@
       }
     });
 
-    arm(/[?&]glitch=now\b/.test(window.location.search) ? 300 : null);
+    var first = /[?&]glitch=now\b/.test(window.location.search) ? 300 : null;
+    if (booting()) {
+      document.addEventListener(
+        'nu11signal:boot-end',
+        function () {
+          arm(first);
+        },
+        { once: true },
+      );
+    } else {
+      arm(first);
+    }
   })();
 </script>

@@ -2,6 +2,10 @@
 import '../styles/global.css';
 import { SITE } from '../config';
 import SignalGlitch from '../components/SignalGlitch.astro';
+import Boot from '../components/Boot.astro';
+import StatusBar from '../components/StatusBar.astro';
+import KeysDialog from '../components/KeysDialog.astro';
+import Immersive from '../components/Immersive.astro';
 
 interface Props {
   title?: string;
@@ -17,7 +21,7 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
 ---
 
 <!doctype html>
-<html lang="en" data-theme="blueshift" data-fx="on">
+<html lang="en" data-theme="blueshift">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -46,10 +50,10 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=Kode+Mono:wght@400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400;600;700&display=swap"
     />
 
-    <!-- Apply the saved theme and effects before first paint. -->
+    <!-- Apply the saved theme before first paint. -->
     <script is:inline>
       (function () {
         var d = document.documentElement;
@@ -70,17 +74,18 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
             localStorage.setItem('nu11signal:theme', t);
           }
           if (t) d.dataset.theme = t;
-          var fx = localStorage.getItem('nu11signal:fx');
-          if (fx === 'on' || fx === 'off') d.dataset.fx = fx;
         } catch (e) {}
       })();
     </script>
   </head>
   <body>
+    <Boot />
     <a class="skip-link" href="#main">Skip to content</a>
     <slot />
+    <StatusBar />
+    <KeysDialog />
 
-    <!-- Theme and effects toggles: [data-theme-toggle] and [data-fx-toggle].
+    <!-- Theme toggle: [data-theme-toggle] (and the S key, Immersive.astro).
          The theme button cycles BLUESHIFT -> REDSHIFT -> NEON ROSE ->
          BLUESHIFT (BLUESHIFT is the default).
          A manual theme pick dispatches nu11signal:theme-picked on document;
@@ -124,12 +129,6 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
             var n = b.querySelector('[data-next]');
             if (n) n.textContent = ', switch to ' + LABELS[after];
           });
-          var on = d.dataset.fx !== 'off';
-          document.querySelectorAll('[data-fx-toggle]').forEach(function (b) {
-            b.setAttribute('aria-pressed', String(on));
-            var l = b.querySelector('[data-label]');
-            if (l) l.textContent = on ? 'FX ON' : 'FX OFF';
-          });
           var meta = document.querySelector('meta[name="theme-color"]');
           if (meta) meta.setAttribute('content', COLORS[theme]);
         }
@@ -148,15 +147,12 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
           if (t.closest('[data-theme-toggle]')) {
             setTheme('next');
             document.dispatchEvent(new CustomEvent('nu11signal:theme-picked'));
-          } else if (t.closest('[data-fx-toggle]')) {
-            d.dataset.fx = d.dataset.fx === 'off' ? 'on' : 'off';
-            save('nu11signal:fx', d.dataset.fx);
-            sync();
           }
         });
         sync();
       })();
     </script>
     <SignalGlitch />
+    <Immersive />
   </body>
 </html>

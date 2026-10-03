@@ -1,0 +1,78 @@
+---
+// The boot sequence, like the app's boot splash (internal/radio/boot.go):
+// the head mark, a few boot-log lines and B O O T I N G   N U 1 1 S I G N A L,
+// 1.5 s in all, then it dissolves into the page with a glitch.
+//
+// Once per browser session (sessionStorage nu11signal:booted), never with
+// prefers-reduced-motion. The overlay lives in an inert <template>: without
+// JavaScript (or for crawlers that skip it) nothing renders and the page
+// reads as usual. The inline script runs right after <body> opens, so the
+// overlay is in place before the first paint; it is position: fixed, so it
+// shifts nothing. Any key, click, touch, wheel or scroll skips it.
+//
+// While it shows, <html> carries data-booting; when it is gone the attribute
+// is removed and document gets a nu11signal:boot-end event. The signal
+// glitch and the scramble-in titles wait for it; without a boot neither
+// the attribute nor the event happens and they start at once.
+import ThemeArt from './ThemeArt.astro';
+
+const lines = ['NU11SIGNAL // SIGNAL ACQUIRED', 'LINKING APPLE MUSIC ...', 'AUTH OK', 'TUNING 88.0 - 108.0 MHZ ... OK'];
+---
+
+<template id="boot-tpl">
+  <div class="boot" aria-hidden="true">
+    <div class="boot__inner">
+      <ThemeArt kind="mark" class="boot__mark" />
+      <ol class="boot__log">
+        {lines.map((line, i) => <li style={`--i:${i}`}>{line}</li>)}
+      </ol>
+      <p class="boot__text">B O O T I N G &nbsp; N U 1 1 S I G N A L <span class="boot__dots">. . .</span></p>
+    </div>
+  </div>
+</template>
+
+<script is:inline>
+  (function () {
+    var KEY = 'nu11signal:booted';
+    var tpl = document.getElementById('boot-tpl');
+    if (!tpl || !('content' in tpl)) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var seen = false;
+    try {
+      seen = sessionStorage.getItem(KEY) === '1';
+      sessionStorage.setItem(KEY, '1');
+    } catch (e) {}
+    if (seen || reduce) return;
+
+    var d = document.documentElement;
+    var node = tpl.content.firstElementChild.cloneNode(true);
+    d.setAttribute('data-booting', '');
+    document.body.appendChild(node);
+    var done = false;
+    var EVENTS = ['keydown', 'pointerdown', 'wheel', 'touchstart', 'scroll'];
+    function finish(fast) {
+      if (done) return;
+      done = true;
+      EVENTS.forEach(function (t) {
+        window.removeEventListener(t, skip, true);
+      });
+      clearTimeout(outT);
+      node.classList.add(fast ? 'boot--skip' : 'boot--out');
+      setTimeout(function () {
+        node.remove();
+        d.removeAttribute('data-booting');
+        document.dispatchEvent(new CustomEvent('nu11signal:boot-end'));
+      }, fast ? 160 : 260);
+    }
+    function skip() {
+      finish(true);
+    }
+    // 1.24 s of boot, then the 0.26 s glitch dissolve: 1.5 s in all.
+    var outT = setTimeout(function () {
+      finish(false);
+    }, 1240);
+    EVENTS.forEach(function (t) {
+      window.addEventListener(t, skip, { capture: true, passive: true });
+    });
+  })();
+</script>

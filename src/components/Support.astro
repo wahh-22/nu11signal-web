@@ -2,6 +2,7 @@
 // Donation links come from src/config.ts (DONATIONS). An unset URL shows its
 // button as "coming soon"; with both unset the section says so.
 import { DONATIONS } from '../config';
+import Pane from './Pane.astro';
 
 const buttons = [
   { label: 'Buy me a coffee', glyph: '☕', url: DONATIONS.coffee.trim() },
@@ -10,11 +11,11 @@ const buttons = [
 const anyLive = buttons.some((b) => b.url !== '');
 ---
 
-<section class="section" id="support" aria-labelledby="support-title">
+<section class="section" id="support" aria-labelledby="support-title" data-section="SUPPORT">
   <div class="container support">
     <div class="section-head">
-      <p class="section-kicker">Keep it on air</p>
-      <h2 class="section-title" id="support-title">Support the signal</h2>
+      <p class="section-kicker">Support // keep it on air</p>
+      <h2 class="section-title" id="support-title" data-scramble>Support the signal</h2>
       <p class="section-lede">
         nu11signal is free and open source.{' '}
         {
@@ -25,6 +26,7 @@ const anyLive = buttons.some((b) => b.url !== '');
       </p>
     </div>
 
+    <Pane title="DONATE // OPTIONAL" class="support__pane">
     <div class="support__buttons">
       {
         buttons.map((b) =>
@@ -40,10 +42,15 @@ const anyLive = buttons.some((b) => b.url !== '');
         )
       }
     </div>
+    </Pane>
   </div>
 </section>
 
 <style>
+  .support__pane {
+    max-width: 44rem;
+    padding: 1.75rem 1.25rem 1.25rem;
+  }
   .support__buttons {
     display: flex;
     flex-wrap: wrap;
@@ -52,7 +59,5 @@ const anyLive = buttons.some((b) => b.url !== '');
   .soon {
     color: var(--text-dim);
     font-weight: 400;
-    text-transform: none;
-    letter-spacing: 0;
   }
 </style>
