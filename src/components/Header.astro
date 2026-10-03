@@ -1,6 +1,7 @@
 ---
 import ThemeArt from './ThemeArt.astro';
 import { LINKS } from '../config';
+import { DEFAULT_THEME, nextTheme, themeById } from '../themes.mjs';
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const nav = [
@@ -9,6 +10,9 @@ const nav = [
   { href: `${base}#install`, label: 'Install' },
   { href: `${base}#support`, label: 'Support' },
 ];
+// The theme button's no-JS state; Base.astro's theme cycle keeps it current.
+const theme = themeById(DEFAULT_THEME);
+const after = nextTheme(theme.id);
 ---
 
 <header class="site-header">
@@ -26,8 +30,8 @@ const nav = [
     </nav>
 
     <div class="toggles">
-      <button type="button" class="hud-btn hud-btn--small" data-theme-toggle data-current="blueshift" title="Color theme: BLUESHIFT. Click for REDSHIFT.">
-        <span class="sr-only">Theme: </span><span data-label>BLUESHIFT</span><span class="sr-only" data-next>, switch to REDSHIFT</span>
+      <button type="button" class="hud-btn hud-btn--small" data-theme-toggle data-current={theme.id} title={`Color theme: ${theme.label}. Click for ${after.label}.`}>
+        <span class="sr-only">Theme: </span><span data-label>{theme.label}</span><span class="sr-only" data-next>, switch to {after.label}</span>
       </button>
     </div>
   </div>

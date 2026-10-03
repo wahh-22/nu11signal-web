@@ -2,8 +2,13 @@
    Palettes mirror the app (internal/radio/theme.go): BLUESHIFT by default
    (also when <html> has no data-theme), REDSHIFT when <html data-theme="redshift">,
    NEON ROSE when <html data-theme="neon-rose">. The app has five themes; the
-   site shows these three. The token names are REDSHIFT's
-   roles (red, cyan, yellow...); every theme maps its colors onto them. */
+   site shows these three (the list lives in src/themes.mjs). The token names
+   are REDSHIFT's roles (red, cyan, yellow...); every theme maps its colors
+   onto them.
+   The BLUESHIFT block below is also the plain :root block, so it is the one
+   and only default: a page without data-theme (or before a theme applies)
+   reads exactly these tokens. Every theme-specific difference is a token set
+   in each theme's block, never a selector repeating the default. */
 
 :root,
 :root[data-theme='blueshift'] {
@@ -23,6 +28,14 @@
   --text-dim: #a9b4d0;
   --link: var(--cyan);
   --glow: rgb(52 122 255 / 0.2);
+  /* Text-safe accent: the app's #7C5CFF is too dark for body text on
+     near-black, so a lighter violet. */
+  --accent-text: #a995ff;
+  /* Ink on an accent fill (primary buttons, selected tabs, the release
+     badge's label): white reads on the violet. */
+  --on-accent: #fff;
+  /* The NO SIGNAL flash of the signal glitch. */
+  --signal-text: var(--accent-text);
   color-scheme: dark;
 }
 
@@ -42,6 +55,9 @@
   --text: #f1e9e7;
   --text-dim: #b9aeab;
   --glow: rgb(255 95 87 / 0.18);
+  --accent-text: var(--yellow);
+  --on-accent: var(--ink);
+  --signal-text: var(--red);
 }
 
 /* NEON ROSE is the app's pinkTheme (theme.go) mapped by role onto
@@ -63,12 +79,15 @@
   --text: #f6eff3;
   --text-dim: #c7b6bf;
   --link: var(--red);
-}
-:root[data-theme='neon-rose'] {
   --red: #f43888;
   --cyan: #d2cbd0;
   --yellow: #ff4f9a;
   --glow: rgb(244 56 136 / 0.18);
+  /* The active pink reads on the near-black, and dark ink reads on it as a
+     fill, so primary buttons keep the ink. */
+  --accent-text: var(--yellow);
+  --on-accent: var(--ink);
+  --signal-text: var(--red);
 }
 
 :root {
@@ -89,21 +108,12 @@
   --fit-pad: clamp(0.75rem, 3vh, 2.5rem);
   --max: 72rem;
   --gutter: clamp(1rem, 4vw, 2rem);
-  /* Text-safe accent: yellow in REDSHIFT, a lighter violet in BLUESHIFT
-     (the app's #7C5CFF is too dark for body text on near-black), and the
-     active pink in NEON ROSE (#FF4F9A reads on its near-black, and dark ink
-     reads on it as a fill, so its primary buttons keep the ink). */
-  --accent-text: var(--yellow);
 }
 @supports (height: 100svh) {
   :root {
     --screen-h: calc(100svh - var(--header-h) - var(--statusbar-h));
   }
 }
-:root:is([data-theme='blueshift'], :not([data-theme])) {
-  --accent-text: #a995ff;
-}
-
 *,
 *::before,
 *::after {
@@ -366,22 +376,15 @@ pre {
 .hud-btn--primary {
   background: var(--yellow);
   border-color: var(--yellow);
-  color: var(--ink);
+  color: var(--on-accent);
 }
 .hud-btn--primary::before,
 .hud-btn--primary::after {
-  color: var(--ink);
+  color: var(--on-accent);
 }
 .hud-btn--primary:hover {
   background: transparent;
   color: var(--accent-text);
-}
-:root:is([data-theme='blueshift'], :not([data-theme])) .hud-btn--primary {
-  color: #fff;
-}
-:root:is([data-theme='blueshift'], :not([data-theme])) .hud-btn--primary::before,
-:root:is([data-theme='blueshift'], :not([data-theme])) .hud-btn--primary::after {
-  color: #fff;
 }
 .hud-btn--small {
   min-height: 2.25rem;
@@ -425,11 +428,8 @@ kbd {
   height: 100%;
   object-fit: contain;
 }
-:root:is([data-theme='blueshift'], :not([data-theme])) .theme-art__img--blueshift,
-:root[data-theme='redshift'] .theme-art__img--redshift,
-:root[data-theme='neon-rose'] .theme-art__img--neon-rose {
-  display: block;
-}
+/* The rules that show the active theme's image are generated from the theme
+   list (src/themes.mjs, themeArtCss) and inlined by Base.astro. */
 /* In a glitching logo every layer covers the box; the tinted copies read as
    a colour split while they tear across it. */
 .glitch > .theme-art {
@@ -581,11 +581,8 @@ kbd {
   color: var(--red);
 }
 .sig-glitch__text {
-  color: var(--red);
+  color: var(--signal-text);
   font-weight: 700;
-}
-:root:is([data-theme='blueshift'], :not([data-theme])) .sig-glitch__text {
-  color: var(--accent-text);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,12 +1,12 @@
 ---
-// The official artwork in public/logo/, one <img> per theme. global.css
-// (.theme-art) shows only the one matching <html data-theme>, so the artwork
+// The official artwork in public/logo/, one <img> per theme in src/themes.mjs.
+// The .theme-art rules (global.css, plus the per-theme ones Base.astro inlines
+// from themes.mjs) show only the one matching <html data-theme>, so the artwork
 // follows a theme change at once. kind="logo" is the full 1650x520 logo;
 // kind="mark" is the 500x500 head mark. Decorative: the images have empty
 // alt text, so give the surrounding element the accessible name.
 import type { HTMLAttributes } from 'astro/types';
-
-const THEMES = ['blueshift', 'redshift', 'neon-rose'] as const;
+import { THEME_IDS, logoFile } from '../themes.mjs';
 
 interface Props extends HTMLAttributes<'span'> {
   kind: 'logo' | 'mark';
@@ -14,16 +14,15 @@ interface Props extends HTMLAttributes<'span'> {
 
 const { kind, class: className, ...rest } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
-const file = kind === 'logo' ? 'nu11signal' : 'nu11signal-mark';
 const [width, height] = kind === 'logo' ? ['1650', '520'] : ['500', '500'];
 ---
 
 <span class:list={['theme-art', className]} {...rest}>
   {
-    THEMES.map((theme) => (
+    THEME_IDS.map((theme) => (
       <img
         class={`theme-art__img theme-art__img--${theme}`}
-        src={`${base}logo/${file}-${theme}.svg`}
+        src={`${base}${logoFile(kind, theme)}`}
         alt=""
         width={width}
         height={height}

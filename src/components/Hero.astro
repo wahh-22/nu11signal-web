@@ -3,12 +3,15 @@ import ThemeArt from './ThemeArt.astro';
 import Pane from './Pane.astro';
 import DataRain from './DataRain.astro';
 import { INSTALL_COMMANDS, LINKS, REPO } from '../config';
+import { releaseBadgeScript } from '../release.mjs';
 
 // The official logo, one file per theme (ThemeArt). The glitch layers repeat
 // the stack, tinted, and tear across it now and then.
 const layers = ['glitch__main', 'glitch__layer glitch__layer--a', 'glitch__layer glitch__layer--b'];
 
-const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-the-badge&labelColor=0A0A0A&color=FF5F57&label=latest`;
+// The latest-release badge: a plain link until the inline script (release.mjs)
+// fills in the current tag, so a new release shows without a redeploy.
+const releaseScript = releaseBadgeScript(`https://api.github.com/repos/${REPO}/releases/latest`, `${LINKS.releases}/tag/`);
 ---
 
 <section class="hero fit" id="top" aria-labelledby="hero-title" data-section="ON AIR">
@@ -74,8 +77,8 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
 
     <ul class="hero__meta">
       <li>
-        <a href={LINKS.latestRelease} rel="noopener">
-          <img src={releaseBadge} alt="Latest nu11signal release" height="28" loading="lazy" decoding="async" />
+        <a class="release-badge" href={LINKS.latestRelease} rel="noopener" data-release-badge>
+          <span class="release-badge__label">Latest</span><span class="release-badge__value" data-release-version>release</span>
         </a>
       </li>
       <li class="chip">macOS 14+</li>
@@ -85,6 +88,8 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
   </Pane>
   </div>
 </section>
+
+<script is:inline set:html={releaseScript} />
 
 <script is:inline>
   (function () {
@@ -218,18 +223,15 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
   .install__tabs[hidden] {
     display: none;
   }
-  /* The selected platform reads like a primary HUD button (white ink on BLUESHIFT). */
+  /* The selected platform reads like a primary HUD button (--on-accent ink). */
   .install__tab[aria-pressed='true'] {
     border-color: var(--yellow);
     background: var(--yellow);
-    color: var(--install-tab-ink, var(--ink));
+    color: var(--on-accent);
   }
   .install__tab[aria-pressed='true']::before,
   .install__tab[aria-pressed='true']::after {
     color: inherit;
-  }
-  :root:is([data-theme='blueshift'], :not([data-theme])) .install {
-    --install-tab-ink: #fff;
   }
   .install__tab[aria-pressed='false'] {
     color: var(--text-dim);
@@ -307,9 +309,36 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
     padding: 0;
     list-style: none;
   }
-  .hero__meta img {
-    height: 28px;
-    width: auto;
+  /* The latest-release badge: a two-part HUD tag in the theme's colors, the
+     label filled with the active color. The value keeps room for the longest
+     tag it may show (9 characters), so filling in the version shifts nothing. */
+  .release-badge {
+    display: inline-flex;
+    align-items: stretch;
+    border: 1px solid var(--yellow);
+    border-radius: 2px;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+  }
+  .release-badge__label {
+    padding: 0.15rem 0.5rem;
+    background: var(--yellow);
+    color: var(--on-accent);
+    font-weight: 700;
+  }
+  .release-badge__label::before {
+    content: '▮ ';
+  }
+  .release-badge__value {
+    min-width: calc(9ch + 0.9em);
+    padding: 0.15rem 0.5rem;
+    color: var(--accent-text);
+  }
+  .release-badge:hover .release-badge__value,
+  .release-badge:focus-visible .release-badge__value {
+    background: var(--select);
+    color: var(--text);
   }
   .chip {
     padding: 0.15rem 0.55rem;

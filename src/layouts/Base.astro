@@ -6,6 +6,15 @@ import Boot from '../components/Boot.astro';
 import StatusBar from '../components/StatusBar.astro';
 import KeysDialog from '../components/KeysDialog.astro';
 import Immersive from '../components/Immersive.astro';
+import {
+  DEFAULT_THEME,
+  THEMES,
+  THEME_IDS,
+  THEME_STORAGE_KEY,
+  prePaintThemeScript,
+  themeArtCss,
+  themeById,
+} from '../themes.mjs';
 
 interface Props {
   title?: string;
@@ -18,17 +27,26 @@ const { title = SITE.title, description = SITE.description, noindex = false } = 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const canonical = noindex ? new URL(base, Astro.site) : new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(`${base}og.png`, Astro.site);
+
+// The theme cycle's data, from the one theme list (src/themes.mjs).
+const themeVars = {
+  CYCLE: THEME_IDS,
+  DEFAULT: DEFAULT_THEME,
+  KEY: THEME_STORAGE_KEY,
+  LABELS: Object.fromEntries(THEMES.map((t) => [t.id, t.label])),
+  COLORS: Object.fromEntries(THEMES.map((t) => [t.id, t.bg])),
+};
 ---
 
 <!doctype html>
-<html lang="en" data-theme="blueshift">
+<html lang="en" data-theme={DEFAULT_THEME}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
     {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
-    <meta name="theme-color" content="#03050c" />
+    <meta name="theme-color" content={themeById(DEFAULT_THEME).bg} />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
 
@@ -53,30 +71,13 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
       href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400;600;700&display=swap"
     />
 
-    <!-- Apply the saved theme before first paint. -->
-    <script is:inline>
-      (function () {
-        var d = document.documentElement;
-        try {
-          var t = localStorage.getItem('nu11signal:theme');
-          // Renamed themes: 'night-city' is now 'redshift' and 'blue' is now
-          // 'blueshift'. Keep returning visitors on their pick under its new id.
-          var renamed = { 'night-city': 'redshift', blue: 'blueshift' };
-          if (t && Object.prototype.hasOwnProperty.call(renamed, t)) {
-            t = renamed[t];
-            localStorage.setItem('nu11signal:theme', t);
-          }
-          // The site has three themes. Any other saved value (themes the site
-          // no longer shows, or anything unknown) loads the default BLUESHIFT
-          // and is rewritten.
-          if (t && t !== 'blueshift' && t !== 'redshift' && t !== 'neon-rose') {
-            t = 'blueshift';
-            localStorage.setItem('nu11signal:theme', t);
-          }
-          if (t) d.dataset.theme = t;
-        } catch (e) {}
-      })();
-    </script>
+    <!-- Per-theme artwork (ThemeArt.astro): show the active theme's image. -->
+    <style is:inline set:html={themeArtCss()}></style>
+
+    <!-- Apply the saved theme before first paint (src/themes.mjs,
+         migrateTheme: renamed ids load under their new id, unknown ones load
+         the default; both are rewritten). -->
+    <script is:inline set:html={prePaintThemeScript()}></script>
   </head>
   <body>
     <Boot />
@@ -86,26 +87,16 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
     <KeysDialog />
 
     <!-- Theme toggle: [data-theme-toggle] (and the S key, Immersive.astro).
-         The theme button cycles BLUESHIFT -> REDSHIFT -> NEON ROSE ->
-         BLUESHIFT (BLUESHIFT is the default).
+         The theme button cycles through the themes in src/themes.mjs order
+         (BLUESHIFT -> REDSHIFT -> NEON ROSE -> BLUESHIFT; BLUESHIFT is the
+         default).
          A manual theme pick dispatches nu11signal:theme-picked on document;
-         nu11signal:set-theme (detail: 'blueshift' | 'redshift' | 'neon-rose',
-         or 'next' for the following theme in the cycle) switches the theme the
-         same way, saved like a pick (the signal glitch uses 'next'). -->
-    <script is:inline>
+         nu11signal:set-theme (detail: a theme id, or 'next' for the following
+         theme in the cycle) switches the theme the same way, saved like a pick
+         (the signal glitch uses 'next'). -->
+    <script is:inline define:vars={themeVars}>
       (function () {
         var d = document.documentElement;
-        var THEMES = ['blueshift', 'redshift', 'neon-rose'];
-        var LABELS = {
-          blueshift: 'BLUESHIFT',
-          redshift: 'REDSHIFT',
-          'neon-rose': 'NEON ROSE',
-        };
-        var COLORS = {
-          blueshift: '#03050c',
-          redshift: '#070707',
-          'neon-rose': '#060407',
-        };
         function save(key, value) {
           try {
             localStorage.setItem(key, value);
@@ -113,10 +104,10 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
         }
         function current() {
           var t = d.dataset.theme;
-          return THEMES.indexOf(t) >= 0 ? t : 'blueshift';
+          return CYCLE.indexOf(t) >= 0 ? t : DEFAULT;
         }
         function next(theme) {
-          return THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length];
+          return CYCLE[(CYCLE.indexOf(theme) + 1) % CYCLE.length];
         }
         function sync() {
           var theme = current();
@@ -134,8 +125,8 @@ const ogImage = new URL(`${base}og.png`, Astro.site);
         }
         function setTheme(theme) {
           if (theme === 'next') theme = next(current());
-          d.dataset.theme = THEMES.indexOf(theme) >= 0 ? theme : 'blueshift';
-          save('nu11signal:theme', d.dataset.theme);
+          d.dataset.theme = CYCLE.indexOf(theme) >= 0 ? theme : DEFAULT;
+          save(KEY, d.dataset.theme);
           sync();
         }
         document.addEventListener('nu11signal:set-theme', function (e) {

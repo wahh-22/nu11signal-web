@@ -18,6 +18,7 @@ npm run build      # static build into dist/
 npm run preview    # serve dist/ locally
 npm run check      # astro check (TypeScript and .astro diagnostics)
 npm run check:links  # after a build: find broken internal links and assets in dist/
+npm test           # Node tests (node:test, no extra dependencies) in tools/*.test.mjs
 ```
 
 ### Base path and site URL
@@ -43,6 +44,8 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 | Path | What |
 |------|------|
 | `src/config.ts` | Links, the macOS and Linux install commands, page title and description, **donation URLs** |
+| `src/themes.mjs` | **The theme list** (ids, labels, background colors, toggle order), the default theme (BLUESHIFT), the saved-theme migration and the generated per-theme artwork rules. The theme cycle, header, status line, artwork, brand tools and tests all read it |
+| `src/release.mjs` | The hero's latest-release badge script: one GitHub API request per browser session, cached in `sessionStorage`, with a plain `LATEST RELEASE` link without JavaScript or when the request fails |
 | `public/logo/` | The official vector logos, one per site theme — BLUESHIFT, REDSHIFT and NEON ROSE (`nu11signal-<theme>.svg`, 1650x520), and their head-only marks (`nu11signal-mark-<theme>.svg`, the same paths cropped to a 500x500 viewBox). The hero shows the full logo and the header, footer and 404 page the mark, all through `src/components/ThemeArt.astro`; global.css `.theme-art` shows the file for the active theme |
 | `src/components/SignalGlitch.astro` | The periodic page glitch that also advances the theme |
 | `src/components/Boot.astro` | The boot sequence shown once per session (an inert `<template>` cloned by an inline script) |
@@ -57,12 +60,13 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 | `public/favicon.svg` | A copy of `public/logo/nu11signal-mark-blueshift.svg` |
 | `public/og.png` | The 1200x630 social card, rendered from `src/assets/og-card.svg` (the Blueshift logo on the BLUESHIFT background), which `tools/og-card.mjs` generates from `public/logo/nu11signal-blueshift.svg`; do not edit the card by hand |
 | `tools/check-links.mjs` | Internal link and asset checker for `dist/` |
+| `tools/*.test.mjs` | Node tests for `src/themes.mjs` and `src/release.mjs` (`npm test`) |
 
-If the logos change, replace the files in `public/logo/` (keep the marks in step) and run `npm run brand` (needs `rsvg-convert`, from librsvg) to refresh the favicon, regenerate `src/assets/og-card.svg` and render `public/og.png`. `npm run check:brand` fails when the card or the favicon no longer match the logos.
+If the logos change, replace the files in `public/logo/` (keep the marks in step) and run `npm run brand` (needs `rsvg-convert`, from librsvg) to refresh the favicon (the default theme's mark), regenerate `src/assets/og-card.svg` and render `public/og.png`. `npm run check:brand` fails when the card or the favicon no longer match the logos.
 
 ## Themes
 
-The app has five themes; the site has three of them, the ones in the themes recording: **BLUESHIFT** (electric blue and violet, the default), **REDSHIFT** (neon red, cyan and yellow) and **NEON ROSE** (hot pinks with silver). The theme button in the header (or the `S` key, or the status line's THEME button) shows the current one and cycles BLUESHIFT → REDSHIFT → NEON ROSE → BLUESHIFT; the choice is saved per browser. A choice saved under an old theme id, `night-city` or `blue`, loads as its renamed theme (REDSHIFT or BLUESHIFT); any other saved value, including the app's themes the site does not show, loads BLUESHIFT and is rewritten. The palettes live as CSS tokens per `data-theme` in `src/styles/global.css`.
+The app has five themes; the site has three of them, the ones in the themes recording: **BLUESHIFT** (electric blue and violet, the default), **REDSHIFT** (neon red, cyan and yellow) and **NEON ROSE** (hot pinks with silver). The theme button in the header (or the `S` key, or the status line's THEME button) shows the current one and cycles BLUESHIFT → REDSHIFT → NEON ROSE → BLUESHIFT; the choice is saved per browser. A choice saved under an old theme id, `night-city` or `blue`, loads as its renamed theme (REDSHIFT or BLUESHIFT); any other saved value, including the app's themes the site does not show, loads BLUESHIFT and is rewritten. The palettes live as CSS tokens per `data-theme` in `src/styles/global.css`; the BLUESHIFT block doubles as the plain `:root` default, and theme-specific differences (`--accent-text`, `--on-accent`, `--signal-text`) are tokens in each theme's block. To add or remove a theme, edit the list in `src/themes.mjs`, its palette block in `global.css` and its two files in `public/logo/`; `npm test` checks that the three agree.
 
 ## Terminal feel
 
