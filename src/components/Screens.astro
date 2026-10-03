@@ -1,16 +1,21 @@
 ---
-// The screens section: a recording of the real app on top, then the app's
-// own 80x24 screen renders (copied from the app repo's docs/assets/screens).
+// The screens section: a recording of the real app on top, then a gallery
+// of recordings (public/demo, encoded from the owner's GIFs) and the app's
+// own 80x24 screen renders (copied from the app repo's docs/assets/screens)
+// for the views not recorded yet.
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const src = (name: string) => `${base}screens/${name}.svg`;
 
 const demo = (name: string) => `${base}demo/${name}`;
 
-const gallery = [
+// A shot with `video` plays that recording from public/demo instead of
+// showing the still render.
+const gallery: { name: string; title: string; alt: string; caption: string; video?: string }[] = [
   {
     name: 'search',
+    video: 'search',
     title: 'SEARCH',
-    alt: 'SEARCH with live suggestions, matching artists and songs',
+    alt: 'SEARCH in action: recent searches, live suggestions while typing, then an artist page with its top songs and albums, and a song playing',
     caption: 'Live suggestions, recent searches, artists, albums, songs and playlists.',
   },
   {
@@ -82,7 +87,25 @@ const gallery = [
         gallery.map((shot) => (
           <li>
             <figure>
-              <img src={src(shot.name)} width="840" height="556" alt={shot.alt} loading="lazy" decoding="async" />
+              {shot.video ? (
+                <video
+                  width="1278"
+                  height="702"
+                  loop
+                  muted
+                  playsinline
+                  controls
+                  preload="none"
+                  poster={demo(`${shot.video}-poster.jpg`)}
+                  aria-label={shot.alt}
+                  data-demo
+                >
+                  <source src={demo(`${shot.video}.webm`)} type="video/webm" />
+                  <source src={demo(`${shot.video}.mp4`)} type="video/mp4" />
+                </video>
+              ) : (
+                <img src={src(shot.name)} width="840" height="556" alt={shot.alt} loading="lazy" decoding="async" />
+              )}
               <figcaption>
                 <strong>{shot.title}</strong> — {shot.caption}
               </figcaption>
@@ -151,7 +174,8 @@ const gallery = [
   .gallery figure {
     margin: 0;
   }
-  .gallery img {
+  .gallery img,
+  .gallery video {
     width: 100%;
     height: auto;
     border-radius: 8px;
