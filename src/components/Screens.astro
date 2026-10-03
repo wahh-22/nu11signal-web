@@ -10,13 +10,13 @@ const recordings: { video: string; title: string; alt: string; caption: string }
     video: 'search',
     title: 'SEARCH',
     alt: 'SEARCH in action: recent searches, live suggestions while typing, then an artist page with its top songs and albums, and a song playing',
-    caption: 'Live suggestions, artist pages, play from any result.',
+    caption: 'Search the catalog.',
   },
   {
     video: 'themes',
     title: 'Themes and quit',
     alt: 'The SETTINGS panel switching the app between the BLUESHIFT, REDSHIFT and NEON ROSE themes, then quitting: the confirmation prompt and the shutdown',
-    caption: 'Switch BLUESHIFT, REDSHIFT and NEON ROSE in SETTINGS; quitting always asks first.',
+    caption: 'Switch themes, then quit.',
   },
 ];
 ---
@@ -26,10 +26,7 @@ const recordings: { video: string; title: string; alt: string; caption: string }
     <div class="section-head">
       <p class="section-kicker">Signal acquired</p>
       <h2 class="section-title" id="screens-title">The radio, in 80×24</h2>
-      <p class="section-lede">
-        Playlists on the dial at the left, NOW PLAYING with bracketed transport controls and data rain at the right.
-        Three recordings of the real app: playing, searching, and switching themes.
-      </p>
+      <p class="section-lede">Three recordings of the real app.</p>
     </div>
 
     <figure class="terminal">
@@ -49,7 +46,7 @@ const recordings: { video: string; title: string; alt: string; caption: string }
         <source src={demo('overview.webm')} type="video/webm" />
         <source src={demo('overview.mp4')} type="video/mp4" />
       </video>
-      <figcaption>Launch, open a playlist, play: the rain follows the music.</figcaption>
+      <figcaption>Launch, open a playlist, play.</figcaption>
     </figure>
 
     <ul class="recordings">

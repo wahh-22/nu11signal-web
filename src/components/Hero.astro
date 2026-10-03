@@ -1,6 +1,6 @@
 ---
 import ThemeArt from './ThemeArt.astro';
-import { INSTALL_COMMANDS, LINKS, LINUX_FONT_COMMAND, REPO } from '../config';
+import { INSTALL_COMMANDS, LINKS, REPO } from '../config';
 
 // The official logo, one file per theme (ThemeArt). The glitch layers repeat
 // the stack, tinted, and tear across it now and then.
@@ -20,9 +20,8 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
 
     <p class="hero__tagline">A neon car radio for Apple&nbsp;Music, in your terminal.</p>
     <p class="hero__lede">
-      Your playlists sit on a pseudo FM dial beside a now-playing panel, a volume readout, and data rain that plays the
-      music. Search the Apple Music catalog, edit playlists, and love songs without leaving the terminal, or play your
-      own music files: beside Apple Music on macOS, on their own on Linux.
+      Your playlists on a pseudo FM dial, a now-playing panel, and data rain that plays the music. Apple Music and your
+      own music files, without leaving the terminal.
     </p>
 
     <!--
@@ -46,7 +45,7 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
               <span class="install__prompt" aria-hidden="true">$</span>
               <code class="install__cmd" id="install-cmd-macos" data-copy-key="⌘C">{INSTALL_COMMANDS.macos}</code>
             </p>
-            <p class="install__note">macOS 14+. Also installs the Kode Mono font.</p>
+            <p class="install__note">macOS 14+, Apple Silicon or Intel.</p>
           </div>
           <div class="install__line" data-platform-line="linux">
             <p class="install__row">
@@ -54,10 +53,7 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
               <span class="install__prompt" aria-hidden="true">$</span>
               <code class="install__cmd" id="install-cmd-linux" data-copy-key="Ctrl+C">{INSTALL_COMMANDS.linux}</code>
             </p>
-            <p class="install__note">
-              x86_64 or ARM64, glibc, Homebrew on Linux. Font: <code>{LINUX_FONT_COMMAND}</code>. Or
-              a <a href={LINKS.installLinux} rel="noopener">release archive</a>.
-            </p>
+            <p class="install__note">x86_64 or ARM64, glibc. Your local music files.</p>
           </div>
         </div>
         <button type="button" class="hud-btn hud-btn--small install__copy" data-copy-target="install-cmd-macos">
@@ -79,9 +75,7 @@ const releaseBadge = `https://img.shields.io/github/v/release/${REPO}?style=for-
         </a>
       </li>
       <li class="chip">macOS 14+</li>
-      <li class="chip">Linux x86_64 · ARM64</li>
-      <li class="chip">Local files</li>
-      <li class="chip">Apple Music on macOS</li>
+      <li class="chip">Linux</li>
       <li class="chip">MIT</li>
     </ul>
   </div>
