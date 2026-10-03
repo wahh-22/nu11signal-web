@@ -1,6 +1,6 @@
 # nu11signal-web
 
-The website for [nu11signal](https://github.com/wahh-22/nu11signal), a neon car radio for Apple Music in your terminal (Apple Music and local files on macOS, local files on Linux).
+The website for [nu11signal](https://github.com/wahh-22/nu11signal), a terminal-native music player for Apple Music and local files (Apple Music and local files on macOS, local files on Linux).
 
 It is a static [Astro](https://astro.build) site published on GitHub Pages:
 

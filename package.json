@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "description": "The nu11signal website: a neon car radio for Apple Music, in your terminal.",
+  "description": "The nu11signal website: a terminal-native music player for Apple Music and local files.",
   "license": "MIT",
   "engines": {
     "node": ">=22.12.0"

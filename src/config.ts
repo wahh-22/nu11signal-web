@@ -27,10 +27,10 @@ export const INSTALL_COMMANDS = {
 } as const;
 
 export const SITE = {
-  title: 'nu11signal — a neon car radio for Apple Music, in your terminal',
+  title: 'nu11signal — a terminal-native music player for Apple Music and local files',
   shortTitle: 'nu11signal',
   description:
-    'A neon car radio for Apple Music, in your terminal. Apple Music and your own music files on macOS 14+, your music files on Linux.',
+    'A terminal-native music player for Apple Music and local files: instant search, keyboard and mouse control, beautiful visuals. Apple Music and local files on macOS 14+, local files on Linux.',
 } as const;
 
 // ---------------------------------------------------------------------------
