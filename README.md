@@ -43,7 +43,7 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 
 | Path | What |
 |------|------|
-| `src/config.ts` | Links (including the Android guides), the macOS and Linux install commands, page title and description, **donation URLs** |
+| `src/config.ts` | Links (including the Android guides), `GOOGLE_SITE_VERIFICATION` (Search Console's HTML-tag code; empty adds no tag), the macOS and Linux install commands, page title and description, **donation URLs** |
 | `src/themes.mjs` | **The theme list** (ids, labels, background colors, toggle order), the default theme (BLUESHIFT), the saved-theme migration and the generated per-theme artwork rules. The theme cycle, header, status line, artwork, brand tools and tests all read it |
 | `src/release.mjs` | The hero's latest-release badge script: one GitHub API request per browser session, cached in `sessionStorage`, with a plain `LATEST RELEASE` link without JavaScript or when the request fails |
 | `public/logo/` | The official vector logos, one per site theme — BLUESHIFT, REDSHIFT and NEON ROSE (`nu11signal-<theme>.svg`, 1650x520), and their head-only marks (`nu11signal-mark-<theme>.svg`, the same paths cropped to a 500x500 viewBox). The hero shows the full logo and the header, footer and 404 page the mark, all through `src/components/ThemeArt.astro`; global.css `.theme-art` shows the file for the active theme |
@@ -59,6 +59,7 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 | `public/demo/` | The three recordings of the screens section, each as `<name>.webm`, `<name>.mp4` (encoded from the owner's GIFs with ffmpeg) and `<name>-poster.jpg`: `overview` (the main figure), `search` (SEARCH) and `themes` (switching themes in SETTINGS and quitting). The section shows recordings only, no still renders |
 | `public/favicon.svg` | A copy of `public/logo/nu11signal-mark-blueshift.svg` |
 | `public/og.png` | The 1200x630 social card, rendered from `src/assets/og-card.svg` (the Blueshift logo on the BLUESHIFT background), which `tools/og-card.mjs` generates from `public/logo/nu11signal-blueshift.svg`; do not edit the card by hand |
+| `src/pages/sitemap.xml.ts`, `src/pages/robots.txt.ts` | The sitemap (the home page) and robots.txt pointing to it, both under `SITE_URL`/`BASE_PATH` |
 | `tools/check-links.mjs` | Internal link and asset checker for `dist/` |
 | `tools/*.test.mjs` | Node tests for `src/themes.mjs` and `src/release.mjs` (`npm test`) |
 
