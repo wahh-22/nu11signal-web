@@ -5,9 +5,23 @@
 import { INSTALL_COMMANDS, LINKS } from '../config';
 import Pane from './Pane.astro';
 
+// Android has no install command: its card links the APK and the guides.
 const platforms = [
   { title: 'macOS', note: 'macOS 14+. Apple Music needs a subscription.', cmd: INSTALL_COMMANDS.macos },
-  { title: 'Linux', note: 'x86_64 or ARM64, glibc. Your local music files.', cmd: INSTALL_COMMANDS.linux },
+  {
+    title: 'Linux',
+    note: 'x86_64 or ARM64, glibc. Local files; Apple Music is experimental.',
+    cmd: INSTALL_COMMANDS.linux,
+  },
+  {
+    title: 'Android',
+    note: 'Android 9+: TV, phones and tablets. Install the APK; newer versions are offered in the app.',
+    links: [
+      { href: LINKS.releases, label: 'APK on GitHub Releases' },
+      { href: LINKS.androidTv, label: 'TV guide' },
+      { href: LINKS.androidPhone, label: 'Phone and tablet guide' },
+    ],
+  },
 ];
 ---
 
@@ -16,7 +30,7 @@ const platforms = [
     <div class="section-head">
       <h2 class="section-kicker" id="install-title"><span data-scramble>Install</span></h2>
       <p class="section-lede">
-        One Homebrew command, then run <code>nu11signal</code>. See the{' '}
+        One Homebrew command on macOS and Linux, then run <code>nu11signal</code>; on Android, the APK. See the{' '}
         <a href={LINKS.install} rel="noopener">install guide</a> or <a href={LINKS.releases} rel="noopener">GitHub Releases</a>.
       </p>
     </div>
@@ -25,7 +39,18 @@ const platforms = [
         platforms.map((p) => (
           <Pane title={p.title} tag="h3" class="platform">
             <p>{p.note}</p>
-            <pre><span class="prompt" aria-hidden="true">$ </span><code>{p.cmd}</code></pre>
+            {p.cmd && (
+              <pre><span class="prompt" aria-hidden="true">$ </span><code>{p.cmd}</code></pre>
+            )}
+            {p.links && (
+              <p class="platform__links">
+                {p.links.map((l) => (
+                  <a href={l.href} rel="noopener">
+                    {l.label} <span aria-hidden="true">→</span>
+                  </a>
+                ))}
+              </p>
+            )}
           </Pane>
         ))
       }
@@ -46,6 +71,12 @@ const platforms = [
     margin: 0 0 0.75rem;
     color: var(--text-dim);
     font-size: 0.875rem;
+  }
+  .platform .platform__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin: 0;
   }
   .section-lede code {
     color: var(--text);

@@ -16,11 +16,14 @@ export const LINKS = {
   browsing: `${REPO_URL}/blob/main/docs/usage.md#browsing-the-catalog`,
   settings: `${REPO_URL}/blob/main/docs/usage.md#settings`,
   keys: `${REPO_URL}/blob/main/docs/usage.md#keys`,
+  androidTv: `${REPO_URL}/blob/main/docs/android-tv.md`,
+  androidPhone: `${REPO_URL}/blob/main/docs/android-phone.md`,
   siteRepo: 'https://github.com/wahh-22/nu11signal-web',
 } as const;
 
 // Homebrew install commands. The cask is macOS-only (it also installs the
-// Kode Mono font); Linux uses the formula through Homebrew on Linux.
+// Kode Mono font); Linux uses the formula through Homebrew on Linux. Android
+// has no command: its APK comes from GitHub Releases (Install.astro).
 export const INSTALL_COMMANDS = {
   macos: 'brew install --cask wahh-22/tap/nu11signal',
   linux: 'brew install wahh-22/tap/nu11signal',
@@ -30,7 +33,7 @@ export const SITE = {
   title: 'nu11signal — a terminal-native music player for Apple Music and local files',
   shortTitle: 'nu11signal',
   description:
-    'A terminal-native music player for Apple Music and local files: instant search, keyboard and mouse control, beautiful visuals. Apple Music and local files on macOS 14+, local files on Linux.',
+    'A terminal-native music player for Apple Music and local files: instant search, keyboard and mouse control, beautiful visuals. Apple Music and local files on macOS 14+ and Linux (Apple Music experimental), Apple Music on Android TV, phones and tablets.',
 } as const;
 
 // ---------------------------------------------------------------------------

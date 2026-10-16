@@ -1,6 +1,6 @@
 # nu11signal-web
 
-The website for [nu11signal](https://github.com/wahh-22/nu11signal), a terminal-native music player for Apple Music and local files (Apple Music and local files on macOS, local files on Linux).
+The website for [nu11signal](https://github.com/wahh-22/nu11signal), a terminal-native music player for Apple Music and local files (Apple Music and local files on macOS and Linux, Apple Music on Android TV, phones and tablets).
 
 It is a static [Astro](https://astro.build) site published on GitHub Pages:
 
@@ -43,7 +43,7 @@ Internal links and assets go through `import.meta.env.BASE_URL`, so both work.
 
 | Path | What |
 |------|------|
-| `src/config.ts` | Links, the macOS and Linux install commands, page title and description, **donation URLs** |
+| `src/config.ts` | Links (including the Android guides), the macOS and Linux install commands, page title and description, **donation URLs** |
 | `src/themes.mjs` | **The theme list** (ids, labels, background colors, toggle order), the default theme (BLUESHIFT), the saved-theme migration and the generated per-theme artwork rules. The theme cycle, header, status line, artwork, brand tools and tests all read it |
 | `src/release.mjs` | The hero's latest-release badge script: one GitHub API request per browser session, cached in `sessionStorage`, with a plain `LATEST RELEASE` link without JavaScript or when the request fails |
 | `public/logo/` | The official vector logos, one per site theme — BLUESHIFT, REDSHIFT and NEON ROSE (`nu11signal-<theme>.svg`, 1650x520), and their head-only marks (`nu11signal-mark-<theme>.svg`, the same paths cropped to a 500x500 viewBox). The hero shows the full logo and the header, footer and 404 page the mark, all through `src/components/ThemeArt.astro`; global.css `.theme-art` shows the file for the active theme |

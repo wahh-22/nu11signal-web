@@ -108,6 +108,61 @@ const recordings: {
       </ul>
     </div>
   </div>
+
+  <div class="fit screens__android">
+    <div class="container">
+      <Pane title="ANDROID // TV AND PHONE" class="screen screen--android">
+        <figure class="android">
+          <div class="android__videos">
+            <video
+              class="android__tv"
+              width="1280"
+              height="720"
+              loop
+              muted
+              playsinline
+              controls
+              preload="none"
+              poster={demo('android-tv-poster.jpg')}
+              aria-label="nu11signal on Android TV: the playlists, opening COLDPLAY with the remote, a song playing and the data rain reacting to it"
+              data-demo
+            >
+              <source src={demo('android-tv.webm')} type="video/webm" />
+              <source src={demo('android-tv.mp4')} type="video/mp4" />
+            </video>
+            <video
+              class="android__phone"
+              width="540"
+              height="1260"
+              loop
+              muted
+              playsinline
+              controls
+              preload="none"
+              poster={demo('android-phone-poster.jpg')}
+              aria-label="nu11signal on a phone held upright: NOW PLAYING over the list, opening a playlist, a song playing and the data rain"
+              data-demo
+            >
+              <source src={demo('android-phone.webm')} type="video/webm" />
+              <source src={demo('android-phone.mp4')} type="video/mp4" />
+            </video>
+          </div>
+          <figcaption class="row__text">
+            <p class="row__caption">The same player on your TV and your phone.</p>
+            <ul class="row__points">
+              <li>Android TV and Google TV: the remote</li>
+              <li>Phones and tablets: taps, swipes, portrait</li>
+              <li>Music keeps playing in the background</li>
+            </ul>
+            <p class="android__links">
+              <a class="row__link" href={LINKS.androidTv} rel="noopener">TV guide <span aria-hidden="true">→</span></a>
+              <a class="row__link" href={LINKS.androidPhone} rel="noopener">Phone and tablet guide <span aria-hidden="true">→</span></a>
+            </p>
+          </figcaption>
+        </figure>
+      </Pane>
+    </div>
+  </div>
 </section>
 
 <script>
@@ -192,6 +247,22 @@ const recordings: {
     display: inline-block;
     margin-top: 0.6rem;
   }
+  /* ANDROID: the TV recording beside the phone's, the text under them. */
+  .screen--android {
+    margin-top: 2rem;
+  }
+  .android__videos {
+    display: grid;
+    grid-template-columns: minmax(0, 1280fr) minmax(0, 309fr);
+    align-items: end;
+    gap: 1rem;
+  }
+  .android__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.5rem;
+    margin: 0;
+  }
 
   /* Wider windows: each row is its video beside its text, the second row
      mirrored. */
@@ -265,6 +336,16 @@ const recordings: {
     .row__link {
       margin-top: clamp(0.5rem, 1.8vh, 1.25rem);
       font-size: clamp(0.8125rem, 0.35rem + 1.1vh, 1rem);
+    }
+  }
+
+  /* Fit mode: the ANDROID screen keeps both recordings, side by side at the
+     same height, within one screen with room for the text under them. */
+  @media (min-width: 52.0625rem) and (min-height: 35rem) {
+    .screen--android {
+      margin-top: 0;
+      width: min(100%, calc((var(--screen-h) - 2 * var(--fit-pad) - 12rem) * 2.2064 + 1rem + 1.8rem + 2px));
+      margin-inline: auto;
     }
   }
 </style>
