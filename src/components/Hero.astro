@@ -40,16 +40,21 @@ const donations = [
     </p>
 
     <!--
-      Without JavaScript both install lines show, each labeled. With it, the
-      platform toggle shows one line at a time and the copy button follows it.
+      Without JavaScript every install line shows, each labeled. With it, the
+      platform toggle shows one line at a time and the copy button follows it;
+      Android has no command (the APK comes from GitHub Releases), so the copy
+      button hides there.
     -->
-    <Pane title="INSTALL // HOMEBREW" class="install" role="group" aria-label="Install with Homebrew" data-install>
+    <Pane title="INSTALL // GET THE SIGNAL" class="install" role="group" aria-label="Install nu11signal" data-install>
       <div class="install__tabs" role="group" aria-label="Platform" hidden data-install-tabs>
         <button type="button" class="hud-btn hud-btn--small install__tab" aria-pressed="true" data-platform="macos">
           macOS
         </button>
         <button type="button" class="hud-btn hud-btn--small install__tab" aria-pressed="false" data-platform="linux">
           Linux
+        </button>
+        <button type="button" class="hud-btn hud-btn--small install__tab" aria-pressed="false" data-platform="android">
+          Android
         </button>
       </div>
       <div class="install__body">
@@ -68,7 +73,20 @@ const donations = [
               <span class="install__prompt" aria-hidden="true">$</span>
               <code class="install__cmd" id="install-cmd-linux" data-copy-key="Ctrl+C">{INSTALL_COMMANDS.linux}</code>
             </p>
-            <p class="install__note">x86_64 or ARM64, glibc. Your local music files.</p>
+            <p class="install__note">x86_64 or ARM64, glibc. Local files; Apple Music is experimental.</p>
+          </div>
+          <div class="install__line" data-platform-line="android">
+            <p class="install__row">
+              <span class="install__os">Android</span>
+              <a class="install__cmd install__link" href={LINKS.releases} rel="noopener">
+                nu11signal-tv-&lt;version&gt;.apk on GitHub Releases <span aria-hidden="true">→</span>
+              </a>
+            </p>
+            <p class="install__note">
+              Android 9+: TV, phones and tablets; newer versions are offered in the app.
+              <a href={LINKS.androidTv} rel="noopener">TV guide</a> ·
+              <a href={LINKS.androidPhone} rel="noopener">Phone and tablet guide</a>
+            </p>
           </div>
         </div>
         <button type="button" class="hud-btn hud-btn--small install__copy" data-copy-target="install-cmd-macos">
@@ -92,6 +110,7 @@ const donations = [
       </li>
       <li class="chip">macOS 14+</li>
       <li class="chip">Linux</li>
+      <li class="chip">Android</li>
       <li class="chip">MIT</li>
     </ul>
 
@@ -131,6 +150,7 @@ const donations = [
           if (on && copy) {
             var cmd = line.querySelector('code[id]');
             if (cmd) copy.setAttribute('data-copy-target', cmd.id);
+            copy.hidden = !cmd;
           }
         });
       }
@@ -141,7 +161,7 @@ const donations = [
       var ua = navigator.userAgent || '';
       box.setAttribute('data-js', '');
       tabs.hidden = false;
-      select(/Linux/.test(ua) && !/Android/.test(ua) ? 'linux' : 'macos');
+      select(/Android/.test(ua) ? 'android' : /Linux/.test(ua) ? 'linux' : 'macos');
     });
 
     document.querySelectorAll('[data-copy-target]').forEach(function (btn) {
@@ -312,6 +332,15 @@ const donations = [
     color: var(--text-dim);
     font-size: 0.8125rem;
     line-height: 1.5;
+  }
+  .install__link {
+    color: var(--accent-text);
+  }
+  .install__copy[hidden] {
+    display: none;
+  }
+  .install__note a {
+    color: var(--accent-text);
   }
   .install__note code {
     overflow-wrap: anywhere;
