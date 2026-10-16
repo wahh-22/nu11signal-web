@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { SITE } from '../config';
+import { GOOGLE_SITE_VERIFICATION, LINKS, SITE } from '../config';
 import SignalGlitch from '../components/SignalGlitch.astro';
 import Boot from '../components/Boot.astro';
 import StatusBar from '../components/StatusBar.astro';
@@ -27,6 +27,26 @@ const { title = SITE.title, description = SITE.description, noindex = false } = 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const canonical = noindex ? new URL(base, Astro.site) : new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(`${base}og.png`, Astro.site);
+const verification = GOOGLE_SITE_VERIFICATION.trim();
+
+// Structured data for search engines: the app, its platforms and where to
+// get it. Only indexed pages carry it.
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'nu11signal',
+  alternateName: ['NU11SIGNAL', 'null signal'],
+  description: SITE.description,
+  url: new URL(base, Astro.site).href,
+  image: ogImage.href,
+  applicationCategory: 'MultimediaApplication',
+  operatingSystem: 'macOS 14+, Linux, Android 9+ (TV, phones and tablets)',
+  downloadUrl: LINKS.releases,
+  installUrl: LINKS.install,
+  license: LINKS.license,
+  sameAs: [LINKS.repo],
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
 
 // The theme cycle's data, from the one theme list (src/themes.mjs).
 const themeVars = {
@@ -46,6 +66,8 @@ const themeVars = {
     <title>{title}</title>
     <meta name="description" content={description} />
     {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    {verification && <meta name="google-site-verification" content={verification} />}
+    {!noindex && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
     <meta name="theme-color" content={themeById(DEFAULT_THEME).bg} />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
