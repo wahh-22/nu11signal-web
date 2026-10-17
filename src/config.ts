@@ -31,7 +31,7 @@ export const INSTALL_COMMANDS = {
 
 // Google Search Console's HTML-tag verification code (the content of its
 // google-site-verification meta tag). Empty adds no tag.
-export const GOOGLE_SITE_VERIFICATION = '';
+export const GOOGLE_SITE_VERIFICATION = 'TqB79N-ftKKmiBliiA0qR098HmXomOGoeWpwAUrwT0s';
 
 export const SITE = {
   title: 'nu11signal — a terminal-native music player for Apple Music and local files',
